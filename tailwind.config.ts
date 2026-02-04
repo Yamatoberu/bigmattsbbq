@@ -13,12 +13,12 @@ const config: Config = {
       colors: {
         coal: '#0b0c0f',
         charcoal: '#16171c',
-        ember: '#f97316',
+        ember: '#d64141',
         smoke: '#1f2127',
         ash: '#9ca3af'
       },
       boxShadow: {
-        glow: '0 10px 40px rgba(249,115,22,0.25)'
+        glow: '0 10px 40px rgba(214,65,65,0.25)'
       },
       backgroundImage: {
         'smoke-texture':

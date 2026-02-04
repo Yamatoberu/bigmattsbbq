@@ -20,21 +20,18 @@ export default function Header() {
   const isActive = (href: string) => pathname === href;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/5 bg-black/50 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-white/5 bg-black/25 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center gap-4 px-5 py-4 md:px-8">
         <div className="flex flex-1 justify-start md:justify-start">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="relative h-12 w-12 overflow-hidden rounded-full border border-ember/50 bg-black shadow-glow">
-              <Image
-                src="/logo.jpg"
-                alt="Big Matt's BBQ"
-                fill
-                className="object-cover"
-                priority
-                sizes="48px"
-              />
-            </div>
-            <span className="hidden text-lg font-semibold tracking-tight md:inline">Big Matt&apos;s BBQ</span>
+          <Link href="/" className="flex items-center gap-4">
+            <Image
+              src="/logo.jpg"
+              alt="Big Matt's BBQ"
+              width={112}
+              height={112}
+              className="h-28 w-28 rounded-2xl border border-ember/50 bg-black object-cover shadow-glow"
+              priority
+            />
           </Link>
         </div>
 

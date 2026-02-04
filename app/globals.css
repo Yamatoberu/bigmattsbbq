@@ -12,11 +12,24 @@ body {
   min-height: 100vh;
   font-family: var(--font-body), 'Helvetica Neue', system-ui, -apple-system, sans-serif;
   font-feature-settings: 'liga' 1, 'calt' 1;
-  background-image:
-    radial-gradient(120% 120% at 10% 20%, rgba(249, 115, 22, 0.08), transparent),
-    radial-gradient(120% 120% at 90% 20%, rgba(249, 115, 22, 0.06), transparent),
-    radial-gradient(160% 140% at 50% 80%, rgba(255, 255, 255, 0.05), transparent),
-    linear-gradient(180deg, #0b0c0f 0%, #0d0f14 35%, #0b0c0f 100%);
+  background-image: url('/smoke.jpg');
+  background-size: 1400px auto;
+  background-repeat: repeat;
+  background-position: center top;
+  image-rendering: auto;
+  background-attachment: scroll;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(120% 120% at 50% 50%, rgba(0, 0, 0, 0.35), transparent 65%);
+  mix-blend-mode: multiply;
+  opacity: 0.8;
 }
 
 .font-display {

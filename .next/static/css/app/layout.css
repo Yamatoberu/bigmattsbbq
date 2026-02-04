@@ -888,8 +888,8 @@ video {
 .h-10 {
   height: 2.5rem;
 }
-.h-12 {
-  height: 3rem;
+.h-28 {
+  height: 7rem;
 }
 .h-4 {
   height: 1rem;
@@ -906,8 +906,8 @@ video {
 .w-10 {
   width: 2.5rem;
 }
-.w-12 {
-  width: 3rem;
+.w-28 {
+  width: 7rem;
 }
 .w-4 {
   width: 1rem;
@@ -1049,13 +1049,13 @@ video {
 }
 .border-ember {
   --tw-border-opacity: 1;
-  border-color: rgb(249 115 22 / var(--tw-border-opacity, 1));
+  border-color: rgb(214 65 65 / var(--tw-border-opacity, 1));
 }
 .border-ember\/30 {
-  border-color: rgb(249 115 22 / 0.3);
+  border-color: rgb(214 65 65 / 0.3);
 }
 .border-ember\/50 {
-  border-color: rgb(249 115 22 / 0.5);
+  border-color: rgb(214 65 65 / 0.5);
 }
 .border-white\/10 {
   border-color: rgb(255 255 255 / 0.1);
@@ -1094,10 +1094,10 @@ video {
 }
 .bg-ember {
   --tw-bg-opacity: 1;
-  background-color: rgb(249 115 22 / var(--tw-bg-opacity, 1));
+  background-color: rgb(214 65 65 / var(--tw-bg-opacity, 1));
 }
 .bg-ember\/10 {
-  background-color: rgb(249 115 22 / 0.1);
+  background-color: rgb(214 65 65 / 0.1);
 }
 .bg-smoke {
   --tw-bg-opacity: 1;
@@ -1106,12 +1106,15 @@ video {
 .bg-smoke\/60 {
   background-color: rgb(31 33 39 / 0.6);
 }
+.bg-black\/25 {
+  background-color: rgb(0 0 0 / 0.25);
+}
 .bg-gradient-to-br {
   background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
 }
 .from-ember\/10 {
-  --tw-gradient-from: rgb(249 115 22 / 0.1) var(--tw-gradient-from-position);
-  --tw-gradient-to: rgb(249 115 22 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-from: rgb(214 65 65 / 0.1) var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(214 65 65 / 0) var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 .via-transparent {
@@ -1242,7 +1245,7 @@ video {
 }
 .text-ember {
   --tw-text-opacity: 1;
-  color: rgb(249 115 22 / var(--tw-text-opacity, 1));
+  color: rgb(214 65 65 / var(--tw-text-opacity, 1));
 }
 .text-emerald-300 {
   --tw-text-opacity: 1;
@@ -1280,10 +1283,10 @@ video {
   -moz-osx-font-smoothing: grayscale;
 }
 .accent-ember {
-  accent-color: #f97316;
+  accent-color: #d64141;
 }
 .shadow-glow {
-  --tw-shadow: 0 10px 40px rgba(249,115,22,0.25);
+  --tw-shadow: 0 10px 40px rgba(214,65,65,0.25);
   --tw-shadow-colored: 0 10px 40px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
@@ -1315,11 +1318,24 @@ body {
   min-height: 100vh;
   font-family: var(--font-body), 'Helvetica Neue', system-ui, -apple-system, sans-serif;
   font-feature-settings: 'liga' 1, 'calt' 1;
-  background-image:
-    radial-gradient(120% 120% at 10% 20%, rgba(249, 115, 22, 0.08), transparent),
-    radial-gradient(120% 120% at 90% 20%, rgba(249, 115, 22, 0.06), transparent),
-    radial-gradient(160% 140% at 50% 80%, rgba(255, 255, 255, 0.05), transparent),
-    linear-gradient(180deg, #0b0c0f 0%, #0d0f14 35%, #0b0c0f 100%);
+  background-image: url('/smoke.jpg');
+  background-size: 1400px auto;
+  background-repeat: repeat;
+  background-position: center top;
+  image-rendering: auto;
+  background-attachment: scroll;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(120% 120% at 50% 50%, rgba(0, 0, 0, 0.35), transparent 65%);
+  mix-blend-mode: multiply;
+  opacity: 0.8;
 }
 
 .font-display {
@@ -1391,12 +1407,12 @@ a {
 }
 
 .hover\:border-ember\/50:hover {
-  border-color: rgb(249 115 22 / 0.5);
+  border-color: rgb(214 65 65 / 0.5);
 }
 
 .hover\:text-ember:hover {
   --tw-text-opacity: 1;
-  color: rgb(249 115 22 / var(--tw-text-opacity, 1));
+  color: rgb(214 65 65 / var(--tw-text-opacity, 1));
 }
 
 .hover\:underline:hover {
@@ -1405,7 +1421,7 @@ a {
 
 .focus\:border-ember:focus {
   --tw-border-opacity: 1;
-  border-color: rgb(249 115 22 / var(--tw-border-opacity, 1));
+  border-color: rgb(214 65 65 / var(--tw-border-opacity, 1));
 }
 
 .focus\:outline-none:focus {

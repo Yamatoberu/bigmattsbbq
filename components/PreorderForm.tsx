@@ -1,6 +1,7 @@
 'use client';
 
-import { useActionState, useMemo, useState } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
+import { useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { placePreorderAction, type PreorderActionState } from '@/app/actions';
 import { formatWindow, poundsFromBags } from '@/lib/utils';
@@ -29,8 +30,21 @@ type Props = {
 
 const initialState: PreorderActionState = { status: 'idle', message: '' };
 
+function SubmitButton({ disabled }: { disabled: boolean }) {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      disabled={pending || disabled}
+      className="w-full rounded-full bg-ember px-6 py-3 text-base font-semibold text-black shadow-glow transition hover:translate-y-[-1px] disabled:opacity-60"
+    >
+      {pending ? 'Placing order...' : 'Place Pre-Order'}
+    </button>
+  );
+}
+
 export default function PreorderForm({ dropId, dropName, products, pickups }: Props) {
-  const [state, formAction, pending] = useActionState(placePreorderAction, initialState);
+  const [state, formAction] = useFormState(placePreorderAction, initialState);
   const [quantities, setQuantities] = useState<Record<string, number>>(() =>
     Object.fromEntries(products.map((p) => [p.productId, 0]))
   );
@@ -107,7 +121,7 @@ export default function PreorderForm({ dropId, dropName, products, pickups }: Pr
                       type="button"
                       onClick={() => handleQty(product.productId, -1, remaining)}
                       className="h-10 w-10 rounded-full border border-white/10 bg-black/40 text-xl disabled:opacity-40"
-                      disabled={qty === 0 || pending}
+                      disabled={qty === 0}
                     >
                       −
                     </button>
@@ -118,7 +132,7 @@ export default function PreorderForm({ dropId, dropName, products, pickups }: Pr
                       type="button"
                       onClick={() => handleQty(product.productId, 1, remaining)}
                       className="h-10 w-10 rounded-full bg-ember text-black shadow-glow transition hover:translate-y-[-1px] disabled:opacity-50"
-                      disabled={soldOut || qty >= remaining || pending}
+                      disabled={soldOut || qty >= remaining}
                     >
                       +
                     </button>
@@ -259,13 +273,7 @@ export default function PreorderForm({ dropId, dropName, products, pickups }: Pr
           </div>
         )}
 
-        <button
-          type="submit"
-          disabled={pending || summary.totals.bags === 0}
-          className="w-full rounded-full bg-ember px-6 py-3 text-base font-semibold text-black shadow-glow transition hover:translate-y-[-1px] disabled:opacity-60"
-        >
-          {pending ? 'Placing order...' : 'Place Pre-Order'}
-        </button>
+        <SubmitButton disabled={summary.totals.bags === 0} />
         <p className="text-xs text-slate-400">You&apos;ll be redirected to confirmation after submission.</p>
       </aside>
     </form>

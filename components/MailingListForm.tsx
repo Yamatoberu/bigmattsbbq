@@ -1,14 +1,27 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
 import { subscribeToMailingList } from '@/app/actions';
 
 const initialState = { status: 'idle', message: '' } as const;
 
 type Props = { variant?: 'inline' | 'card' };
 
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="mt-2 w-full rounded-lg bg-ember px-4 py-3 text-sm font-semibold text-black shadow-glow transition hover:translate-y-[-1px] disabled:opacity-70 md:mt-0 md:w-auto"
+    >
+      {pending ? 'Saving...' : 'Join the list'}
+    </button>
+  );
+}
+
 export default function MailingListForm({ variant = 'inline' }: Props) {
-  const [state, formAction, pending] = useActionState(subscribeToMailingList, initialState);
+  const [state, formAction] = useFormState(subscribeToMailingList, initialState);
 
   return (
     <form
@@ -38,13 +51,7 @@ export default function MailingListForm({ variant = 'inline' }: Props) {
           </p>
         )}
       </div>
-      <button
-        type="submit"
-        disabled={pending}
-        className="mt-2 w-full rounded-lg bg-ember px-4 py-3 text-sm font-semibold text-black shadow-glow transition hover:translate-y-[-1px] disabled:opacity-70 md:mt-0 md:w-auto"
-      >
-        {pending ? 'Saving...' : 'Join the list'}
-      </button>
+      <SubmitButton />
     </form>
   );
 }
