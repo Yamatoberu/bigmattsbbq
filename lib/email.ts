@@ -66,7 +66,7 @@ export async function sendOrderConfirmationEmail(payload: OrderEmailPayload, to:
     to,
     subject,
     html,
-    reply_to: process.env.EMAIL_REPLY_TO
+    replyTo: process.env.EMAIL_REPLY_TO
   });
 
   if (error) return { sent: false, reason: error.message };

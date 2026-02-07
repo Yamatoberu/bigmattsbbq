@@ -157,16 +157,26 @@ export async function placePreorderAction(_prev: PreorderActionState, formData: 
           orderNumber: order.order_number,
           customerName: order.full_name,
           items:
-            order.order_items?.map((item) => ({
-              name: item.product?.name ?? 'Item',
-              bags: item.qty_bags,
-              pounds: poundsFromBags(item.qty_bags, item.product?.bag_size_lb ?? 0.5)
-            })) ?? [],
-          pickup: {
-            name: order.drop_pickup?.pickup_location?.name ?? 'Pickup',
-            window: formatWindow(order.drop_pickup?.start_time, order.drop_pickup?.end_time),
-            instructions: order.drop_pickup?.instructions
-          }
+            order.order_items?.map((item) => {
+              const product = Array.isArray(item.product) ? item.product[0] : item.product;
+              return {
+                name: product?.name ?? 'Item',
+                bags: item.qty_bags,
+                pounds: poundsFromBags(item.qty_bags, product?.bag_size_lb ?? 0.5)
+              };
+            }) ?? [],
+          pickup: (() => {
+            const dropPickup = Array.isArray(order.drop_pickup) ? order.drop_pickup[0] : order.drop_pickup;
+            const pickupLocation = Array.isArray(dropPickup?.pickup_location)
+              ? dropPickup?.pickup_location[0]
+              : dropPickup?.pickup_location;
+
+            return {
+              name: pickupLocation?.name ?? 'Pickup',
+              window: formatWindow(dropPickup?.start_time, dropPickup?.end_time),
+              instructions: dropPickup?.instructions
+            };
+          })()
         },
         order.email
       );

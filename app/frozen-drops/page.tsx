@@ -31,20 +31,26 @@ async function getLiveDrop() {
     return {
       drop,
       products:
-        inventoryRows?.map((row) => ({
-          productId: row.product_id,
-          name: row.product?.name ?? 'Product',
-          bagSize: row.product?.bag_size_lb ?? 0.5,
-          remaining: row.bags_remaining ?? 0,
-          description: row.product?.description ?? null
-        })) ?? [],
+        inventoryRows?.map((row) => {
+          const product = Array.isArray(row.product) ? row.product[0] : row.product;
+          return {
+            productId: row.product_id,
+            name: product?.name ?? 'Product',
+            bagSize: product?.bag_size_lb ?? 0.5,
+            remaining: row.bags_remaining ?? 0,
+            description: product?.description ?? null
+          };
+        }) ?? [],
       pickups:
-        pickups?.map((p) => ({
-          id: p.id,
-          label: p.pickup_location?.name ?? 'Pickup',
-          window: formatWindow(p.start_time, p.end_time),
-          instructions: p.instructions ?? null
-        })) ?? []
+        pickups?.map((p) => {
+          const pickupLocation = Array.isArray(p.pickup_location) ? p.pickup_location[0] : p.pickup_location;
+          return {
+            id: p.id,
+            label: pickupLocation?.name ?? 'Pickup',
+            window: formatWindow(p.start_time, p.end_time),
+            instructions: p.instructions ?? null
+          };
+        }) ?? []
     };
   } catch (err) {
     console.error('Live drop fetch failed', err);
