@@ -16,8 +16,8 @@ export default function ContactPage() {
         <div className="card space-y-4">
           <p className="text-sm text-slate-300">
             Prefer email? Drop us a line at{' '}
-            <Link href="mailto:hello@bigmattsbbq.com" className="text-ember underline">
-              hello@bigmattsbbq.com
+            <Link href="mailto:bigmattsbarbecue@gmail.com" className="text-ember underline">
+              bigmattsbarbecue@gmail.com
             </Link>
             .
           </p>
@@ -74,12 +74,12 @@ export default function ContactPage() {
                 className="w-full rounded-lg border border-white/10 bg-black/50 px-3 py-3 text-sm text-white focus:border-ember focus:outline-none"
               />
             </div>
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 flex justify-center">
               <button
                 type="button"
-                className="w-full rounded-full bg-ember px-6 py-3 text-sm font-semibold text-black shadow-glow transition hover:translate-y-[-1px]"
+                className="inline-flex rounded-xl border border-slate-400/40 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-300 shadow-glow transition hover:translate-y-[-1px] hover:border-slate-200/60 hover:bg-white/10"
               >
-                Send request (opens email)
+                Send Request (opens email)
               </button>
             </div>
           </form>

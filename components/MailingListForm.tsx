@@ -14,9 +14,9 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="mt-2 w-full rounded-lg bg-ember px-4 py-3 text-sm font-semibold text-black shadow-glow transition hover:translate-y-[-1px] disabled:opacity-70 md:mt-0 md:w-auto"
+      className="mt-1 inline-flex rounded-xl border border-slate-400/40 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-300 shadow-glow transition hover:translate-y-[-1px] hover:border-slate-200/60 hover:bg-white/10 disabled:opacity-70"
     >
-      {pending ? 'Saving...' : 'Join the list'}
+      {pending ? 'Saving...' : 'Join the List'}
     </button>
   );
 }
@@ -30,7 +30,7 @@ export default function MailingListForm({ variant = 'inline' }: Props) {
       className={
         variant === 'card'
           ? 'card flex flex-col gap-4 rounded-2xl'
-          : 'flex flex-col gap-3 rounded-xl border border-white/5 bg-black/40 p-4 md:flex-row md:items-center'
+          : 'flex flex-col gap-2 rounded-xl border border-white/5 bg-black/40 p-4'
       }
     >
       <div className="flex-1">
@@ -52,7 +52,9 @@ export default function MailingListForm({ variant = 'inline' }: Props) {
           </p>
         )}
       </div>
-      <SubmitButton />
+      <div className="flex justify-center">
+        <SubmitButton />
+      </div>
     </form>
   );
 }

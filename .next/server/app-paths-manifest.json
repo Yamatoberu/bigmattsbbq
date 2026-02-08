@@ -1,6 +1,3 @@
 {
-  "/frozen-drops/page": "app/frozen-drops/page.js",
-  "/contact/page": "app/contact/page.js",
-  "/catering/page": "app/catering/page.js",
-  "/page": "app/page.js"
+  "/contact/page": "app/contact/page.js"
 }
