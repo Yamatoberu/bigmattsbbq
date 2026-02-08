@@ -1,13 +1,13 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
-import { useMemo, useState } from 'react';
+import { useActionState, useMemo, useState } from 'react';
+import { useFormStatus } from 'react-dom';
 import clsx from 'clsx';
 import { placePreorderAction, type PreorderActionState } from '@/app/actions';
 import { formatWindow, poundsFromBags } from '@/lib/utils';
 
 type Product = {
-  productId: string;
+  productId: number;
   name: string;
   bagSize: number;
   remaining: number;
@@ -15,14 +15,14 @@ type Product = {
 };
 
 type Pickup = {
-  id: string;
+  id: number;
   label: string;
   window?: string;
   instructions?: string | null;
 };
 
 type Props = {
-  dropId: string;
+  dropId: number;
   dropName: string;
   products: Product[];
   pickups: Pickup[];
@@ -44,11 +44,11 @@ function SubmitButton({ disabled }: { disabled: boolean }) {
 }
 
 export default function PreorderForm({ dropId, dropName, products, pickups }: Props) {
-  const [state, formAction] = useFormState(placePreorderAction, initialState);
+  const [state, formAction] = useActionState(placePreorderAction, initialState);
   const [quantities, setQuantities] = useState<Record<string, number>>(() =>
-    Object.fromEntries(products.map((p) => [p.productId, 0]))
+    Object.fromEntries(products.map((p) => [String(p.productId), 0]))
   );
-  const [pickupId, setPickupId] = useState<string>(pickups[0]?.id ?? '');
+  const [pickupId, setPickupId] = useState<number | null>(pickups[0]?.id ?? null);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -57,7 +57,7 @@ export default function PreorderForm({ dropId, dropName, products, pickups }: Pr
   const summary = useMemo(() => {
     const lineItems = products
       .map((p) => {
-        const qty = Math.min(quantities[p.productId] ?? 0, p.remaining);
+        const qty = Math.min(quantities[String(p.productId)] ?? 0, p.remaining);
         return { ...p, qty, pounds: poundsFromBags(qty, p.bagSize) };
       })
       .filter((p) => p.qty > 0);
@@ -72,10 +72,11 @@ export default function PreorderForm({ dropId, dropName, products, pickups }: Pr
     return { lineItems, totals };
   }, [products, quantities]);
 
-  const handleQty = (productId: string, delta: number, max: number) => {
+  const handleQty = (productId: number, delta: number, max: number) => {
     setQuantities((prev) => {
-      const next = Math.max(0, Math.min((prev[productId] ?? 0) + delta, max));
-      return { ...prev, [productId]: next };
+      const key = String(productId);
+      const next = Math.max(0, Math.min((prev[key] ?? 0) + delta, max));
+      return { ...prev, [key]: next };
     });
   };
 
@@ -99,7 +100,7 @@ export default function PreorderForm({ dropId, dropName, products, pickups }: Pr
           <p className="text-sm text-slate-300">Select quantities per product. Remaining inventory updates live.</p>
           <div className="mt-4 space-y-4">
             {products.map((product) => {
-              const qty = quantities[product.productId] ?? 0;
+              const qty = quantities[String(product.productId)] ?? 0;
               const remaining = product.remaining;
               const soldOut = remaining <= 0;
               return (

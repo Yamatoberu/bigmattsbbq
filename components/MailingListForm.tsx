@@ -1,6 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { subscribeToMailingList } from '@/app/actions';
 
 const initialState = { status: 'idle', message: '' } as const;
@@ -21,7 +22,7 @@ function SubmitButton() {
 }
 
 export default function MailingListForm({ variant = 'inline' }: Props) {
-  const [state, formAction] = useFormState(subscribeToMailingList, initialState);
+  const [state, formAction] = useActionState(subscribeToMailingList, initialState);
 
   return (
     <form

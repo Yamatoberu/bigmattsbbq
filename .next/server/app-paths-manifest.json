@@ -1,9 +1,6 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/about/page": "app/about/page.js",
-  "/contact/page": "app/contact/page.js",
-  "/page": "app/page.js",
-  "/order-confirmation/page": "app/order-confirmation/page.js",
   "/frozen-drops/page": "app/frozen-drops/page.js",
-  "/catering/page": "app/catering/page.js"
+  "/contact/page": "app/contact/page.js",
+  "/catering/page": "app/catering/page.js",
+  "/page": "app/page.js"
 }

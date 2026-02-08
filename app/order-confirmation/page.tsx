@@ -12,8 +12,6 @@ async function getOrder(orderNumber?: string | null) {
         `
         id,
         order_number,
-        full_name,
-        email,
         pickup:drop_pickups (
           start_time,
           end_time,

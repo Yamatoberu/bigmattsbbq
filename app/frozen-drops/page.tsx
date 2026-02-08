@@ -1,6 +1,7 @@
 import MailingListForm from '@/components/MailingListForm';
 import PreorderForm from '@/components/PreorderForm';
 import { getSupabaseServiceRole } from '@/lib/supabase/server';
+import { toNumberId } from '@/lib/supabase/ids';
 import { formatWindow } from '@/lib/utils';
 
 async function getLiveDrop() {
@@ -8,49 +9,68 @@ async function getLiveDrop() {
     const supabase = getSupabaseServiceRole();
     const { data: drop, error: dropError } = await supabase
       .from('drops')
-      .select('*')
-      .eq('status', 'live')
+      .select('id, name, starts_at, ends_at, hero_copy, drop_status:drop_status!inner(status, viewable)')
+      .eq('drop_status.status', 'live')
+      .eq('drop_status.viewable', true)
       .order('starts_at', { ascending: true })
       .limit(1)
       .maybeSingle();
 
     if (dropError || !drop) return null;
 
+    const dropId = toNumberId(drop.id);
+    if (dropId === null) return null;
+
     const { data: inventoryRows } = await supabase
-      .from('v_drop_inventory_remaining')
-      .select('product_id, drop_id, bags_remaining, product:products(name, bag_size_lb, description)')
-      .eq('drop_id', drop.id)
+      .from('drop_inventory')
+      .select('product_id, drop_id, bags_available, bags_reserved, bags_sold, enabled, product:products(name, bag_size_lb, description)')
+      .eq('drop_id', dropId)
       .eq('enabled', true);
 
     const { data: pickups } = await supabase
       .from('drop_pickups')
       .select('id, start_time, end_time, instructions, enabled, pickup_location:pickup_locations(name, address)')
-      .eq('drop_id', drop.id)
+      .eq('drop_id', dropId)
       .eq('enabled', true);
 
     return {
-      drop,
+      drop: { ...drop, id: dropId },
       products:
-        inventoryRows?.map((row) => {
-          const product = Array.isArray(row.product) ? row.product[0] : row.product;
-          return {
-            productId: row.product_id,
-            name: product?.name ?? 'Product',
-            bagSize: product?.bag_size_lb ?? 0.5,
-            remaining: row.bags_remaining ?? 0,
-            description: product?.description ?? null
-          };
-        }) ?? [],
+        inventoryRows
+          ?.map((row) => {
+            const productId = toNumberId(row.product_id);
+            if (productId === null) return null;
+
+            const product = Array.isArray(row.product) ? row.product[0] : row.product;
+            const remaining = Math.max(
+              (row.bags_available ?? 0) - (row.bags_reserved ?? 0) - (row.bags_sold ?? 0),
+              0
+            );
+
+            return {
+              productId,
+              name: product?.name ?? 'Product',
+              bagSize: product?.bag_size_lb ?? 0.5,
+              remaining,
+              description: product?.description ?? null
+            };
+          })
+          .filter((row): row is NonNullable<typeof row> => row !== null) ?? [],
       pickups:
-        pickups?.map((p) => {
-          const pickupLocation = Array.isArray(p.pickup_location) ? p.pickup_location[0] : p.pickup_location;
-          return {
-            id: p.id,
-            label: pickupLocation?.name ?? 'Pickup',
-            window: formatWindow(p.start_time, p.end_time),
-            instructions: p.instructions ?? null
-          };
-        }) ?? []
+        pickups
+          ?.map((p) => {
+            const pickupId = toNumberId(p.id);
+            if (pickupId === null) return null;
+
+            const pickupLocation = Array.isArray(p.pickup_location) ? p.pickup_location[0] : p.pickup_location;
+            return {
+              id: pickupId,
+              label: pickupLocation?.name ?? 'Pickup',
+              window: formatWindow(p.start_time, p.end_time),
+              instructions: p.instructions ?? null
+            };
+          })
+          .filter((row): row is NonNullable<typeof row> => row !== null) ?? []
     };
   } catch (err) {
     console.error('Live drop fetch failed', err);

@@ -1,6 +1,6 @@
 export type DropInventoryRow = {
-  product_id: string;
-  drop_id: string;
+  product_id: number;
+  drop_id: number;
   bags_available: number;
   bags_reserved: number;
   bags_sold: number;
@@ -13,9 +13,9 @@ export type DropInventoryRow = {
 };
 
 export type DropPickup = {
-  id: string;
-  drop_id: string;
-  pickup_location_id: string;
+  id: number;
+  drop_id: number;
+  pickup_location_id: number;
   start_time: string | null;
   end_time: string | null;
   instructions?: string | null;
@@ -27,9 +27,9 @@ export type DropPickup = {
 };
 
 export type Drop = {
-  id: string;
+  id: number;
   name: string;
-  status: 'draft' | 'scheduled' | 'live' | 'closed';
+  status: number | null;
   starts_at?: string | null;
   ends_at?: string | null;
   hero_copy?: string | null;

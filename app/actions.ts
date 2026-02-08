@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { getSupabaseServiceRole } from '@/lib/supabase/server';
+import { requireNumberId } from '@/lib/supabase/ids';
 import { poundsFromBags, formatWindow } from '@/lib/utils';
 import { sendOrderConfirmationEmail } from '@/lib/email';
 
@@ -53,8 +54,8 @@ export async function subscribeToMailingList(_prev: ActionState, formData: FormD
 }
 
 const preorderSchema = z.object({
-  drop_id: z.string().uuid(),
-  pickup_id: z.string().uuid(),
+  drop_id: z.coerce.number().int().positive(),
+  pickup_id: z.coerce.number().int().positive(),
   full_name: z.string().min(2),
   email: z.string().email(),
   phone: z.string().optional(),
@@ -62,8 +63,8 @@ const preorderSchema = z.object({
   items: z
     .array(
       z.object({
-        product_id: z.string().uuid(),
-        qty: z.number().int().positive()
+        product_id: z.coerce.number().int().positive(),
+        qty: z.coerce.number().int().positive()
       })
     )
     .min(1)
@@ -119,7 +120,8 @@ export async function placePreorderAction(_prev: PreorderActionState, formData: 
       throw rpcError ?? new Error('Unknown error placing preorder');
     }
 
-    const orderId = rpcData.order_id ?? rpcData.orderId;
+    const orderIdRaw = rpcData.order_id ?? rpcData.orderId;
+    const orderId = requireNumberId(orderIdRaw, 'order_id');
     const orderNumber = rpcData.order_number ?? rpcData.orderNumber;
 
     // Fetch order details for email + confirmation
@@ -129,8 +131,7 @@ export async function placePreorderAction(_prev: PreorderActionState, formData: 
         `
         id,
         order_number,
-        full_name,
-        email,
+        customer:customers(full_name, email, phone),
         drop_pickup:drop_pickups!orders_pickup_id_fkey (
           start_time,
           end_time,
@@ -148,14 +149,18 @@ export async function placePreorderAction(_prev: PreorderActionState, formData: 
 
     if (orderError) throw orderError;
 
+    const customer = Array.isArray(order.customer) ? order.customer[0] : order.customer;
+    const customerEmail = customer?.email ?? payload.email;
+    const customerName = customer?.full_name ?? payload.full_name;
+
     let emailStatus = 'not_sent';
     let emailMessage = 'Skipped — RESEND_API_KEY or EMAIL_FROM missing';
 
-    if (order?.email) {
+    if (customerEmail) {
       const sendResult = await sendOrderConfirmationEmail(
         {
           orderNumber: order.order_number,
-          customerName: order.full_name,
+          customerName,
           items:
             order.order_items?.map((item) => {
               const product = Array.isArray(item.product) ? item.product[0] : item.product;
@@ -178,7 +183,7 @@ export async function placePreorderAction(_prev: PreorderActionState, formData: 
             };
           })()
         },
-        order.email
+        customerEmail
       );
 
       emailStatus = sendResult.sent ? 'sent' : 'failed';
@@ -188,7 +193,7 @@ export async function placePreorderAction(_prev: PreorderActionState, formData: 
     await supabase.from('email_log').insert({
       order_id: orderId,
       email_type: 'confirmation',
-      to_email: order?.email ?? payload.email,
+      to_email: customerEmail ?? payload.email,
       status: emailStatus,
       message: emailMessage
     });
