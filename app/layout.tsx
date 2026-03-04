@@ -1,36 +1,35 @@
-import type { Metadata } from 'next';
-import { Chivo, Unbounded } from 'next/font/google';
-import './globals.css';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
+import { Playfair_Display, Source_Sans_3 } from "next/font/google";
+import "./globals.css";
+import { Providers } from "./providers";
 
-const bodyFont = Chivo({
-  weight: ['300', '400', '500', '600', '700'],
-  subsets: ['latin'],
-  variable: '--font-body'
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap"
 });
 
-const displayFont = Unbounded({
-  weight: ['400', '500', '600', '700'],
-  subsets: ['latin'],
-  variable: '--font-display'
+const sourceSans = Source_Sans_3({
+  subsets: ["latin"],
+  variable: "--font-body",
+  display: "swap"
 });
 
 export const metadata: Metadata = {
-  title: "Big Matt's BBQ",
-  description:
-    'Catering legends and limited-run frozen BBQ drops. Reserve smoky goodness, pick up locally, pay at pickup.'
+  title: "Big Matt's BBQ | Frozen Drops",
+  description: "Frozen-forward ordering for Big Matt's BBQ drops."
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children
+}: {
+  children: ReactNode;
+}) {
   return (
-    <html lang="en" className={`${bodyFont.variable} ${displayFont.variable}`}>
-      <body className="min-h-screen bg-coal text-slate-100 antialiased">
-        <div className="flex min-h-screen flex-col">
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+    <html lang="en" className={`${playfair.variable} ${sourceSans.variable}`}>
+      <body className="font-[var(--font-body)]">
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

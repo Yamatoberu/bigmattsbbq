@@ -1,36 +1,57 @@
-export type DropInventoryRow = {
-  product_id: number;
-  drop_id: number;
-  bags_available: number;
-  bags_reserved: number;
-  bags_sold: number;
-  enabled: boolean;
-  product?: {
-    name: string;
-    bag_size_lb: number;
-    description?: string | null;
-  };
-};
-
-export type DropPickup = {
-  id: number;
-  drop_id: number;
-  pickup_location_id: number;
-  start_time: string | null;
-  end_time: string | null;
-  instructions?: string | null;
-  enabled: boolean;
-  pickup_location?: {
-    name: string;
-    address?: string | null;
-  };
-};
-
-export type Drop = {
-  id: number;
+export interface VariationDTO {
+  variationId: string;
   name: string;
-  status: number | null;
-  starts_at?: string | null;
-  ends_at?: string | null;
-  hero_copy?: string | null;
-};
+  priceCents: number;
+  currency: string;
+  remaining: number;
+}
+
+export interface FrozenItemDTO {
+  itemId: string;
+  name: string;
+  description: string;
+  variations: VariationDTO[];
+}
+
+export interface CartItem {
+  variationId: string;
+  quantity: number;
+}
+
+export interface PackageItemConfig {
+  variationId?: string;
+  itemName?: string;
+  variationName?: string;
+  quantity: number;
+}
+
+export interface PackageConfig {
+  id: string;
+  name: string;
+  description: string;
+  highlight?: boolean;
+  items: PackageItemConfig[];
+}
+
+export interface PickupOption {
+  locationLabel: "Preston" | "Orem";
+  pickupDateLabel: string;
+  pickupAtISO: string;
+}
+
+export interface CheckoutRequestBody {
+  customer: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
+  };
+  pickup: PickupOption;
+  cart: CartItem[];
+}
+
+export interface CheckoutResponseBody {
+  orderId: string;
+  invoiceId: string;
+  pickupNote: string;
+}

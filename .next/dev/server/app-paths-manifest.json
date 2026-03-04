@@ -1,0 +1,4 @@
+{
+  "/api/frozen-items/route": "app/api/frozen-items/route.js",
+  "/page": "app/page.js"
+}

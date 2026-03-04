@@ -1,0 +1,12 @@
+[00:00:00.622] Server  LOG     ✓ Ready in 399ms
+[00:00:01.474] Server  WARN    Error: Route "/api/frozen-items" used `headers().get`. `headers()` returns a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:00:01.509] Server  ERROR   ⨯ TypeError: {imported module ./nodemodules/next/headers.js}.headers(...).get is not a function
+[00:00:16.438] Server  WARN    Error: Route "/api/frozen-items" used `headers().get`. `headers()` returns a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:00:16.473] Server  ERROR   ⨯ TypeError: {imported module ./nodemodules/next/headers.js}.headers(...).get is not a function
+[00:00:52.891] Server  LOG     ✓ Compiled in 485ms
+[00:01:25.352] Server  LOG     ✓ Compiled in 56ms
+[00:02:15.242] Server  LOG     ✓ Compiled in 43ms
+[00:02:36.803] Server  LOG     ✓ Compiled in 36ms
+[00:03:21.368] Server  LOG     ✓ Compiled in 105ms
+[00:03:40.550] Server  LOG     ✓ Compiled in 21ms
+[00:04:46.484] Server  LOG     ✓ Compiled in 62ms

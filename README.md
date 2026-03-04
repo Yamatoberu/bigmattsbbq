@@ -1,82 +1,78 @@
-# Big Matt's BBQ — Next.js + Supabase
+# Big Matt's BBQ – Frozen-Forward Website
 
-Dark, smoky site for catering info and frozen BBQ drops with preorder + capacity control. Built for Vercel + Supabase using App Router, server actions, Tailwind, zod, and Resend email.
+Mobile-first sales funnel for frozen BBQ drops, built with Next.js App Router and Square APIs.
 
-## Tech stack
-- Next.js (App Router, TypeScript, Server Components + Actions)
-- Tailwind CSS
-- Supabase (Postgres)
-- zod validation
-- Resend (transactional email) — optional, falls back to logging
+## Setup
 
-## Getting started
-1) Install deps (requires registry access):
+1. Install dependencies:
+
 ```bash
 npm install
 ```
-2) Copy env vars:
+
+2. Create a `.env.local` file (see `.env.example`):
+
 ```bash
-cp .env.example .env.local
+SQUARE_ENV=sandbox
+SQUARE_HOST=https://connect.squareupsandbox.com
+SQUARE_ACCESS_TOKEN=YOUR_TOKEN
+SQUARE_LOCATION_ID=YOUR_LOCATION_ID
+SQUARE_FROZEN_CATEGORY_ID=YOUR_CATEGORY_ID
+SQUARE_SAUCE_VARIATION_ID=YOUR_SAUCE_VARIATION_ID
 ```
-3) Run locally:
+
+3. Run the app:
+
 ```bash
 npm run dev
 ```
 
-## Environment variables
-Required
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `EMAIL_FROM` (e.g. `"Big Matt's BBQ <orders@bigmattsbbq.com>"`)
+Open `http://localhost:3000`.
 
-Optional
-- `RESEND_API_KEY` (enable live confirmation email)
-- `EMAIL_REPLY_TO`
+## Required env vars
 
-## Supabase setup
-1) Open `/supabase/schema.sql` in the Supabase SQL editor and run it. It creates:
-   - Tables: drops, products, pickup_locations, drop_pickups, drop_inventory, customers, orders, order_items, mailing_list_subscribers, email_log
-   - View: `v_drop_inventory_remaining`
-   - RPC: `place_preorder(...)`
-   - Seeds: Frozen Brisket, Frozen Pulled Pork, pickup locations for Cache Valley & Utah County
-2) No RLS is defined; add policies later if needed.
+- `SQUARE_ENV`: `sandbox` or `production`
+- `SQUARE_HOST`: `https://connect.squareup.com` or sandbox host
+- `SQUARE_ACCESS_TOKEN`: Square access token
+- `SQUARE_LOCATION_ID`: Square location for pickup and inventory
+- `SQUARE_FROZEN_CATEGORY_ID`: Catalog category containing frozen items
+- `SQUARE_SAUCE_VARIATION_ID`: Variation ID for house sauce (used for bump)
 
-## Creating a new drop
-Minimal SQL example after running the schema:
-```sql
--- 1) Create drop
-insert into drops (name, status, starts_at, ends_at)
-values ('February Drop', 'live', '2026-02-10T17:00:00Z', '2026-02-11T05:00:00Z')
-returning id;
+## Square version header
 
--- 2) Add pickup options (use the pickup_locations seeded earlier)
-insert into drop_pickups (drop_id, pickup_location_id, start_time, end_time, instructions, enabled)
-values
-  ('<drop_id>', (select id from pickup_locations where name='Cache Valley'), '2026-02-10T18:00:00Z', '2026-02-10T20:00:00Z', 'Watch for the smoker trailer.', true),
-  ('<drop_id>', (select id from pickup_locations where name='Utah County'), '2026-02-10T21:00:00Z', '2026-02-10T22:00:00Z', 'Text when you arrive.', true);
+All Square API requests use `Square-Version: 2024-12-18`. Update in `lib/square.ts` if needed.
 
--- 3) Add inventory per product (bags available)
-insert into drop_inventory (drop_id, product_id, bags_available, enabled)
-values
-  ('<drop_id>', (select id from products where name='Frozen Brisket'), 120, true),
-  ('<drop_id>', (select id from products where name='Frozen Pulled Pork'), 160, true);
+## How to get Square IDs
+
+1. In the Square Dashboard, open **Items > Item Library**.
+2. Locate your frozen category and copy its Category ID.
+3. Open the sauce item, choose the correct variation, and copy its Variation ID.
+4. Grab your Location ID from **Account & Settings > Business > Locations**.
+
+You can also fetch catalog data via the Square Catalog API if you prefer CLI tools.
+
+## API routes
+
+- `GET /api/frozen-items`
+  - Returns frozen menu items with inventory counts.
+- `POST /api/checkout`
+  - Creates customer, order, and invoice, then publishes the invoice.
+- `POST /api/dev/set-inventory` (sandbox only)
+  - Updates physical counts for testing.
+
+## Tests
+
+```bash
+npm run test
 ```
-The site queries `status = 'live'` and uses `v_drop_inventory_remaining` to enforce remaining bags.
 
-## Seeding products & pickup locations
-- Products: edit the `products` seed rows in `/supabase/schema.sql` or insert via SQL.
-- Pickup locations: use `pickup_locations` table (name, address, notes).
-
-## Deploy to Vercel
-1) Push this repo to GitHub.
-2) In Vercel, create a new project, link the repo, set the env vars above (including Supabase keys + Resend if used).
-3) Deploy. The app uses server actions; no API routes required.
-
-## Email + logging
-- If `RESEND_API_KEY` + `EMAIL_FROM` are set, successful preorders send a confirmation email.
-- Regardless, the server action logs to `email_log` with status (sent/failed/skipped).
+Tests cover:
+- inventory count joins
+- sauce bump logic
+- package mapping
 
 ## Notes
-- Payment is **not** collected online. The UI and copy state “Payment collected at pickup.”
-- Replace `public/logo.jpg` with the provided Big Matt’s BBQ logo asset for best branding.
+
+- Packages are configured in `lib/config.ts` and map to catalog items/variations by name.
+- No database is used in v1.
+- All Square secrets remain server-side in `/app/api/*` routes.
