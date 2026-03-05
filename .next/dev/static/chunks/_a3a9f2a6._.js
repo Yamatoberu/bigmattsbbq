@@ -50,9 +50,16 @@ function resolvePackageToCartItems(packageConfig, items) {
     }
     return resolved;
 }
-function isSauceBumpNeeded(items, sauceVariationId) {
-    const sauceQty = items.filter((item)=>item.variationId === sauceVariationId).reduce((sum, item)=>sum + item.quantity, 0);
-    const meatQty = items.filter((item)=>item.variationId !== sauceVariationId).reduce((sum, item)=>sum + item.quantity, 0);
+function isSauceBumpNeeded(items, sauceVariationIds) {
+    const ids = Array.isArray(sauceVariationIds) ? sauceVariationIds : [
+        sauceVariationIds
+    ];
+    const sauceSet = new Set(ids.filter((value)=>value.trim().length > 0));
+    if (sauceSet.size === 0) {
+        return false;
+    }
+    const sauceQty = items.filter((item)=>sauceSet.has(item.variationId)).reduce((sum, item)=>sum + item.quantity, 0);
+    const meatQty = items.filter((item)=>!sauceSet.has(item.variationId)).reduce((sum, item)=>sum + item.quantity, 0);
     return meatQty > 0 && sauceQty === 0;
 }
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {

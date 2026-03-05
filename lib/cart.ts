@@ -50,12 +50,20 @@ export function resolvePackageToCartItems(
   return resolved;
 }
 
-export function isSauceBumpNeeded(items: CartItem[], sauceVariationId: string): boolean {
+export function isSauceBumpNeeded(
+  items: CartItem[],
+  sauceVariationIds: string | string[]
+): boolean {
+  const ids = Array.isArray(sauceVariationIds) ? sauceVariationIds : [sauceVariationIds];
+  const sauceSet = new Set(ids.filter((value) => value.trim().length > 0));
+  if (sauceSet.size === 0) {
+    return false;
+  }
   const sauceQty = items
-    .filter((item) => item.variationId === sauceVariationId)
+    .filter((item) => sauceSet.has(item.variationId))
     .reduce((sum, item) => sum + item.quantity, 0);
   const meatQty = items
-    .filter((item) => item.variationId !== sauceVariationId)
+    .filter((item) => !sauceSet.has(item.variationId))
     .reduce((sum, item) => sum + item.quantity, 0);
   return meatQty > 0 && sauceQty === 0;
 }

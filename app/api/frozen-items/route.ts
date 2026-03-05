@@ -14,7 +14,8 @@ import { logError } from "../../../lib/logger";
 export const runtime = "nodejs";
 
 export async function GET() {
-  const requestId = headers().get("x-request-id") ?? crypto.randomUUID();
+  const headerList = await headers();
+  const requestId = headerList.get("x-request-id") ?? crypto.randomUUID();
 
   try {
     const env = getSquareEnv();

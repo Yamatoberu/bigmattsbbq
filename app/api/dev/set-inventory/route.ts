@@ -20,7 +20,8 @@ const payloadSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const requestId = headers().get("x-request-id") ?? crypto.randomUUID();
+  const headerList = await headers();
+  const requestId = headerList.get("x-request-id") ?? crypto.randomUUID();
 
   try {
     const env = getSquareEnv();

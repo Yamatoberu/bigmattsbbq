@@ -1,12 +1,49 @@
-[00:00:00.622] Server  LOG     ✓ Ready in 399ms
-[00:00:01.474] Server  WARN    Error: Route "/api/frozen-items" used `headers().get`. `headers()` returns a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
-[00:00:01.509] Server  ERROR   ⨯ TypeError: {imported module ./nodemodules/next/headers.js}.headers(...).get is not a function
-[00:00:16.438] Server  WARN    Error: Route "/api/frozen-items" used `headers().get`. `headers()` returns a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
-[00:00:16.473] Server  ERROR   ⨯ TypeError: {imported module ./nodemodules/next/headers.js}.headers(...).get is not a function
-[00:00:52.891] Server  LOG     ✓ Compiled in 485ms
-[00:01:25.352] Server  LOG     ✓ Compiled in 56ms
-[00:02:15.242] Server  LOG     ✓ Compiled in 43ms
-[00:02:36.803] Server  LOG     ✓ Compiled in 36ms
-[00:03:21.368] Server  LOG     ✓ Compiled in 105ms
-[00:03:40.550] Server  LOG     ✓ Compiled in 21ms
-[00:04:46.484] Server  LOG     ✓ Compiled in 62ms
+[00:00:00.780] Server  LOG     ✓ Ready in 529ms
+[00:00:04.615] Server  WARN    Error: Route "/api/frozen-items" used `headers().get`. `headers()` returns a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:00:04.643] Server  ERROR   ⨯ TypeError: {imported module ./nodemodules/next/headers.js}.headers(...).get is not a function
+[00:00:13.238] Server  ERROR   ⨯ Error: Missing Square environment variables. Check SQUARE_ACCESS_TOKEN, SQUARE_LOCATION_ID, SQUARE_FROZEN_CATEGORY_ID, SQUARE_SAUCE_VARIATION_ID.
+[00:00:13.353] Browser ERROR   uncaughtError: Error: Missing Square environment variables. Check SQUARE_ACCESS_TOKEN, SQUARE_LOCATION_ID, SQUARE_FROZEN_CATEGORY_ID, SQUARE_SAUCE_VARIATION_ID.
+[00:00:30.003] Server  WARN    Error: Route "/api/frozen-items" used `headers().get`. `headers()` returns a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:00:30.049] Server  ERROR   ⨯ TypeError: {imported module ./nodemodules/next/headers.js}.headers(...).get is not a function
+[00:01:48.988] Server  LOG     ✓ Compiled in 703ms
+[00:01:49.119] Server  WARN    Error: Route "/api/frozen-items" used `headers().get`. `headers()` returns a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:01:49.171] Server  ERROR   ⨯ TypeError: {imported module ./nodemodules/next/headers.js}.headers(...).get is not a function
+[00:02:13.533] Server  WARN    Error: Route "/api/frozen-items" used `headers().get`. `headers()` returns a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:02:13.559] Server  ERROR   ⨯ TypeError: {imported module ./nodemodules/next/headers.js}.headers(...).get is not a function
+[00:05:25.964] Server  LOG       Reload env: .env.local
+[00:05:26.128] Server  LOG     ✓ Compiled in 118ms
+[00:10:37.652] Server  LOG       Reload env: .env.local
+[00:10:37.927] Server  LOG     ✓ Compiled in 169ms
+[00:10:43.020] Server  WARN    Error: Route "/api/frozen-items" used `headers().get`. `headers()` returns a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:10:43.069] Server  ERROR   ⨯ TypeError: {imported module ./nodemodules/next/headers.js}.headers(...).get is not a function
+[00:10:48.046] Server  WARN    Error: Route "/api/frozen-items" used `headers().get`. `headers()` returns a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:10:48.081] Server  ERROR   ⨯ TypeError: {imported module ./nodemodules/next/headers.js}.headers(...).get is not a function
+[00:10:48.122] Server  WARN    Error: Route "/api/frozen-items" used `headers().get`. `headers()` returns a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:10:48.149] Server  ERROR   ⨯ TypeError: {imported module ./nodemodules/next/headers.js}.headers(...).get is not a function
+[00:10:53.420] Server  WARN    Error: Route "/api/frozen-items" used `headers().get`. `headers()` returns a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:10:53.465] Server  ERROR   ⨯ TypeError: {imported module ./nodemodules/next/headers.js}.headers(...).get is not a function
+[00:10:53.500] Server  WARN    Error: Route "/api/frozen-items" used `headers().get`. `headers()` returns a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:10:53.526] Server  ERROR   ⨯ TypeError: {imported module ./nodemodules/next/headers.js}.headers(...).get is not a function
+[00:11:11.110] Server  WARN    Error: Route "/api/frozen-items" used `headers().get`. `headers()` returns a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:11:11.146] Server  ERROR   ⨯ TypeError: {imported module ./nodemodules/next/headers.js}.headers(...).get is not a function
+[00:21:00.595] Server  LOG     ✓ Compiled in 225ms
+[00:21:11.673] Server  LOG     ✓ Compiled in 167ms
+[00:22:25.092] Server  LOG     ✓ Compiled in 159ms
+[00:23:07.736] Server  LOG     ✓ Compiled in 57ms
+[00:24:30.360] Server  LOG     ✓ Compiled in 97ms
+[00:26:06.176] Server  LOG     ✓ Compiled in 45ms
+[00:27:18.406] Server  LOG     ✓ Compiled in 80ms
+[00:29:20.364] Server  LOG     ✓ Compiled in 124ms
+[00:34:47.520] Server  LOG     ✓ Compiled in 91ms
+[00:35:19.374] Server  LOG     ✓ Compiled in 33ms
+[00:38:26.847] Server  LOG     ✓ Compiled in 91ms
+[00:39:41.272] Server  LOG     ✓ Compiled in 65ms
+[00:40:55.744] Server  LOG     ✓ Compiled in 90ms
+[00:42:42.042] Server  LOG     ✓ Compiled in 50ms
+[00:44:14.966] Server  LOG     ✓ Compiled in 99ms
+[00:44:56.849] Server  LOG     ✓ Compiled in 83ms
+[00:45:42.502] Server  LOG     ✓ Compiled in 77ms
+[00:45:53.873] Server  LOG     ✓ Compiled in 28ms
+[00:46:22.640] Server  LOG     ✓ Compiled in 36ms
+[00:46:31.081] Server  LOG     ✓ Compiled in 32ms
+[00:47:33.227] Server  LOG     ✓ Compiled in 42ms

@@ -12,6 +12,10 @@ interface CheckoutClientProps {
   sauceVariationId: string;
 }
 
+function normalizeMatch(value: string) {
+  return value.trim().toLowerCase();
+}
+
 export function CheckoutClient({ sauceVariationId }: CheckoutClientProps) {
   const router = useRouter();
   const { items, setQuantity, addItem, clear } = useCart();
@@ -40,6 +44,34 @@ export function CheckoutClient({ sauceVariationId }: CheckoutClientProps) {
     return map;
   }, [frozenItems]);
 
+  const sauceVariationIds = useMemo(() => {
+    const ids = new Set<string>();
+    if (sauceVariationId) {
+      ids.add(sauceVariationId);
+    }
+    for (const item of frozenItems) {
+      if (item.itemId === sauceVariationId) {
+        for (const variation of item.variations) {
+          ids.add(variation.variationId);
+        }
+      }
+      if (normalizeMatch(item.name).includes("sauce")) {
+        for (const variation of item.variations) {
+          ids.add(variation.variationId);
+        }
+      }
+    }
+    return Array.from(ids);
+  }, [frozenItems, sauceVariationId]);
+
+  const sauceAddVariationId = useMemo(() => {
+    if (variationMap.has(sauceVariationId)) {
+      return sauceVariationId;
+    }
+    const inMap = sauceVariationIds.find((variationId) => variationMap.has(variationId));
+    return inMap ?? sauceVariationIds[0];
+  }, [sauceVariationId, sauceVariationIds, variationMap]);
+
   const cartDetails = items.map((item) => {
     const info = variationMap.get(item.variationId);
     return {
@@ -55,7 +87,7 @@ export function CheckoutClient({ sauceVariationId }: CheckoutClientProps) {
     0
   );
 
-  const needsSauce = isSauceBumpNeeded(items, sauceVariationId);
+  const needsSauce = isSauceBumpNeeded(items, sauceVariationIds);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -188,7 +220,7 @@ export function CheckoutClient({ sauceVariationId }: CheckoutClientProps) {
           </div>
         </div>
 
-        {needsSauce && (
+        {needsSauce && sauceAddVariationId && (
           <div className="glass-card border border-ember-400 bg-[#1a120e] p-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
@@ -199,7 +231,7 @@ export function CheckoutClient({ sauceVariationId }: CheckoutClientProps) {
               </div>
               <button
                 className="button-primary"
-                onClick={() => addItem({ variationId: sauceVariationId, quantity: 1 })}
+                onClick={() => addItem({ variationId: sauceAddVariationId, quantity: 1 })}
               >
                 Add Sauce
               </button>
