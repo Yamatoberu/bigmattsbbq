@@ -1,4 +1,5 @@
 import { CartItem, FrozenItemDTO, PackageConfig } from "./types";
+export type { CartItem };
 
 export function mergeCartItems(current: CartItem[], added: CartItem[]): CartItem[] {
   const map = new Map<string, number>();
