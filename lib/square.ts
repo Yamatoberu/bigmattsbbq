@@ -170,7 +170,7 @@ export async function createOrder(params: {
   host: string;
   accessToken: string;
   requestId?: string;
-  body: unknown;
+  body: Record<string, unknown>;
   idempotencyKey: string;
 }) {
   return squareFetch<{ order?: { id: string; total_money?: { amount: number } } }>({
@@ -189,7 +189,7 @@ export async function createInvoice(params: {
   host: string;
   accessToken: string;
   requestId?: string;
-  body: unknown;
+  body: Record<string, unknown>;
   idempotencyKey: string;
 }) {
   return squareFetch<{ invoice?: { id: string; version: number } }>({
