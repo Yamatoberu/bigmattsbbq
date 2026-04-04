@@ -29,7 +29,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. The `reserve_pickup_slot` Postgres RPC function is deployed and callable
   4. `lib/supabase.ts` exists with a typed singleton client and `npx tsc --noEmit` passes with no new errors
   5. A seeded test drop record exists in Supabase and is queryable from a Next.js API route
-**Plans**: TBD
+**Plans:** 1/2 plans executed
+
+Plans:
+- [x] 01-01-PLAN.md — Migration SQL, Supabase client, env validation, and unit tests
+- [ ] 01-02-PLAN.md — Supabase project setup (human), type generation, and verification API route
+
 **UI hint**: no
 
 ### Phase 2: Drop Config & Storefront
@@ -77,7 +82,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/? | Not started | - |
+| 1. Foundation | 1/2 | In Progress|  |
 | 2. Drop Config & Storefront | 0/? | Not started | - |
 | 3. Checkout Integration | 0/? | Not started | - |
 | 4. Mailing List & Content | 0/? | Not started | - |

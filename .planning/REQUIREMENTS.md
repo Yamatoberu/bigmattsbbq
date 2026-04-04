@@ -7,8 +7,8 @@
 
 ### Data Foundation
 
-- [ ] **DATA-01**: Supabase schema created with tables for drops, drop_pickup_options, orders, mailing_list, and email_logs
-- [ ] **DATA-02**: Row-level security enabled on all Supabase tables from initial creation
+- [x] **DATA-01**: Supabase schema created with tables for drops, drop_pickup_options, orders, mailing_list, and email_logs
+- [x] **DATA-02**: Row-level security enabled on all Supabase tables from initial creation
 - [ ] **DATA-03**: Drops are managed in Supabase with configurable products, capacity, and pickup options per drop
 - [ ] **DATA-04**: Each drop has a state (upcoming/active/closed) that controls ordering availability
 - [ ] **DATA-05**: Drop pickup options (dates, locations, time windows) are stored in Supabase and replace hardcoded config
@@ -66,8 +66,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DATA-01 | Phase 1 | Pending |
-| DATA-02 | Phase 1 | Pending |
+| DATA-01 | Phase 1 | Complete |
+| DATA-02 | Phase 1 | Complete |
 | DATA-03 | Phase 2 | Pending |
 | DATA-04 | Phase 2 | Pending |
 | DATA-05 | Phase 2 | Pending |

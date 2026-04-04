@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Phase 1 context gathered
-last_updated: "2026-04-04T16:20:38.401Z"
-last_activity: 2026-04-03 — Roadmap created, ready for Phase 1 planning
+status: executing
+stopped_at: Completed 01-foundation-01-PLAN.md
+last_updated: "2026-04-04T21:20:31.444Z"
+last_activity: 2026-04-04
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 2
+  completed_plans: 1
   percent: 0
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-03)
 
 **Core value:** Customers can preorder frozen BBQ from a live drop without overselling — capacity is enforced, pickup is clear, and confirmation is immediate.
-**Current focus:** Phase 1 — Foundation
+**Current focus:** Phase 01 — foundation
 
 ## Current Position
 
-Phase: 1 of 4 (Foundation)
-Plan: 0 of ? in current phase
-Status: Ready to plan
-Last activity: 2026-04-03 — Roadmap created, ready for Phase 1 planning
+Phase: 01 (foundation) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
+Last activity: 2026-04-04
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -52,6 +52,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01-foundation P01 | 3 | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,9 @@ Recent decisions affecting current work:
 - Initialization: Keep Square for catalog/inventory/payments; Supabase for drops, orders, mailing list, email logs; Resend for email
 - Initialization: Enable RLS on all Supabase tables at creation time (before any app code)
 - Initialization: Write Supabase slot reservation before Square API calls; email failures are fire-and-forget
+- [Phase 01-foundation]: v_count declared as int (not bool) for GET DIAGNOSTICS ROW_COUNT in reserve_pickup_slot RPC function
+- [Phase 01-foundation]: Single migration file for all DDL, RLS, functions, and seed data — simpler to inspect and replay
+- [Phase 01-foundation]: lib/supabase.ts reads process.env directly rather than via getSupabaseEnv() — simpler for server-only singleton
 
 ### Pending Todos
 
@@ -75,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-04T16:20:38.391Z
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-foundation/01-CONTEXT.md
+Last session: 2026-04-04T21:20:31.441Z
+Stopped at: Completed 01-foundation-01-PLAN.md
+Resume file: None
