@@ -30,3 +30,21 @@ export function getSquareEnv(): SquareEnv {
     environment
   };
 }
+
+export interface SupabaseEnv {
+  url: string;
+  serviceRoleKey: string;
+}
+
+export function getSupabaseEnv(): SupabaseEnv {
+  const url = process.env.SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!url || !serviceRoleKey) {
+    throw new Error(
+      "Missing Supabase environment variables. Check SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY."
+    );
+  }
+
+  return { url, serviceRoleKey };
+}
