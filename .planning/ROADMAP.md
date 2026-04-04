@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 - [x] 01-01-PLAN.md — Migration SQL, Supabase client, env validation, and unit tests
-- [ ] 01-02-PLAN.md — Supabase project setup (human), type generation, and verification API route
+- [x] 01-02-PLAN.md — Supabase project setup (human), type generation, and verification API route
 
 **UI hint**: no
 
