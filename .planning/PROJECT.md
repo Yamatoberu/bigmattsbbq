@@ -24,7 +24,7 @@ Customers can preorder frozen BBQ from a live drop without overselling — capac
 
 ### Active
 
-- [ ] Supabase integration for drops, orders, mailing list, and email logs
+- [x] Supabase integration for drops, orders, mailing list, and email logs — Validated in Phase 1: Foundation
 - [ ] Database-driven drops model (configurable products, capacity, pickup options per drop)
 - [ ] Mailing list signup (home page section + site-wide footer)
 - [ ] Resend integration for confirmation emails and mailing list
@@ -49,7 +49,7 @@ Customers can preorder frozen BBQ from a live drop without overselling — capac
 ## Context
 
 - **Existing codebase**: Next.js 16 App Router with TypeScript, Tailwind CSS, React 18
-- **Current state**: Working frozen ordering flow with Square as sole backend (catalog, inventory, customers, invoices)
+- **Current state**: Phase 1 complete — Supabase foundation deployed (5 tables, RLS, atomic reservation RPCs, typed client). Square remains for catalog/inventory/payments.
 - **Expanding to**: Hybrid approach — Square for catalog/inventory/payments, Supabase for drops config, order tracking, mailing list, email logs
 - **Pickup locations**: Cache Valley and Utah County, with predefined dates/time windows per drop
 - **Design system**: Custom Tailwind theme with `ember` (warm orange-red) and `smoke` (dark browns) palettes, Playfair Display + Source Sans 3 fonts
@@ -93,4 +93,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-03 after initialization*
+*Last updated: 2026-04-04 after Phase 1 completion*
