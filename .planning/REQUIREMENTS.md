@@ -66,32 +66,32 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DATA-01 | — | Pending |
-| DATA-02 | — | Pending |
-| DATA-03 | — | Pending |
-| DATA-04 | — | Pending |
-| DATA-05 | — | Pending |
-| ORD-01 | — | Pending |
-| ORD-02 | — | Pending |
-| ORD-03 | — | Pending |
-| ORD-04 | — | Pending |
-| ORD-05 | — | Pending |
-| MAIL-01 | — | Pending |
-| MAIL-02 | — | Pending |
-| MAIL-03 | — | Pending |
-| MAIL-04 | — | Pending |
-| MAIL-05 | — | Pending |
-| MAIL-06 | — | Pending |
-| NAV-01 | — | Pending |
-| PAGE-01 | — | Pending |
-| PAGE-02 | — | Pending |
-| PAGE-03 | — | Pending |
+| DATA-01 | Phase 1 | Pending |
+| DATA-02 | Phase 1 | Pending |
+| DATA-03 | Phase 2 | Pending |
+| DATA-04 | Phase 2 | Pending |
+| DATA-05 | Phase 2 | Pending |
+| ORD-01 | Phase 3 | Pending |
+| ORD-02 | Phase 3 | Pending |
+| ORD-03 | Phase 3 | Pending |
+| ORD-04 | Phase 2 | Pending |
+| ORD-05 | Phase 2 | Pending |
+| MAIL-01 | Phase 3 | Pending |
+| MAIL-02 | Phase 4 | Pending |
+| MAIL-03 | Phase 4 | Pending |
+| MAIL-04 | Phase 3 | Pending |
+| MAIL-05 | Phase 4 | Pending |
+| MAIL-06 | Phase 4 | Pending |
+| NAV-01 | Phase 4 | Pending |
+| PAGE-01 | Phase 4 | Pending |
+| PAGE-02 | Phase 4 | Pending |
+| PAGE-03 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 20 total
-- Mapped to phases: 0
-- Unmapped: 20 ⚠️
+- Mapped to phases: 20
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-04-03*
-*Last updated: 2026-04-03 after initial definition*
+*Last updated: 2026-04-03 after roadmap creation*
