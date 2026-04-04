@@ -38,8 +38,10 @@ created: 2026-04-04
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| TBD | TBD | TBD | DATA-01 | unit | `npx vitest run tests/supabase-schema.test.ts` | ❌ W0 | ⬜ pending |
-| TBD | TBD | TBD | DATA-02 | unit | `npx vitest run tests/reservation.test.ts` | ❌ W0 | ⬜ pending |
+| 01-01-01 | 01 | 1 | DATA-01, DATA-02 | static | `grep -c "create table public." supabase/migrations/0001_foundation.sql` | ✅ created by task | ⬜ pending |
+| 01-01-02 | 01 | 1 | DATA-01, DATA-02 | unit | `npx vitest run tests/supabase.test.ts` | ✅ created by task | ⬜ pending |
+| 01-02-01 | 02 | 2 | DATA-01 | static | `test -f .env.local && grep -q "SUPABASE_URL" .env.local` | N/A (human) | ⬜ pending |
+| 01-02-02 | 02 | 2 | DATA-01, DATA-02 | integration | `npx tsc --noEmit && npm run test` | ✅ created by task | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -47,10 +49,7 @@ created: 2026-04-04
 
 ## Wave 0 Requirements
 
-- [ ] `tests/supabase-schema.test.ts` — stubs for DATA-01 (schema + RLS verification)
-- [ ] `tests/reservation.test.ts` — stubs for DATA-02 (reserve_pickup_slot logic)
-
-*Existing vitest infrastructure covers framework needs — no new framework install required.*
+*Existing vitest infrastructure covers framework needs — no new framework install required. Test file `tests/supabase.test.ts` is created inline by Plan 01 Task 2. Migration SQL verification uses grep-based static analysis.*
 
 ---
 
