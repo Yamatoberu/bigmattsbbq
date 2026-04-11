@@ -40,14 +40,46 @@ export interface PickupOption {
 }
 
 export interface CheckoutRequestBody {
+  dropId: string;
+  pickupOptionId: string;
   customer: {
     firstName: string;
     lastName: string;
     email: string;
     phone?: string;
   };
-  pickup: PickupOption;
   cart: CartItem[];
+}
+
+export type DropStatus = "upcoming" | "active" | "closed";
+
+export interface CapacitySlot {
+  total: number;
+  reserved: number;
+}
+
+export interface PickupOptionDTO {
+  id: string;
+  locationLabel: string;
+  pickupDateLabel: string;
+  pickupAtISO: string;
+  isSoldOut: boolean;
+}
+
+export interface DropDTO {
+  id: string;
+  title: string;
+  status: DropStatus;
+  orderCutoffAt: string | null;
+  capacity: {
+    pulledPork: CapacitySlot;
+    brisket: CapacitySlot;
+  };
+  soldOut: {
+    pulledPork: boolean;
+    brisket: boolean;
+  };
+  pickupOptions: PickupOptionDTO[];
 }
 
 export interface CheckoutResponseBody {
