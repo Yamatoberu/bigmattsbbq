@@ -53,7 +53,7 @@ export async function POST(request: Request) {
 
     const { data: dropRow, error: dropErr } = await supabase
       .from("drops")
-      .select("id, status, capacity_pulled_pork, capacity_brisket, reserved_pulled_pork, reserved_brisket")
+      .select("id, status, order_cutoff_at, capacity_pulled_pork, capacity_brisket, reserved_pulled_pork, reserved_brisket")
       .eq("id", parsed.data.dropId)
       .maybeSingle();
 

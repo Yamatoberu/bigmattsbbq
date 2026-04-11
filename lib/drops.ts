@@ -76,6 +76,7 @@ export interface DropReadinessRow {
   capacity_brisket: number;
   reserved_pulled_pork: number;
   reserved_brisket: number;
+  order_cutoff_at: string | null;
 }
 
 export type DropReadiness =
@@ -92,6 +93,16 @@ export function checkDropReady(drop: DropReadinessRow | null): DropReadiness {
       status: 409,
       error: "This drop has closed. Orders are no longer being accepted."
     };
+  }
+  if (drop.order_cutoff_at !== null) {
+    const cutoffMs = Date.parse(drop.order_cutoff_at);
+    if (!Number.isNaN(cutoffMs) && cutoffMs <= Date.now()) {
+      return {
+        ok: false,
+        status: 409,
+        error: "This drop has closed. Orders are no longer being accepted."
+      };
+    }
   }
   const globallySoldOut =
     drop.reserved_pulled_pork >= drop.capacity_pulled_pork &&
