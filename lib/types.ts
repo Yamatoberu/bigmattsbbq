@@ -33,11 +33,6 @@ export interface PackageConfig {
   items: PackageItemConfig[];
 }
 
-export interface PickupOption {
-  locationLabel: "Preston" | "Orem";
-  pickupDateLabel: string;
-  pickupAtISO: string;
-}
 
 export interface CheckoutRequestBody {
   dropId: string;

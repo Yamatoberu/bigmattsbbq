@@ -1,4 +1,4 @@
-import { PackageConfig, PickupOption } from "./types";
+import { PackageConfig } from "./types";
 
 export const PACKAGES: PackageConfig[] = [
   {
@@ -31,18 +31,5 @@ export const PACKAGES: PackageConfig[] = [
       { itemName: "Pulled Pork", variationName: "1 lb", quantity: 4 },
       { itemName: "BBQ Sauce", variationName: "Jar", quantity: 4 }
     ]
-  }
-];
-
-export const PICKUP_OPTIONS: PickupOption[] = [
-  {
-    locationLabel: "Preston",
-    pickupDateLabel: "3/14",
-    pickupAtISO: "2026-03-14T17:30:00-07:00"
-  },
-  {
-    locationLabel: "Orem",
-    pickupDateLabel: "3/28",
-    pickupAtISO: "2026-03-28T17:30:00-07:00"
   }
 ];
