@@ -4,11 +4,12 @@ import { formatMoney } from "../lib/format";
 interface FrozenItemCardProps {
   item: FrozenItemDTO;
   onAdd: (variationId: string) => void;
+  soldOut?: boolean;
 }
 
-export function FrozenItemCard({ item, onAdd }: FrozenItemCardProps) {
+export function FrozenItemCard({ item, onAdd, soldOut = false }: FrozenItemCardProps) {
   return (
-    <article className="glass-card flex h-full flex-col gap-4 p-5">
+    <article className={`glass-card flex h-full flex-col gap-4 p-5${soldOut ? " opacity-60" : ""}`}>
       <div className="flex items-start gap-4">
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-smoke-900" style={{ fontFamily: "var(--font-display)" }}>
@@ -20,7 +21,7 @@ export function FrozenItemCard({ item, onAdd }: FrozenItemCardProps) {
       </div>
       <div className="flex flex-col gap-3">
         {item.variations.map((variation) => {
-          const isSoldOut = variation.remaining <= 0;
+          const isSoldOut = soldOut || variation.remaining <= 0;
           return (
             <div key={variation.variationId} className="flex flex-wrap items-center justify-between gap-3">
               <div>
