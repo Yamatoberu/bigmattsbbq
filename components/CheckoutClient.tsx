@@ -4,23 +4,25 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "./cart/CartContext";
 import { useFrozenItems } from "./hooks/useFrozenItems";
-import { PICKUP_OPTIONS } from "../lib/config";
 import { formatMoney } from "../lib/format";
 import { isSauceBumpNeeded } from "../lib/cart";
+import { DropDTO } from "../lib/types";
 
 interface CheckoutClientProps {
   sauceVariationId: string;
+  drop: DropDTO;
 }
 
 function normalizeMatch(value: string) {
   return value.trim().toLowerCase();
 }
 
-export function CheckoutClient({ sauceVariationId }: CheckoutClientProps) {
+export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) {
   const router = useRouter();
   const { items, setQuantity, addItem, clear } = useCart();
   const { items: frozenItems, isLoading } = useFrozenItems();
-  const [pickupIndex, setPickupIndex] = useState(0);
+  const firstAvailable = drop.pickupOptions.find((o) => !o.isSoldOut);
+  const [pickupOptionId, setPickupOptionId] = useState<string | undefined>(firstAvailable?.id);
   const [formState, setFormState] = useState({
     firstName: "",
     lastName: "",
@@ -98,23 +100,28 @@ export function CheckoutClient({ sauceVariationId }: CheckoutClientProps) {
       return;
     }
 
+    if (!pickupOptionId) {
+      setError("Please select a pickup option.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      const pickup = PICKUP_OPTIONS[pickupIndex];
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
+          dropId: drop.id,
+          pickupOptionId,
           customer: {
             firstName: formState.firstName,
             lastName: formState.lastName,
             email: formState.email,
             phone: formState.phone || undefined
           },
-          pickup,
           cart: items
         })
       });
@@ -195,29 +202,52 @@ export function CheckoutClient({ sauceVariationId }: CheckoutClientProps) {
 
         <div className="glass-card p-6">
           <h2 className="text-lg font-semibold text-smoke-900">Pickup Selection</h2>
-          <div className="mt-4 grid gap-3">
-            {PICKUP_OPTIONS.map((option, index) => (
-              <label
-                key={`${option.locationLabel}-${option.pickupDateLabel}`}
-                className={`flex cursor-pointer items-center justify-between rounded-xl border px-4 py-3 text-sm ${
-                  pickupIndex === index
-                    ? "border-ember-400 bg-[#1a120e]"
-                    : "border-[#3a2a20] bg-[#120c09]"
-                }`}
-              >
-                <span>
-                  <span className="font-semibold text-smoke-800">{option.locationLabel}</span>
-                  <span className="ml-2 text-smoke-500">{option.pickupDateLabel}</span>
-                </span>
-                <input
-                  type="radio"
-                  name="pickup"
-                  checked={pickupIndex === index}
-                  onChange={() => setPickupIndex(index)}
-                />
-              </label>
-            ))}
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            {drop.pickupOptions.map((option) => {
+              const isSelected = pickupOptionId === option.id;
+              const disabled = option.isSoldOut;
+              const baseClasses = "rounded-lg border p-5 text-left min-h-[72px] transition-colors";
+              const stateClasses = disabled
+                ? "border-[#3a2a20] bg-[#16100c] opacity-60 cursor-not-allowed"
+                : isSelected
+                  ? "border-[#d8b56a] bg-[#16100c] ring-1 ring-[#d8b56a]/40"
+                  : "border-[#3a2a20] bg-[#16100c] hover:border-[#b8893a]";
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => setPickupOptionId(option.id)}
+                  className={`${baseClasses} ${stateClasses}`}
+                  aria-pressed={isSelected}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-base font-semibold text-smoke-900" style={{ fontFamily: "var(--font-display)" }}>
+                        {option.locationLabel}
+                      </p>
+                      <p className="mt-1 text-sm text-smoke-700">{option.pickupDateLabel}</p>
+                      <p className="text-sm text-smoke-600">
+                        {new Date(option.pickupAtISO).toLocaleTimeString("en-US", {
+                          hour: "numeric",
+                          minute: "2-digit",
+                          timeZone: "America/Denver"
+                        })}
+                      </p>
+                    </div>
+                    {disabled && (
+                      <span className="rounded-full bg-smoke-300 px-2 py-0.5 text-xs font-semibold text-smoke-50">
+                        Sold Out
+                      </span>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
           </div>
+          {drop.pickupOptions.length === 0 && (
+            <p className="mt-4 text-sm text-smoke-500">No pickup options available for this drop.</p>
+          )}
         </div>
 
         {needsSauce && sauceAddVariationId && (
@@ -284,7 +314,7 @@ export function CheckoutClient({ sauceVariationId }: CheckoutClientProps) {
           <button
             type="submit"
             className="button-primary mt-6 w-full"
-            disabled={isSubmitting || isLoading}
+            disabled={isSubmitting || isLoading || !pickupOptionId}
           >
             {isSubmitting ? "Submitting..." : "Submit Order"}
           </button>

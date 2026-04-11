@@ -80,12 +80,15 @@ export async function POST(request: Request) {
       .eq("drop_id", parsed.data.dropId)
       .maybeSingle();
 
-    if (pickupErr || !pickupRow) {
-      logError(
-        "Checkout pickup option lookup failed",
-        pickupErr ?? new Error("pickup option not found"),
-        requestId
+    if (pickupErr) {
+      logError("Checkout pickup option lookup failed", pickupErr, requestId);
+      return NextResponse.json(
+        { error: "Unable to verify pickup option.", requestId },
+        { status: 500 }
       );
+    }
+
+    if (!pickupRow) {
       return NextResponse.json(
         { error: "Pickup option not found for this drop.", requestId },
         { status: 404 }
