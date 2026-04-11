@@ -12,6 +12,8 @@ import {
   SquareError
 } from "../../../lib/square";
 import { logError } from "../../../lib/logger";
+import { getSupabaseClient } from "../../../lib/supabase";
+import { checkDropReady } from "../../../lib/drops";
 
 export const runtime = "nodejs";
 
@@ -21,16 +23,13 @@ const cartSchema = z.object({
 });
 
 const checkoutSchema = z.object({
+  dropId: z.string().uuid(),
+  pickupOptionId: z.string().uuid(),
   customer: z.object({
     firstName: z.string().min(1),
     lastName: z.string().min(1),
     email: z.string().email(),
     phone: z.string().optional()
-  }),
-  pickup: z.object({
-    locationLabel: z.enum(["Preston", "Orem"]),
-    pickupDateLabel: z.string().min(1),
-    pickupAtISO: z.string().datetime()
   }),
   cart: z.array(cartSchema).min(1)
 });
@@ -50,8 +49,51 @@ export async function POST(request: Request) {
       );
     }
 
+    const supabase = getSupabaseClient();
+
+    const { data: dropRow, error: dropErr } = await supabase
+      .from("drops")
+      .select("id, status, capacity_pulled_pork, capacity_brisket, reserved_pulled_pork, reserved_brisket")
+      .eq("id", parsed.data.dropId)
+      .maybeSingle();
+
+    if (dropErr) {
+      logError("Checkout drop precheck failed", dropErr, requestId);
+      return NextResponse.json(
+        { error: "Unable to verify drop status.", requestId },
+        { status: 500 }
+      );
+    }
+
+    const readiness = checkDropReady(dropRow);
+    if (!readiness.ok) {
+      return NextResponse.json(
+        { error: readiness.error, requestId },
+        { status: readiness.status }
+      );
+    }
+
+    const { data: pickupRow, error: pickupErr } = await supabase
+      .from("drop_pickup_options")
+      .select("id, location_label, pickup_at, pickup_date")
+      .eq("id", parsed.data.pickupOptionId)
+      .eq("drop_id", parsed.data.dropId)
+      .maybeSingle();
+
+    if (pickupErr || !pickupRow) {
+      logError(
+        "Checkout pickup option lookup failed",
+        pickupErr ?? new Error("pickup option not found"),
+        requestId
+      );
+      return NextResponse.json(
+        { error: "Pickup option not found for this drop.", requestId },
+        { status: 404 }
+      );
+    }
+
     const env = getSquareEnv();
-    const { customer, pickup, cart } = parsed.data;
+    const { customer, cart } = parsed.data;
 
     const customerSearch = await searchCustomerByEmail({
       host: env.host,
@@ -86,7 +128,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const pickupNote = `${pickup.locationLabel} Pickup - ${pickup.pickupDateLabel}`;
+    const pickupDateLabel = new Date(pickupRow.pickup_at).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      timeZone: "America/Denver"
+    });
+    const pickupNote = `${pickupRow.location_label} Pickup - ${pickupDateLabel}`;
 
     const orderResponse = await createOrder({
       host: env.host,
@@ -105,7 +152,7 @@ export async function POST(request: Request) {
             {
               type: "PICKUP",
               pickup_details: {
-                pickup_at: pickup.pickupAtISO,
+                pickup_at: pickupRow.pickup_at,
                 note: pickupNote,
                 recipient: {
                   display_name: `${customer.firstName} ${customer.lastName}`
