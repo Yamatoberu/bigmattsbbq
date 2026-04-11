@@ -69,3 +69,39 @@ export async function fetchActiveDrop(): Promise<DropDTO | null> {
     pickupOptions
   };
 }
+
+export interface DropReadinessRow {
+  status: string;
+  capacity_pulled_pork: number;
+  capacity_brisket: number;
+  reserved_pulled_pork: number;
+  reserved_brisket: number;
+}
+
+export type DropReadiness =
+  | { ok: true }
+  | { ok: false; status: number; error: string };
+
+export function checkDropReady(drop: DropReadinessRow | null): DropReadiness {
+  if (!drop) {
+    return { ok: false, status: 404, error: "Drop not found." };
+  }
+  if (drop.status !== "active") {
+    return {
+      ok: false,
+      status: 409,
+      error: "This drop has closed. Orders are no longer being accepted."
+    };
+  }
+  const globallySoldOut =
+    drop.reserved_pulled_pork >= drop.capacity_pulled_pork &&
+    drop.reserved_brisket >= drop.capacity_brisket;
+  if (globallySoldOut) {
+    return {
+      ok: false,
+      status: 409,
+      error: "This drop has sold out. No more orders can be taken."
+    };
+  }
+  return { ok: true };
+}
