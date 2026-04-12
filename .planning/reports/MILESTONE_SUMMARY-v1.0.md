@@ -1,4 +1,4 @@
-# Milestone v1.0 — Project Summary
+/g# Milestone v1.0 — Project Summary
 
 **Generated:** 2026-04-04
 **Purpose:** Team onboarding and project review
