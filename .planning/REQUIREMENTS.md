@@ -10,15 +10,15 @@
 - [x] **DATA-01**: Supabase schema created with tables for drops, drop_pickup_options, orders, mailing_list, and email_logs
 - [x] **DATA-02**: Row-level security enabled on all Supabase tables from initial creation
 - [ ] **DATA-03**: Drops are managed in Supabase with configurable products, capacity, and pickup options per drop
-- [ ] **DATA-04**: Each drop has a state (upcoming/active/closed) that controls ordering availability
-- [ ] **DATA-05**: Drop pickup options (dates, locations, time windows) are stored in Supabase and replace hardcoded config
+- [x] **DATA-04**: Each drop has a state (upcoming/active/closed) that controls ordering availability
+- [x] **DATA-05**: Drop pickup options (dates, locations, time windows) are stored in Supabase and replace hardcoded config
 
 ### Ordering & Checkout
 
 - [ ] **ORD-01**: Capacity reservation uses atomic Supabase slot reservation before Square API calls to prevent overselling
 - [ ] **ORD-02**: Order record is saved to Supabase with a JSONB cart snapshot at time of purchase
 - [ ] **ORD-03**: Idempotency keys are deterministic (derived from order data) to prevent duplicate orders
-- [ ] **ORD-04**: Checkout validates that the drop is active before accepting orders
+- [x] **ORD-04**: Checkout validates that the drop is active before accepting orders
 - [ ] **ORD-05**: Products display sold-out indicators in real-time when capacity is reached
 
 ### Email & Mailing List
@@ -68,24 +68,24 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | DATA-01 | Phase 1 | Complete |
 | DATA-02 | Phase 1 | Complete |
-| DATA-03 | Phase 2 | Pending |
-| DATA-04 | Phase 2 | Pending |
-| DATA-05 | Phase 2 | Pending |
-| ORD-01 | Phase 3 | Pending |
-| ORD-02 | Phase 3 | Pending |
-| ORD-03 | Phase 3 | Pending |
-| ORD-04 | Phase 2 | Pending |
-| ORD-05 | Phase 2 | Pending |
-| MAIL-01 | Phase 3 | Pending |
-| MAIL-02 | Phase 4 | Pending |
-| MAIL-03 | Phase 4 | Pending |
-| MAIL-04 | Phase 3 | Pending |
-| MAIL-05 | Phase 4 | Pending |
-| MAIL-06 | Phase 4 | Pending |
-| NAV-01 | Phase 4 | Pending |
-| PAGE-01 | Phase 4 | Pending |
-| PAGE-02 | Phase 4 | Pending |
-| PAGE-03 | Phase 4 | Pending |
+| DATA-03 | Phase 3 | Pending |
+| DATA-04 | Phase 2 | Complete |
+| DATA-05 | Phase 2 | Complete |
+| ORD-01 | Phase 4 | Pending |
+| ORD-02 | Phase 4 | Pending |
+| ORD-03 | Phase 4 | Pending |
+| ORD-04 | Phase 2 | Complete |
+| ORD-05 | Phase 3 | Pending |
+| MAIL-01 | Phase 4 | Pending |
+| MAIL-02 | Phase 5 | Pending |
+| MAIL-03 | Phase 5 | Pending |
+| MAIL-04 | Phase 4 | Pending |
+| MAIL-05 | Phase 5 | Pending |
+| MAIL-06 | Phase 5 | Pending |
+| NAV-01 | Phase 5 | Pending |
+| PAGE-01 | Phase 5 | Pending |
+| PAGE-02 | Phase 5 | Pending |
+| PAGE-03 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 20 total
@@ -94,4 +94,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-04-03*
-*Last updated: 2026-04-03 after roadmap creation*
+*Last updated: 2026-04-12 after v1.0 audit — gap closure phase inserted as Phase 3; Phase 3→4, Phase 4→5; DATA-04, DATA-05, ORD-04 marked Complete*
