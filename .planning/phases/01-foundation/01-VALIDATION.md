@@ -43,7 +43,7 @@ created: 2026-04-04
 | 01-02-01 | 02 | 2 | DATA-01 | static | `test -f .env.local && grep -q "SUPABASE_URL" .env.local` | N/A (human) | ✅ green |
 | 01-02-02 | 02 | 2 | DATA-01, DATA-02 | integration | `npx tsc --noEmit && npm run test` | ✅ created by task | ✅ green |
 
-*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+*Status: ✅ green · ✅ green · ❌ red · ⚠️ flaky*
 
 ---
 
