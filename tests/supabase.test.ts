@@ -23,6 +23,7 @@ describe("getSupabaseClient", () => {
 
   it("throws when SUPABASE_URL is missing", async () => {
     delete process.env.SUPABASE_URL;
+    delete process.env.NEXT_PUBLIC_SUPABASE_URL;
     delete process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     const { getSupabaseClient } = await import("../lib/supabase");
