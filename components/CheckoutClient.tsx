@@ -46,6 +46,19 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
     return map;
   }, [frozenItems]);
 
+  const productNameMap = useMemo(() => {
+    const map = new Map<string, "pulled_pork" | "brisket">();
+    for (const item of frozenItems) {
+      const slug = item.name.toLowerCase().replace(/\s+/g, "_");
+      if (slug === "pulled_pork" || slug === "brisket") {
+        for (const variation of item.variations) {
+          map.set(variation.variationId, slug);
+        }
+      }
+    }
+    return map;
+  }, [frozenItems]);
+
   const sauceVariationIds = useMemo(() => {
     const ids = new Set<string>();
     if (sauceVariationId) {
@@ -122,7 +135,11 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
             email: formState.email,
             phone: formState.phone || undefined
           },
-          cart: items
+          cart: items.map((item) => ({
+            variationId: item.variationId,
+            quantity: item.quantity,
+            ...(productNameMap.get(item.variationId) ? { productName: productNameMap.get(item.variationId) } : {})
+          }))
         })
       });
 
