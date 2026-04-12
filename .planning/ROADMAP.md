@@ -31,7 +31,7 @@
 
 Plans:
 - [x] 03-01-PLAN.md — Wire reserve_pickup_slot RPC into checkout route with tests and CheckoutClient productName mapping
-- [ ] 03-02-PLAN.md — Fix place_preorder types, remove dead getSupabaseEnv code, update Phase 1/2 planning artifacts
+- [x] 03-02-PLAN.md — Fix place_preorder types, remove dead getSupabaseEnv code, update Phase 1/2 planning artifacts
 
 ---
 
