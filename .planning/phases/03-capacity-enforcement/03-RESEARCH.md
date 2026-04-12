@@ -336,17 +336,15 @@ A3 needs attention: confirm that `cart` in the checkout payload is used only for
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Sauce items and the Zod schema**
+1. **RESOLVED: Sauce items and the Zod schema**
    - What we know: D-06 adds `productName: z.union([z.literal("pulled_pork"), z.literal("brisket")])` to `cartSchema`. Sauce items are in `CartContext.items` alongside meat items.
-   - What's unclear: Whether `productName` should be required (forcing CheckoutClient to filter sauce before sending) or optional (letting the route filter items without productName for RPC calls).
-   - Recommendation: Make `productName` optional in the Zod schema. This avoids breaking the 400-rejection contract for sauce items and keeps CheckoutClient simpler — it just adds `productName` for meat items it can identify and omits it for sauce. The route aggregates only items where `productName` is defined.
+   - Resolution: Make `productName` optional in the Zod schema (`z.union([...]).optional()`). This avoids breaking the 400-rejection contract for sauce items and keeps CheckoutClient simpler — it just adds `productName` for meat items it can identify and omits it for sauce. The route aggregates only items where `productName` is defined.
 
-2. **`lib/types.ts` CartItem interface**
+2. **RESOLVED: `lib/types.ts` CartItem interface**
    - What we know: `CartItem` is used in `CartContext` and throughout the client, but the route uses Zod-inferred types at the API boundary.
-   - What's unclear: Whether `CartItem` in `lib/types.ts` needs updating to match the new payload shape.
-   - Recommendation: Leave `CartItem` in `lib/types.ts` unchanged. The checkout route operates on the Zod-inferred type. `CheckoutClient` can cast or use a local inline type for the enriched cart items it sends. This avoids rippling type changes into CartContext and cart utility functions.
+   - Resolution: Leave `CartItem` in `lib/types.ts` unchanged. The checkout route operates on the Zod-inferred type. `CheckoutClient` uses a local inline type for the enriched cart items it sends. This avoids rippling type changes into CartContext and cart utility functions.
 
 ---
 
