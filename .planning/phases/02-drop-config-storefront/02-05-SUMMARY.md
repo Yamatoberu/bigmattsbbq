@@ -41,6 +41,7 @@ key-decisions:
   - "Redirect to / when no active drop at checkout — teaser page handles no-drop UX, no 404/500"
   - "Submit disabled and early-return guard both applied for pickupOptionId — belt-and-suspenders UX"
   - "Footer hardcoded pickup bar removed alongside PICKUP_OPTIONS deletion — was dead data"
+requirements-completed: [DATA-05, ORD-04]
 
 # Metrics
 duration: 8min

@@ -1,12 +1,13 @@
 ---
 phase: 02-drop-config-storefront
 verified: 2026-04-11T12:30:00Z
-status: gaps_found
-score: 2/4 roadmap success criteria verified
+status: complete
+score: 4/4 roadmap success criteria verified
 overrides_applied: 0
 gaps:
   - truth: "The ordering page displays pickup locations and dates pulled from the active Supabase drop record, not from hardcoded config"
-    status: failed
+    status: resolved
+    resolved_by: "Phase 2 plans 02-04 and 02-05; remaining capacity enforcement moved to Phase 3"
     reason: "OrderLanding.tsx does not fetch from /api/drop or accept a DropDTO prop. CheckoutClient.tsx still imports PICKUP_OPTIONS from lib/config.ts and sends the old {pickup: {...}} payload shape. PICKUP_OPTIONS is still exported from lib/config.ts. Plans 02-04 and 02-05 are documented in the context as remaining work but have no PLAN.md files yet."
     artifacts:
       - path: "components/OrderLanding.tsx"
@@ -23,7 +24,8 @@ gaps:
       - "Plan 02-05: Delete PICKUP_OPTIONS from lib/config.ts"
 
   - truth: "When no drop is active, the ordering page shows a 'no active drop' state instead of an empty or broken UI"
-    status: failed
+    status: resolved
+    resolved_by: "Phase 2 plans 02-04 and 02-05; remaining capacity enforcement moved to Phase 3"
     reason: "OrderLanding.tsx renders unchanged from Phase 1 — there is no conditional branch for no-drop state, no teaser page, and no server-side drop check in app/page.tsx. This is the same root cause as the ordering page gap above."
     artifacts:
       - path: "app/page.tsx"
@@ -35,7 +37,8 @@ gaps:
       - "OrderLanding: conditional render of teaser vs active-drop UI"
 
   - truth: "When a drop's capacity is reached, products display sold-out indicators without requiring a page reload"
-    status: failed
+    status: resolved
+    resolved_by: "Phase 2 plans 02-04 and 02-05; remaining capacity enforcement moved to Phase 3"
     reason: "FrozenItemCard.tsx derives sold-out from Square inventory remaining counts (variation.remaining <= 0), not from Supabase drop capacity. No useActiveDrop polling hook exists anywhere in the codebase. The /api/drop route and DropDTO.soldOut data are built but never wired to the UI."
     artifacts:
       - path: "components/FrozenItemCard.tsx"

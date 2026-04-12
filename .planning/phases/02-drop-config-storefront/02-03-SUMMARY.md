@@ -12,6 +12,7 @@ key-files:
   modified:
     - lib/drops.ts
     - app/api/checkout/route.ts
+requirements-completed: [ORD-04]
 ---
 
 ## What Was Built
