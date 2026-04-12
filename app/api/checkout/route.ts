@@ -76,7 +76,9 @@ export async function POST(request: Request) {
 
     const { data: pickupRow, error: pickupErr } = await supabase
       .from("drop_pickup_options")
-      .select("id, location_label, pickup_at, pickup_date")
+      .select(
+        "id, location_label, pickup_at, pickup_date, capacity_pulled_pork, capacity_brisket, reserved_pulled_pork, reserved_brisket"
+      )
       .eq("id", parsed.data.pickupOptionId)
       .eq("drop_id", parsed.data.dropId)
       .maybeSingle();
@@ -96,142 +98,28 @@ export async function POST(request: Request) {
       );
     }
 
-    const env = getSquareEnv();
-    const { customer, cart } = parsed.data;
-
-    const customerSearch = await searchCustomerByEmail({
-      host: env.host,
-      accessToken: env.accessToken,
-      email: customer.email,
-      requestId
-    });
-
-    let customerId = customerSearch.customers?.[0]?.id;
-
-    if (!customerId) {
-      const created = await createCustomer({
-        host: env.host,
-        accessToken: env.accessToken,
-        requestId,
-        idempotencyKey: newIdempotencyKey(),
-        body: {
-          given_name: customer.firstName,
-          family_name: customer.lastName,
-          email_address: customer.email,
-          phone_number: customer.phone
-        }
-      });
-
-      customerId = created.customer?.id;
-    }
-
-    if (!customerId) {
+    const pickupSoldOut =
+      pickupRow.reserved_pulled_pork >= pickupRow.capacity_pulled_pork &&
+      pickupRow.reserved_brisket >= pickupRow.capacity_brisket;
+    if (pickupSoldOut) {
       return NextResponse.json(
-        { error: "Unable to create customer record.", requestId },
-        { status: 500 }
+        { error: "This pickup slot is sold out. Please choose another.", requestId },
+        { status: 409 }
       );
     }
 
-    const pickupDateLabel = new Date(pickupRow.pickup_at).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      timeZone: "America/Denver"
-    });
-    const pickupNote = `${pickupRow.location_label} Pickup - ${pickupDateLabel}`;
-
-    const orderResponse = await createOrder({
-      host: env.host,
-      accessToken: env.accessToken,
-      requestId,
-      idempotencyKey: newIdempotencyKey(),
-      body: {
-        order: {
-          location_id: env.locationId,
-          customer_id: customerId,
-          line_items: cart.map((item) => ({
-            quantity: item.quantity.toString(),
-            catalog_object_id: item.variationId
-          })),
-          fulfillments: [
-            {
-              type: "PICKUP",
-              pickup_details: {
-                pickup_at: pickupRow.pickup_at,
-                note: pickupNote,
-                recipient: {
-                  display_name: `${customer.firstName} ${customer.lastName}`
-                }
-              }
-            }
-          ]
-        }
-      }
-    });
-
-    const orderId = orderResponse.order?.id;
-
-    if (!orderId) {
-      return NextResponse.json(
-        { error: "Unable to create order.", requestId },
-        { status: 500 }
-      );
-    }
-
-    const dueDate = new Date().toISOString().slice(0, 10);
-
-    const invoiceResponse = await createInvoice({
-      host: env.host,
-      accessToken: env.accessToken,
-      requestId,
-      idempotencyKey: newIdempotencyKey(),
-      body: {
-        invoice: {
-          location_id: env.locationId,
-          order_id: orderId,
-          delivery_method: "EMAIL",
-          primary_recipient: {
-            customer_id: customerId
-          },
-          payment_requests: [
-            {
-              request_type: "BALANCE",
-              due_date: dueDate
-            }
-          ],
-          title: "Big Matt's BBQ Frozen Drop",
-          description: "Thanks for locking in your frozen pickup."
-        }
-      }
-    });
-
-    const invoiceId = invoiceResponse.invoice?.id;
-    const invoiceVersion = invoiceResponse.invoice?.version;
-
-    if (!invoiceId || invoiceVersion === undefined) {
-      return NextResponse.json(
-        { error: "Unable to create invoice.", requestId },
-        { status: 500 }
-      );
-    }
-
-    await publishInvoice({
-      host: env.host,
-      accessToken: env.accessToken,
-      requestId,
-      invoiceId,
-      version: invoiceVersion,
-      idempotencyKey: newIdempotencyKey()
-    });
-
+    // Aggregate cart quantities by product type before reserving capacity.
     const totals = new Map<string, number>();
-    for (const item of cart) {
+    for (const item of parsed.data.cart) {
       if (item.productName) {
         totals.set(item.productName, (totals.get(item.productName) ?? 0) + item.quantity);
       }
     }
 
+    // Reserve capacity slots before touching Square. Roll back on any failure.
+    const reserved: Array<{ productName: string; quantity: number }> = [];
     for (const [productName, quantity] of totals) {
-      const { data: reserveResult, error: reserveErr } = await supabase.rpc('reserve_pickup_slot', {
+      const { data: reserveResult, error: reserveErr } = await supabase.rpc("reserve_pickup_slot", {
         p_drop_id: parsed.data.dropId,
         p_pickup_option_id: parsed.data.pickupOptionId,
         p_product_name: productName,
@@ -239,8 +127,191 @@ export async function POST(request: Request) {
       });
       const reserveData = reserveResult as { ok: boolean; reason?: string } | null;
       if (reserveErr || !reserveData?.ok) {
-        logError("reserve_pickup_slot failed", reserveErr ?? reserveData, requestId);
+        for (const r of reserved) {
+          await supabase.rpc("release_pickup_slot", {
+            p_drop_id: parsed.data.dropId,
+            p_pickup_option_id: parsed.data.pickupOptionId,
+            p_product_name: r.productName,
+            p_quantity: r.quantity
+          });
+        }
+        return NextResponse.json(
+          {
+            error: reserveData?.reason ?? "Capacity unavailable for selected pickup.",
+            requestId
+          },
+          { status: 409 }
+        );
       }
+      reserved.push({ productName, quantity });
+    }
+
+    let orderId: string | undefined;
+    let invoiceId: string | undefined;
+    let pickupNote = "";
+
+    try {
+      const env = getSquareEnv();
+      const { customer, cart } = parsed.data;
+
+      const customerSearch = await searchCustomerByEmail({
+        host: env.host,
+        accessToken: env.accessToken,
+        email: customer.email,
+        requestId
+      });
+
+      let customerId = customerSearch.customers?.[0]?.id;
+
+      if (!customerId) {
+        const created = await createCustomer({
+          host: env.host,
+          accessToken: env.accessToken,
+          requestId,
+          idempotencyKey: newIdempotencyKey(),
+          body: {
+            given_name: customer.firstName,
+            family_name: customer.lastName,
+            email_address: customer.email,
+            phone_number: customer.phone
+          }
+        });
+
+        customerId = created.customer?.id;
+      }
+
+      if (!customerId) {
+        for (const r of reserved) {
+          await supabase.rpc("release_pickup_slot", {
+            p_drop_id: parsed.data.dropId,
+            p_pickup_option_id: parsed.data.pickupOptionId,
+            p_product_name: r.productName,
+            p_quantity: r.quantity
+          });
+        }
+        return NextResponse.json(
+          { error: "Unable to create customer record.", requestId },
+          { status: 500 }
+        );
+      }
+
+      const pickupDateLabel = new Date(pickupRow.pickup_at).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        timeZone: "America/Denver"
+      });
+      pickupNote = `${pickupRow.location_label} Pickup - ${pickupDateLabel}`;
+
+      const orderResponse = await createOrder({
+        host: env.host,
+        accessToken: env.accessToken,
+        requestId,
+        idempotencyKey: newIdempotencyKey(),
+        body: {
+          order: {
+            location_id: env.locationId,
+            customer_id: customerId,
+            line_items: cart.map((item) => ({
+              quantity: item.quantity.toString(),
+              catalog_object_id: item.variationId
+            })),
+            fulfillments: [
+              {
+                type: "PICKUP",
+                pickup_details: {
+                  pickup_at: pickupRow.pickup_at,
+                  note: pickupNote,
+                  recipient: {
+                    display_name: `${customer.firstName} ${customer.lastName}`
+                  }
+                }
+              }
+            ]
+          }
+        }
+      });
+
+      orderId = orderResponse.order?.id;
+
+      if (!orderId) {
+        for (const r of reserved) {
+          await supabase.rpc("release_pickup_slot", {
+            p_drop_id: parsed.data.dropId,
+            p_pickup_option_id: parsed.data.pickupOptionId,
+            p_product_name: r.productName,
+            p_quantity: r.quantity
+          });
+        }
+        return NextResponse.json(
+          { error: "Unable to create order.", requestId },
+          { status: 500 }
+        );
+      }
+
+      const dueDate = new Date().toISOString().slice(0, 10);
+
+      const invoiceResponse = await createInvoice({
+        host: env.host,
+        accessToken: env.accessToken,
+        requestId,
+        idempotencyKey: newIdempotencyKey(),
+        body: {
+          invoice: {
+            location_id: env.locationId,
+            order_id: orderId,
+            delivery_method: "EMAIL",
+            primary_recipient: {
+              customer_id: customerId
+            },
+            payment_requests: [
+              {
+                request_type: "BALANCE",
+                due_date: dueDate
+              }
+            ],
+            title: "Big Matt's BBQ Frozen Drop",
+            description: "Thanks for locking in your frozen pickup."
+          }
+        }
+      });
+
+      invoiceId = invoiceResponse.invoice?.id;
+      const invoiceVersion = invoiceResponse.invoice?.version;
+
+      if (!invoiceId || invoiceVersion === undefined) {
+        for (const r of reserved) {
+          await supabase.rpc("release_pickup_slot", {
+            p_drop_id: parsed.data.dropId,
+            p_pickup_option_id: parsed.data.pickupOptionId,
+            p_product_name: r.productName,
+            p_quantity: r.quantity
+          });
+        }
+        return NextResponse.json(
+          { error: "Unable to create invoice.", requestId },
+          { status: 500 }
+        );
+      }
+
+      await publishInvoice({
+        host: env.host,
+        accessToken: env.accessToken,
+        requestId,
+        invoiceId,
+        version: invoiceVersion,
+        idempotencyKey: newIdempotencyKey()
+      });
+    } catch (squareError) {
+      // Square call failed — release reserved capacity so the slot is not stranded.
+      for (const r of reserved) {
+        await supabase.rpc("release_pickup_slot", {
+          p_drop_id: parsed.data.dropId,
+          p_pickup_option_id: parsed.data.pickupOptionId,
+          p_product_name: r.productName,
+          p_quantity: r.quantity
+        });
+      }
+      throw squareError;
     }
 
     return NextResponse.json({
