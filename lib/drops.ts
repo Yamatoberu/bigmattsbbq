@@ -104,6 +104,9 @@ export function checkDropReady(drop: DropReadinessRow | null): DropReadiness {
       };
     }
   }
+  // Coarse gate: block only when every product type is globally exhausted.
+  // Per-product capacity (e.g. pulled pork sold out but brisket available) is
+  // enforced atomically by the reserve_pickup_slot RPC during checkout.
   const globallySoldOut =
     drop.reserved_pulled_pork >= drop.capacity_pulled_pork &&
     drop.reserved_brisket >= drop.capacity_brisket;
