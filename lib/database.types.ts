@@ -214,13 +214,13 @@ export type Database = {
     Functions: {
       place_preorder: {
         Args: {
-          p_drop_id: number
+          p_drop_id: string
           p_email: string
           p_full_name: string
           p_items: Json
           p_opt_in?: boolean
           p_phone?: string
-          p_pickup_id: number
+          p_pickup_id: string
         }
         Returns: Json
       }

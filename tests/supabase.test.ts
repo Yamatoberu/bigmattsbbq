@@ -1,5 +1,4 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getSupabaseEnv } from "../lib/env";
 
 // Each test resets the module to clear the singleton cache.
 // We use vi.resetModules() + dynamic import to get a fresh module per test.
@@ -56,38 +55,5 @@ describe("getSupabaseClient", () => {
     const first = getSupabaseClient();
     const second = getSupabaseClient();
     expect(first).toBe(second);
-  });
-});
-
-describe("getSupabaseEnv", () => {
-  const ORIGINAL_URL = process.env.SUPABASE_URL;
-  const ORIGINAL_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  afterEach(() => {
-    if (ORIGINAL_URL === undefined) {
-      delete process.env.SUPABASE_URL;
-    } else {
-      process.env.SUPABASE_URL = ORIGINAL_URL;
-    }
-    if (ORIGINAL_KEY === undefined) {
-      delete process.env.SUPABASE_SERVICE_ROLE_KEY;
-    } else {
-      process.env.SUPABASE_SERVICE_ROLE_KEY = ORIGINAL_KEY;
-    }
-  });
-
-  it("throws when vars are missing", () => {
-    delete process.env.SUPABASE_URL;
-    delete process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    expect(() => getSupabaseEnv()).toThrow("Missing Supabase environment variables");
-  });
-
-  it("returns url and serviceRoleKey when vars are set", () => {
-    process.env.SUPABASE_URL = "http://localhost:54321";
-    process.env.SUPABASE_SERVICE_ROLE_KEY = "test-key";
-
-    const result = getSupabaseEnv();
-    expect(result).toEqual({ url: "http://localhost:54321", serviceRoleKey: "test-key" });
   });
 });

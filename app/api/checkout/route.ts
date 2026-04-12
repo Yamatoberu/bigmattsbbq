@@ -19,8 +19,7 @@ export const runtime = "nodejs";
 
 const cartSchema = z.object({
   variationId: z.string().min(1),
-  quantity: z.number().int().positive(),
-  productName: z.union([z.literal("pulled_pork"), z.literal("brisket")]).optional()
+  quantity: z.number().int().positive()
 });
 
 const checkoutSchema = z.object({
@@ -222,26 +221,6 @@ export async function POST(request: Request) {
       version: invoiceVersion,
       idempotencyKey: newIdempotencyKey()
     });
-
-    const totals = new Map<string, number>();
-    for (const item of cart) {
-      if (item.productName) {
-        totals.set(item.productName, (totals.get(item.productName) ?? 0) + item.quantity);
-      }
-    }
-
-    for (const [productName, quantity] of totals) {
-      const { data: reserveResult, error: reserveErr } = await supabase.rpc('reserve_pickup_slot', {
-        p_drop_id: parsed.data.dropId,
-        p_pickup_option_id: parsed.data.pickupOptionId,
-        p_product_name: productName,
-        p_quantity: quantity
-      });
-      const reserveData = reserveResult as { ok: boolean; reason?: string } | null;
-      if (reserveErr || !reserveData?.ok) {
-        logError("reserve_pickup_slot failed", reserveErr ?? reserveData, requestId);
-      }
-    }
 
     return NextResponse.json({
       orderId,
