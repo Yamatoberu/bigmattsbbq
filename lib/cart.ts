@@ -51,6 +51,18 @@ export function resolvePackageToCartItems(
   return resolved;
 }
 
+export function aggregateByProduct(
+  items: Array<{ variationId: string; quantity: number; productName?: "pulled_pork" | "brisket" }>
+): Map<string, number> {
+  const totals = new Map<string, number>();
+  for (const item of items) {
+    if (item.productName) {
+      totals.set(item.productName, (totals.get(item.productName) ?? 0) + item.quantity);
+    }
+  }
+  return totals;
+}
+
 export function isSauceBumpNeeded(
   items: CartItem[],
   sauceVariationIds: string | string[]

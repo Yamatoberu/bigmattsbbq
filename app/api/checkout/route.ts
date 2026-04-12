@@ -17,7 +17,7 @@ import { checkDropReady } from "../../../lib/drops";
 
 export const runtime = "nodejs";
 
-const cartSchema = z.object({
+export const cartSchema = z.object({
   variationId: z.string().min(1),
   quantity: z.number().int().positive(),
   productName: z.union([z.literal("pulled_pork"), z.literal("brisket")]).optional()

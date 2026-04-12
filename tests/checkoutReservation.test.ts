@@ -1,25 +1,9 @@
 import { describe, it, expect, vi } from "vitest";
-import { z } from "zod";
 
 vi.mock("server-only", () => ({}));
 
-const cartSchema = z.object({
-  variationId: z.string().min(1),
-  quantity: z.number().int().positive(),
-  productName: z.union([z.literal("pulled_pork"), z.literal("brisket")]).optional()
-});
-
-function aggregateByProduct(
-  items: Array<{ variationId: string; quantity: number; productName?: "pulled_pork" | "brisket" }>
-): Map<string, number> {
-  const totals = new Map<string, number>();
-  for (const item of items) {
-    if (item.productName) {
-      totals.set(item.productName, (totals.get(item.productName) ?? 0) + item.quantity);
-    }
-  }
-  return totals;
-}
+import { cartSchema } from "../app/api/checkout/route";
+import { aggregateByProduct } from "../lib/cart";
 
 describe("cartSchema", () => {
   it("accepts items with productName pulled_pork", () => {
