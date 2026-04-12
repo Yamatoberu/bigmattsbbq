@@ -14,7 +14,7 @@ import { useFrozenItems } from "./hooks/useFrozenItems";
 import { useActiveDrop } from "./hooks/useActiveDrop";
 import { useCart } from "./cart/CartContext";
 import { PACKAGES } from "../lib/config";
-import { formatMoney } from "../lib/format";
+import { formatDenverDateTime, formatMoney } from "../lib/format";
 import { resolvePackageToCartItems } from "../lib/cart";
 import { DropDTO } from "../lib/types";
 
@@ -117,14 +117,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
               <p className="mt-4 text-xs uppercase tracking-[0.35em] text-[#d9c7b3]">
                 {drop.title}
                 {drop.orderCutoffAt && (
-                  <> — Orders close {new Date(drop.orderCutoffAt).toLocaleString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                    hour: "numeric",
-                    minute: "2-digit",
-                    timeZone: "America/Denver"
-                  })}</>
+                  <> — Orders close {formatDenverDateTime(drop.orderCutoffAt)}</>
                 )}
               </p>
             </div>

@@ -1,1 +1,0 @@
-self.__NEXT_FONT_MANIFEST="{\"pages\":{},\"app\":{\"/Users/matt/Development/BigMattsBbq/app/layout\":[\"static/media/f04c3881ee3d9785-s.p.woff2\",\"static/media/29b98dbfba401fa9-s.p.woff2\"]},\"appUsingSizeAdjust\":true,\"pagesUsingSizeAdjust\":false}"

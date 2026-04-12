@@ -46,7 +46,9 @@ module.exports = mod;
 
 __turbopack_context__.s([
     "getSquareEnv",
-    ()=>getSquareEnv
+    ()=>getSquareEnv,
+    "getSupabaseEnv",
+    ()=>getSupabaseEnv
 ]);
 function getSquareEnv() {
     const host = process.env.SQUARE_HOST || "https://connect.squareup.com";
@@ -65,6 +67,17 @@ function getSquareEnv() {
         frozenCategoryId,
         sauceVariationId,
         environment
+    };
+}
+function getSupabaseEnv() {
+    const url = process.env.SUPABASE_URL || ("TURBOPACK compile-time value", "https://wpziabhigztyjrmjpmbw.supabase.co");
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!url || !serviceRoleKey) {
+        throw new Error("Missing Supabase environment variables. Check SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL) and SUPABASE_SERVICE_ROLE_KEY.");
+    }
+    return {
+        url,
+        serviceRoleKey
     };
 }
 }),
