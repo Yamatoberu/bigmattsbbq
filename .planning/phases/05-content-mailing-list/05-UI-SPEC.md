@@ -1,10 +1,11 @@
 ---
 phase: 5
 slug: content-mailing-list
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-04-14
+reviewed_at: 2026-04-14
 ---
 
 # Phase 5 — UI Design Contract
@@ -45,7 +46,6 @@ Declared values (all multiples of 4):
 Exceptions:
 
 - Nav touch targets (hamburger button, cart button): minimum 44px × 44px hit area — use `min-h-[44px] min-w-[44px]` on the interactive element.
-- Logo in NavBar: 125px × 125px fixed — matches existing `h-[125px] w-[125px]`.
 - Footer mailing list row: single line `flex` layout; no vertical rhythm exception needed.
 
 ---
@@ -111,6 +111,7 @@ New components and modifications for this phase:
 - Nav links use `text-sm font-semibold uppercase tracking-[0.25em]` — label/caption size with microcopy treatment.
 - Hamburger icon: inline SVG `≡` / `✕` (3 bars / X). No icon library.
 - Move from `OrderLanding.tsx` to `app/layout.tsx`. Remove from `OrderLanding`.
+- Logo fixed size: `h-[125px] w-[125px]` — matches existing codebase value; this is an inherited asset dimension, not a layout spacing value.
 
 ### Footer.tsx (refactor)
 
@@ -265,11 +266,11 @@ No component registry used. Pure Tailwind CSS with global class vocabulary from 
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** approved 2026-04-14
