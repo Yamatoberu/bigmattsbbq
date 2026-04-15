@@ -391,17 +391,11 @@ Phase 4 is not a rename/refactor/migration phase — this section is skipped.
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Cart unit price source for JSONB snapshot**
-   - What we know: D-05 requires unit price in cents per item in `cart_snapshot`
-   - What's unclear: Whether price should come from the client payload (easiest) or from the Square `createOrder` response (more authoritative)
-   - Recommendation: Have `CheckoutClient` include `priceCents` from its `variationMap` in the fetch body. Add `priceCents: z.number().int().nonnegative()` to `cartSchema`. This keeps the route stateless with respect to catalog data.
+1. **Cart unit price source for JSONB snapshot** — RESOLVED: `priceCents` sent from `CheckoutClient.tsx` variationMap in the fetch body; `priceCents: z.number().int().nonnegative()` added to `cartSchema` in Plan 01 Task 2; route reads `item.priceCents ?? 0` for cart_snapshot construction in Plan 02 Task 1.
 
-2. **Phase 3 reservation placement**
-   - What we know: The current `route.ts` shows reservation at lines 112–147, which is pre-Square
-   - What's unclear: Whether Phase 3 also added a second post-publish reservation that was later removed, or whether the implementation diverged from the Phase 3 plan document
-   - Recommendation: The planner should verify no post-publish `reserve_pickup_slot` call exists. If none exists, the ORD-01 reservation move is already done and the Phase 4 task is limited to Supabase order save + mailing list.
+2. **Phase 3 reservation placement** — RESOLVED: Reservation is already pre-Square at `route.ts` lines 112–147; no post-publish `reserve_pickup_slot` call exists. ORD-01 is already satisfied; Plan 02 Task 1 preserves this position and adds a verification comment.
 
 ---
 
