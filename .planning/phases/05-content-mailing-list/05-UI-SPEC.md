@@ -56,12 +56,12 @@ Source: existing components and `globals.css` — pre-populated from codebase.
 
 | Role | Size | Weight | Line Height | Font |
 |------|------|--------|-------------|------|
-| Body | 16px (text-base) | 400 (normal) | 1.5 | Source Sans 3 (`--font-body`) |
-| Label / caption | 14px (text-sm) | 400 (normal) / 600 (semibold) | 1.5 | Source Sans 3 |
-| Heading | 20px (text-xl) | 600 (semibold) | 1.2 | Playfair Display (`--font-display`) |
-| Display | 40px / 48px mobile/desktop (text-4xl / text-5xl) | 600 (semibold) | 1.15 | Playfair Display |
+| Body | 16px (`text-base`) | 400 (normal) | 1.5 | Source Sans 3 (`--font-body`) |
+| Label / caption | 14px (`text-sm`) | 400 (normal) / 600 (semibold) | 1.5 | Source Sans 3 |
+| Heading | 20px (`text-xl`) | 600 (semibold) | 1.2 | Playfair Display (`--font-display`) |
+| Display | 40px (`text-4xl`) | 600 (semibold) | 1.15 | Playfair Display |
 
-The label/caption size (14px, `text-sm`) covers all microcopy roles: nav links, badges, and eyebrow labels. Visual distinction for these elements comes from `uppercase`, `tracking-[0.25em]`, and `font-semibold` — not from a smaller point size. No fifth size is permitted.
+The display size (`text-4xl`, 40px) covers all section-level and page-level headings: page headings on /catering, /about, /contact, the MailingListSection headline, and all unsubscribe page headings. The label/caption size (14px, `text-sm`) covers all microcopy roles: nav links, badges, and eyebrow labels. Visual distinction for these elements comes from `uppercase`, `tracking-[0.25em]`, and `font-semibold` — not from a smaller point size. No fifth size is permitted. `text-2xl`, `text-3xl`, and `text-5xl` are not in the declared scale and must not appear in this phase.
 
 ---
 
@@ -128,7 +128,7 @@ Full-width band on the home page. Placement: between the FAQ section and the Cat
 - Background: `bg-[#0f0b08]` with `section-spacing`
 - Layout: centered column, max-width `max-w-xl mx-auto text-center`
 - Eyebrow: `.badge` — "Drop Notifications"
-- Headline: `text-3xl font-semibold` in Playfair Display — "Be first to know about the next drop."
+- Headline: `text-4xl font-semibold` in Playfair Display — "Be first to know about the next drop."
 - Subtext: `text-sm text-smoke-700` — "We only email when a new drop opens. No spam, ever."
 - Form: `flex flex-col gap-3 sm:flex-row sm:justify-center mt-8`
   - Input: `.input-field sm:w-72` — placeholder "your@email.com", `type="email"`, `aria-label="Email address"`
@@ -174,8 +174,8 @@ Full-width band on the home page. Placement: between the FAQ section and the Cat
 | State | Heading | Body |
 |-------|---------|------|
 | Verifying (loading) | — | `text-sm text-smoke-700` "Verifying your request…" |
-| Success | Playfair Display `text-2xl font-semibold text-smoke-900` "You're unsubscribed." | `text-sm text-smoke-700 mt-4` "You won't receive drop notifications from us. You can rejoin anytime from the home page." |
-| Invalid/expired token | Playfair Display `text-2xl font-semibold text-ember-300` "This link has expired." | `text-sm text-smoke-700 mt-4` "Unsubscribe links expire after 30 days. If you'd like to unsubscribe, use the link from your most recent email." |
+| Success | Playfair Display `text-4xl font-semibold text-smoke-900` "You're unsubscribed." | `text-sm text-smoke-700 mt-4` "You won't receive drop notifications from us. You can rejoin anytime from the home page." |
+| Invalid/expired token | Playfair Display `text-4xl font-semibold text-ember-300` "This link has expired." | `text-sm text-smoke-700 mt-4` "Unsubscribe links expire after 30 days. If you'd like to unsubscribe, use the link from your most recent email." |
 
 - No back-navigation button required. Home link: `text-sm text-smoke-600 underline mt-6 inline-block` — "Back to Big Matt's BBQ"
 
