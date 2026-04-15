@@ -1,0 +1,13 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/checkout/route": "app/api/checkout/route.js",
+  "/api/dev/set-inventory/route": "app/api/dev/set-inventory/route.js",
+  "/api/drop/route": "app/api/drop/route.js",
+  "/api/frozen-items/route": "app/api/frozen-items/route.js",
+  "/api/test-seed/route": "app/api/test-seed/route.js",
+  "/checkout/page": "app/checkout/page.js",
+  "/confirmation/page": "app/confirmation/page.js",
+  "/orders/page": "app/orders/page.js",
+  "/page": "app/page.js"
+}
