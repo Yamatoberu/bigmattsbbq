@@ -57,11 +57,11 @@ Source: existing components and `globals.css` — pre-populated from codebase.
 | Role | Size | Weight | Line Height | Font |
 |------|------|--------|-------------|------|
 | Body | 16px (text-base) | 400 (normal) | 1.5 | Source Sans 3 (`--font-body`) |
-| Label / caption | 14px (text-sm) | 400 (normal) | 1.5 | Source Sans 3 |
+| Label / caption | 14px (text-sm) | 400 (normal) / 600 (semibold) | 1.5 | Source Sans 3 |
 | Heading | 20px (text-xl) | 600 (semibold) | 1.2 | Playfair Display (`--font-display`) |
 | Display | 40px / 48px mobile/desktop (text-4xl / text-5xl) | 600 (semibold) | 1.15 | Playfair Display |
 
-Microcopy (nav links, badges, eyebrow labels): 10.5–11px (`text-[0.65rem]`), weight 600, uppercase, tracking `[0.25em]` — matches existing NavBar and badge patterns.
+The label/caption size (14px, `text-sm`) covers all microcopy roles: nav links, badges, and eyebrow labels. Visual distinction for these elements comes from `uppercase`, `tracking-[0.25em]`, and `font-semibold` — not from a smaller point size. No fifth size is permitted.
 
 ---
 
@@ -78,7 +78,7 @@ Source: `tailwind.config.ts` ember/smoke palettes + `globals.css` inline hex val
 | Destructive | Not applicable in this phase | No destructive actions in Phase 5 |
 
 Accent reserved for:
-1. `.button-primary` background gradient — "Notify Me", "Join" (footer), "See full catering menu" CTA
+1. `.button-primary` background gradient — "Notify Me", "Join List" (footer), "See full catering menu" CTA
 2. `focus-visible:outline-ember-500` on all interactive elements
 3. Cart badge background (`bg-[#b31414]`)
 
@@ -108,16 +108,17 @@ New components and modifications for this phase:
 - Drawer: full-height (`h-screen`) slide-in from left. `fixed inset-y-0 left-0 z-40 w-64 bg-[#14100d]` with `border-r border-[#2b2b2f]`. Transition: `translate-x-0` / `-translate-x-full` via `transition-transform duration-200`.
 - Drawer overlay: `fixed inset-0 z-30 bg-black/60` — tapping closes drawer.
 - Active link style: `text-[#f0c16a]` for the current route (`usePathname()` from `next/navigation`). Default link color: `text-smoke-800` (`#e0d4c6`).
+- Nav links use `text-sm font-semibold uppercase tracking-[0.25em]` — label/caption size with microcopy treatment.
 - Hamburger icon: inline SVG `≡` / `✕` (3 bars / X). No icon library.
 - Move from `OrderLanding.tsx` to `app/layout.tsx`. Remove from `OrderLanding`.
 
 ### Footer.tsx (refactor)
 
-- Add inline mailing list row: `[ your@email.com ] [ Join ]` on the same line as copyright text on desktop; stacked on mobile.
+- Add inline mailing list row: `[ your@email.com ] [ Join List ]` on the same line as copyright text on desktop; stacked on mobile.
 - Input: reuse `.input-field` class. Width: `sm:w-64`.
-- Button: reuse `.button-primary` class. Label: "Join"
-- Success state: replace the input+button with inline text "You're on the list!" in `text-[#f0c16a] text-xs`. No page navigation.
-- Error state: show `text-ember-300 text-xs` inline below the row: "Something went wrong. Try again."
+- Button: reuse `.button-primary` class. Label: "Join List"
+- Success state: replace the input+button with inline text "You're on the list!" in `text-[#f0c16a] text-sm`. No page navigation.
+- Error state: show `text-ember-300 text-sm` inline below the row: "Something went wrong. Try again."
 - Move from `OrderLanding.tsx` to `app/layout.tsx`. Remove from `OrderLanding`.
 
 ### MailingListSection (new component: `components/MailingListSection.tsx`)
@@ -145,7 +146,7 @@ Full-width band on the home page. Placement: between the FAQ section and the Cat
 - Three tier cards: same `glass-card` pattern, expanded with included items list (`text-sm text-smoke-800 mt-2 space-y-1`)
 - Booking details block: `glass-card p-6 mt-8` — "How far in advance?" + service area text at `text-sm text-smoke-700`
 - Primary CTA: `mailto:catering@bigmattsbbq.com` — label "Email for Catering" using `.button-primary`
-- Update `CateringSection.tsx` on home page: add `"See full catering menu →"` link below the CTA using `.button-secondary text-xs`
+- Update `CateringSection.tsx` on home page: add `"See full catering menu →"` link below the CTA using `.button-secondary text-sm`
 
 ### /about page (`app/about/page.tsx`)
 
@@ -176,7 +177,7 @@ Full-width band on the home page. Placement: between the FAQ section and the Cat
 | Success | Playfair Display `text-2xl font-semibold text-smoke-900` "You're unsubscribed." | `text-sm text-smoke-700 mt-4` "You won't receive drop notifications from us. You can rejoin anytime from the home page." |
 | Invalid/expired token | Playfair Display `text-2xl font-semibold text-ember-300` "This link has expired." | `text-sm text-smoke-700 mt-4` "Unsubscribe links expire after 30 days. If you'd like to unsubscribe, use the link from your most recent email." |
 
-- No back-navigation button required. Home link: `text-xs text-smoke-600 underline mt-6 inline-block` — "Back to Big Matt's BBQ"
+- No back-navigation button required. Home link: `text-sm text-smoke-600 underline mt-6 inline-block` — "Back to Big Matt's BBQ"
 
 ---
 
@@ -190,7 +191,7 @@ Source: CONTEXT.md decisions D-06 through D-22 — pre-populated.
 | Mailing list section headline | "Be first to know about the next drop." |
 | Mailing list section subtext | "We only email when a new drop opens. No spam, ever." |
 | Mailing list CTA (home section) | "Notify Me" |
-| Mailing list CTA (footer) | "Join" |
+| Mailing list CTA (footer) | "Join List" |
 | Mailing list success (home section) | "You're on the list! We'll let you know about the next drop." |
 | Mailing list success (footer) | "You're on the list!" |
 | Mailing list already-subscribed | (same as success — silent, per D-08) |
