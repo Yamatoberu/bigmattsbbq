@@ -602,17 +602,19 @@ if (!process.env.BROADCAST_SECRET || authHeader !== `Bearer ${process.env.BROADC
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **RESEND_API_KEY value**
    - What we know: The env var slot exists in `.env.local` but is empty.
    - What's unclear: Whether Matt has a Resend account and domain `bigmattsbbq.com` verified, or whether that setup is still needed.
    - Recommendation: Wave 0 task should check/document that RESEND_API_KEY is populated and domain is verified before broadcast route is tested.
+   - RESOLVED: Plans use `process.env.RESEND_API_KEY`; populating this is a deployment concern outside plan scope.
 
 2. **Broadcast email `from` address**
    - What we know: `EMAIL_FROM` in `.env.local` is set to `"Big Matt's BBQ <orders@bigmattsbbq.com>"`.
    - What's unclear: Whether `orders@bigmattsbbq.com` is a verified sender in the Resend account.
    - Recommendation: Use `EMAIL_FROM` env var in broadcast route rather than hardcoding.
+   - RESOLVED: P05-T1 uses `process.env.EMAIL_FROM` env var; sender verification is a deployment concern outside plan scope.
 
 ---
 
