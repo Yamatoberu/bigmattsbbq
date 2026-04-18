@@ -208,7 +208,7 @@ describe("POST /api/checkout — RPC failure returns 409 (03-01-04)", () => {
 
     // Assert: route must return 409 and not proceed to Square
     expect(response.status).toBe(409);
-    expect((response.body as { error: string }).error).toBe(
+    expect((response.body as unknown as { error: string }).error).toBe(
       "Capacity unavailable for selected pickup."
     );
   });

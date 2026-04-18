@@ -20,7 +20,8 @@ export const runtime = "nodejs";
 export const cartSchema = z.object({
   variationId: z.string().min(1),
   quantity: z.number().int().positive(),
-  productName: z.union([z.literal("pulled_pork"), z.literal("brisket")]).optional()
+  productName: z.union([z.literal("pulled_pork"), z.literal("brisket")]).optional(),
+  priceCents: z.number().int().nonnegative().optional()
 });
 
 const checkoutSchema = z.object({
@@ -108,6 +109,17 @@ export async function POST(request: Request) {
       );
     }
 
+    const cartFingerprint = parsed.data.cart
+      .map((item) => `${item.variationId}:${item.quantity}`)
+      .sort()
+      .join(",");
+    const idempotencyBase = [
+      parsed.data.customer.email,
+      parsed.data.dropId,
+      parsed.data.pickupOptionId,
+      cartFingerprint
+    ];
+
     // Aggregate cart quantities by product type before reserving capacity.
     const totals = new Map<string, number>();
     for (const item of parsed.data.cart) {
@@ -168,7 +180,7 @@ export async function POST(request: Request) {
           host: env.host,
           accessToken: env.accessToken,
           requestId,
-          idempotencyKey: newIdempotencyKey(),
+          idempotencyKey: newIdempotencyKey([...idempotencyBase, "customer"]),
           body: {
             given_name: customer.firstName,
             family_name: customer.lastName,
@@ -206,7 +218,7 @@ export async function POST(request: Request) {
         host: env.host,
         accessToken: env.accessToken,
         requestId,
-        idempotencyKey: newIdempotencyKey(),
+        idempotencyKey: newIdempotencyKey([...idempotencyBase, "order"]),
         body: {
           order: {
             location_id: env.locationId,
@@ -254,7 +266,7 @@ export async function POST(request: Request) {
         host: env.host,
         accessToken: env.accessToken,
         requestId,
-        idempotencyKey: newIdempotencyKey(),
+        idempotencyKey: newIdempotencyKey([...idempotencyBase, "invoice"]),
         body: {
           invoice: {
             location_id: env.locationId,
@@ -299,7 +311,7 @@ export async function POST(request: Request) {
         requestId,
         invoiceId,
         version: invoiceVersion,
-        idempotencyKey: newIdempotencyKey()
+        idempotencyKey: newIdempotencyKey([...idempotencyBase, "publish"])
       });
     } catch (squareError) {
       // Square call failed — release reserved capacity so the slot is not stranded.
