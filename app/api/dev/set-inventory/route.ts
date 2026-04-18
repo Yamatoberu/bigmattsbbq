@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       requestId,
       locationId: env.locationId,
       changes: parsed.data.counts,
-      idempotencyKey: newIdempotencyKey([crypto.randomUUID()])
+      idempotencyKey: newIdempotencyKey()
     });
 
     return NextResponse.json({ status: "ok" });
