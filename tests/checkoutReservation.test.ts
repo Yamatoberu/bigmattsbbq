@@ -44,7 +44,7 @@ vi.mock("../lib/logger", () => ({
 
 // Mock lib/idempotency before importing the route
 vi.mock("../lib/idempotency", () => ({
-  newIdempotencyKey: () => "idempotency-key-test"
+  newIdempotencyKey: (_inputs?: string[]) => "idempotency-key-test"
 }));
 
 // Mutable supabase mock — tests replace supabaseMock.rpc as needed
