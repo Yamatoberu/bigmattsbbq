@@ -66,11 +66,6 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
       ids.add(sauceVariationId);
     }
     for (const item of frozenItems) {
-      if (item.itemId === sauceVariationId) {
-        for (const variation of item.variations) {
-          ids.add(variation.variationId);
-        }
-      }
       if (normalizeMatch(item.name).includes("sauce")) {
         for (const variation of item.variations) {
           ids.add(variation.variationId);
