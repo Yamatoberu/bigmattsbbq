@@ -311,6 +311,7 @@ export async function POST(request: Request) {
           p_quantity: r.quantity
         });
       }
+      logError("Square API call failed", squareError, requestId);
       throw squareError;
     }
 
