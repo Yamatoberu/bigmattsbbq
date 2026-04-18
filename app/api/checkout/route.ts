@@ -160,6 +160,7 @@ export async function POST(request: Request) {
     let orderId: string | undefined;
     let invoiceId: string | undefined;
     let pickupNote = "";
+    let squareOp = "searchCustomer";
 
     try {
       const env = getSquareEnv();
@@ -175,6 +176,7 @@ export async function POST(request: Request) {
       let customerId = customerSearch.customers?.[0]?.id;
 
       if (!customerId) {
+        squareOp = "createCustomer";
         const created = await createCustomer({
           host: env.host,
           accessToken: env.accessToken,
@@ -213,6 +215,7 @@ export async function POST(request: Request) {
       });
       pickupNote = `${pickupRow.location_label} Pickup - ${pickupDateLabel}`;
 
+      squareOp = "createOrder";
       const orderResponse = await createOrder({
         host: env.host,
         accessToken: env.accessToken,
@@ -261,6 +264,7 @@ export async function POST(request: Request) {
 
       const dueDate = new Date().toISOString().slice(0, 10);
 
+      squareOp = "createInvoice";
       const invoiceResponse = await createInvoice({
         host: env.host,
         accessToken: env.accessToken,
@@ -304,6 +308,7 @@ export async function POST(request: Request) {
         );
       }
 
+      squareOp = "publishInvoice";
       await publishInvoice({
         host: env.host,
         accessToken: env.accessToken,
@@ -322,7 +327,7 @@ export async function POST(request: Request) {
           p_quantity: r.quantity
         });
       }
-      logError("Square API call failed", squareError, requestId);
+      logError(`Square API call failed [${squareOp}]`, squareError, requestId);
       throw squareError;
     }
 
