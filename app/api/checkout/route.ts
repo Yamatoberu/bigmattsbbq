@@ -14,13 +14,15 @@ import {
 import { logError } from "../../../lib/logger";
 import { getSupabaseClient } from "../../../lib/supabase";
 import { checkDropReady } from "../../../lib/drops";
+import { aggregateByProduct } from "../../../lib/cart";
 
 export const runtime = "nodejs";
 
 export const cartSchema = z.object({
   variationId: z.string().min(1),
   quantity: z.number().int().positive(),
-  productName: z.union([z.literal("pulled_pork"), z.literal("brisket")]).optional()
+  productName: z.union([z.literal("pulled_pork"), z.literal("brisket")]).optional(),
+  priceCents: z.number().int().nonnegative().optional()
 });
 
 const checkoutSchema = z.object({
@@ -32,7 +34,8 @@ const checkoutSchema = z.object({
     email: z.string().email(),
     phone: z.string().optional()
   }),
-  cart: z.array(cartSchema).min(1)
+  cart: z.array(cartSchema).min(1),
+  optInMailingList: z.boolean().optional().default(false)
 });
 
 export async function POST(request: Request) {
@@ -108,13 +111,21 @@ export async function POST(request: Request) {
       );
     }
 
+    const cartFingerprint = parsed.data.cart
+      .map((item) => `${item.variationId}:${item.quantity}`)
+      .sort()
+      .join(",");
+    const idempotencyBase = [
+      parsed.data.customer.email,
+      parsed.data.dropId,
+      parsed.data.pickupOptionId,
+      cartFingerprint
+    ];
+
+    // ORD-01: Reserve capacity slots BEFORE any Square API call.
+    // Rollback happens in guard blocks below and in the Square catch block.
     // Aggregate cart quantities by product type before reserving capacity.
-    const totals = new Map<string, number>();
-    for (const item of parsed.data.cart) {
-      if (item.productName) {
-        totals.set(item.productName, (totals.get(item.productName) ?? 0) + item.quantity);
-      }
-    }
+    const totals = aggregateByProduct(parsed.data.cart);
 
     // Reserve capacity slots before touching Square. Roll back on any failure.
     const reserved: Array<{ productName: string; quantity: number }> = [];
@@ -168,7 +179,7 @@ export async function POST(request: Request) {
           host: env.host,
           accessToken: env.accessToken,
           requestId,
-          idempotencyKey: newIdempotencyKey(),
+          idempotencyKey: newIdempotencyKey([...idempotencyBase, "customer"]),
           body: {
             given_name: customer.firstName,
             family_name: customer.lastName,
@@ -206,7 +217,7 @@ export async function POST(request: Request) {
         host: env.host,
         accessToken: env.accessToken,
         requestId,
-        idempotencyKey: newIdempotencyKey(),
+        idempotencyKey: newIdempotencyKey([...idempotencyBase, "order"]),
         body: {
           order: {
             location_id: env.locationId,
@@ -254,7 +265,7 @@ export async function POST(request: Request) {
         host: env.host,
         accessToken: env.accessToken,
         requestId,
-        idempotencyKey: newIdempotencyKey(),
+        idempotencyKey: newIdempotencyKey([...idempotencyBase, "invoice"]),
         body: {
           invoice: {
             location_id: env.locationId,
@@ -299,7 +310,7 @@ export async function POST(request: Request) {
         requestId,
         invoiceId,
         version: invoiceVersion,
-        idempotencyKey: newIdempotencyKey()
+        idempotencyKey: newIdempotencyKey([...idempotencyBase, "publish"])
       });
     } catch (squareError) {
       // Square call failed — release reserved capacity so the slot is not stranded.
@@ -313,6 +324,49 @@ export async function POST(request: Request) {
       }
       logError("Square API call failed", squareError, requestId);
       throw squareError;
+    }
+
+    // Post-Square: Supabase writes (fire-and-forget, no rollback needed)
+    const { customer } = parsed.data;
+
+    const cartSnapshot = {
+      items: parsed.data.cart.map((item) => ({
+        variationId: item.variationId,
+        productName: item.productName ?? null,
+        quantity: item.quantity,
+        priceCents: item.priceCents ?? 0
+      })),
+      estimatedTotalCents: parsed.data.cart.reduce(
+        (sum, item) => sum + (item.priceCents ?? 0) * item.quantity,
+        0
+      )
+    };
+
+    const { error: orderSaveErr } = await supabase.from("orders").insert({
+      drop_id: parsed.data.dropId,
+      pickup_option_id: parsed.data.pickupOptionId,
+      customer_email: customer.email,
+      customer_name: `${customer.firstName} ${customer.lastName}`,
+      square_order_id: orderId ?? null,
+      square_invoice_id: invoiceId ?? null,
+      cart_snapshot: cartSnapshot
+    });
+
+    if (orderSaveErr) {
+      logError("Order save to Supabase failed (non-blocking)", orderSaveErr, requestId);
+    }
+
+    if (parsed.data.optInMailingList) {
+      const { error: mailingErr } = await supabase
+        .from("mailing_list")
+        .upsert(
+          { email: customer.email },
+          { onConflict: "email", ignoreDuplicates: true }
+        );
+
+      if (mailingErr) {
+        logError("Mailing list insert failed (non-blocking)", mailingErr, requestId);
+      }
     }
 
     return NextResponse.json({
