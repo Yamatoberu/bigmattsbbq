@@ -284,6 +284,9 @@ export async function POST(request: Request) {
                 due_date: dueDate
               }
             ],
+            accepted_payment_methods: {
+              card: true
+            },
             title: "Big Matt's BBQ Frozen Drop",
             description: "Thanks for locking in your frozen pickup."
           }
