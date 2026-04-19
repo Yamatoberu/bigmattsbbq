@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 import { Playfair_Display, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { NavBar } from "../components/NavBar";
+import { Footer } from "../components/Footer";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -34,7 +36,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${playfair.variable} ${sourceSans.variable}`}>
       <body className="font-[var(--font-body)]">
-        <Providers>{children}</Providers>
+        <Providers>
+          <NavBar />
+          {children}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
