@@ -93,6 +93,31 @@ main {
   @apply mt-6 border-t border-[#3a2a20];
 }
 
+/* Nav responsive helpers — bypasses Tailwind JIT to guarantee breakpoint behavior */
+.nav-desktop {
+  display: none;
+}
+.nav-mobile-only {
+  display: flex;
+}
+.nav-order-btn {
+  display: none;
+}
+@media (min-width: 640px) {
+  .nav-desktop {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+  }
+  .nav-mobile-only {
+    display: none !important;
+  }
+  .nav-order-btn {
+    display: inline-flex;
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

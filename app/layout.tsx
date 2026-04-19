@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Playfair_Display, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
@@ -19,6 +19,11 @@ const sourceSans = Source_Sans_3({
 export const metadata: Metadata = {
   title: "Big Matt's BBQ | Frozen Drops",
   description: "Frozen-forward ordering for Big Matt's BBQ drops."
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1
 };
 
 export default function RootLayout({
