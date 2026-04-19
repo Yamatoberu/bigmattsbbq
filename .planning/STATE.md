@@ -79,12 +79,6 @@ None yet.
 - Resend domain DNS verification for bigmattsbbq.com must be initiated before Phase 3 coding begins (up to 48-hour propagation)
 - Square API version `2024-12-18` reaches end-of-life ~June 2026 — bump during or before Phase 3
 
-### Quick Tasks Completed
-
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 260417-rpl | Fix checkout Square error logging: update logError to include status/body fields, add Square error body logging before re-throw in checkout route | 2026-04-18 | 74d0c99 | [260417-rpl-fix-checkout-square-error-logging-update](./quick/260417-rpl-fix-checkout-square-error-logging-update/) |
-
 ## Session Continuity
 
 Last session: 2026-04-15T03:15:52.431Z

@@ -2,12 +2,14 @@
 
 import { useMemo } from "react";
 import Link from "next/link";
+import { NavBar } from "./NavBar";
 import { SectionHeader } from "./SectionHeader";
 import { PackageCard } from "./PackageCard";
 import { FrozenItemCard } from "./FrozenItemCard";
 import { Testimonials } from "./Testimonials";
 import { Faq } from "./Faq";
 import { CateringSection } from "./CateringSection";
+import { Footer } from "./Footer";
 import { useFrozenItems } from "./hooks/useFrozenItems";
 import { useActiveDrop } from "./hooks/useActiveDrop";
 import { useCart } from "./cart/CartContext";
@@ -44,6 +46,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
   if (!drop || drop.status !== "active") {
     return (
       <main className="bg-ember-radial bg-grain">
+        <NavBar />
         <section className="px-4 pb-10 pt-6 md:px-10">
           <div className="mx-auto max-w-3xl">
             <div className="hero-panel">
@@ -73,12 +76,14 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
             </div>
           </div>
         </section>
+        <Footer />
       </main>
     );
   }
 
   return (
     <main className="bg-ember-radial bg-grain">
+      <NavBar />
 
       <section className="px-4 pb-10 pt-6 md:px-10">
         <div className="mx-auto max-w-6xl">
@@ -216,10 +221,11 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
             title="Event-ready BBQ"
             subtitle="Simple pricing tiers and a direct line to us."
           />
-          <CateringSection />
+          <CateringSection showFullMenuLink />
         </div>
       </section>
 
+      <Footer />
     </main>
   );
 }

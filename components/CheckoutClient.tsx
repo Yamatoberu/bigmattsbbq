@@ -31,7 +31,6 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | undefined>();
-  const [isOptedIntoMailingList, setIsOptedIntoMailingList] = useState(false);
 
   const variationMap = useMemo(() => {
     const map = new Map<string, { name: string; priceCents: number; currency: string }>();
@@ -66,6 +65,11 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
       ids.add(sauceVariationId);
     }
     for (const item of frozenItems) {
+      if (item.itemId === sauceVariationId) {
+        for (const variation of item.variations) {
+          ids.add(variation.variationId);
+        }
+      }
       if (normalizeMatch(item.name).includes("sauce")) {
         for (const variation of item.variations) {
           ids.add(variation.variationId);
@@ -134,10 +138,8 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
           cart: items.map((item) => ({
             variationId: item.variationId,
             quantity: item.quantity,
-            priceCents: variationMap.get(item.variationId)?.priceCents ?? 0,
             ...(productNameMap.get(item.variationId) ? { productName: productNameMap.get(item.variationId) } : {})
-          })),
-          optInMailingList: isOptedIntoMailingList
+          }))
         })
       });
 
@@ -325,15 +327,6 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
               />
             </label>
           </div>
-          <label className="flex cursor-pointer items-center gap-2 mt-4">
-            <input
-              type="checkbox"
-              checked={isOptedIntoMailingList}
-              onChange={(e) => setIsOptedIntoMailingList(e.target.checked)}
-              className="h-4 w-4 rounded accent-[#e64622]"
-            />
-            <span className="text-sm text-smoke-600">Notify me about future drops</span>
-          </label>
           {error && <p className="mt-4 text-sm text-ember-600">{error}</p>}
           <button
             type="submit"
