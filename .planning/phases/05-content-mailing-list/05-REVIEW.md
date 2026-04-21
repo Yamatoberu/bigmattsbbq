@@ -1,12 +1,13 @@
 ---
 phase: 05-content-mailing-list
-reviewed: 2026-04-19T00:00:00Z
+reviewed: 2026-04-21T00:00:00Z
 depth: standard
-files_reviewed: 18
+files_reviewed: 23
 files_reviewed_list:
-  - .env.example
   - app/about/page.tsx
   - app/api/admin/broadcast/route.ts
+  - app/api/checkout/route.ts
+  - app/api/dev/set-inventory/route.ts
   - app/api/mailing-list/route.ts
   - app/api/unsubscribe/route.ts
   - app/catering/page.tsx
@@ -18,155 +19,204 @@ files_reviewed_list:
   - components/MailingListSection.tsx
   - components/NavBar.tsx
   - components/OrderLanding.tsx
+  - lib/idempotency.ts
   - lib/unsubscribeToken.ts
+  - package.json
   - tests/broadcast.test.ts
+  - tests/checkoutReservation.test.ts
   - tests/mailingList.test.ts
   - tests/unsubscribeToken.test.ts
+  - .env.example
 findings:
   critical: 1
-  warning: 4
-  info: 3
-  total: 8
+  warning: 5
+  info: 4
+  total: 10
 status: issues_found
 ---
 
 # Phase 05: Code Review Report
 
-**Reviewed:** 2026-04-19T00:00:00Z
+**Reviewed:** 2026-04-21
 **Depth:** standard
-**Files Reviewed:** 18
+**Files Reviewed:** 23
 **Status:** issues_found
 
 ## Summary
 
-This phase adds the mailing list signup flow, broadcast admin route, unsubscribe token system, static content pages (about, contact, catering), and updated NavBar/Footer. The token-signing logic and route authorization patterns are solid. One critical issue was found: the broadcast route appends the unsubscribe URL via raw string interpolation, which allows XSS if a malicious subscriber email were ever inserted into the database. Four warnings cover missing validation on the `html` broadcast payload, a `rejectUnauthorized`-style silent-failure path in the unsubscribe route, a non-functional inline form in `OrderLanding`, and a secret fall-through in `unsubscribeToken.ts`. Three informational items round out the review.
+This phase introduces the mailing list signup flow (Footer + MailingListSection forms, `/api/mailing-list`, `/api/unsubscribe`), the broadcast admin endpoint (`/api/admin/broadcast`), the JWT-based unsubscribe token library (`lib/unsubscribeToken.ts`), static content pages (About, Catering, Contact), and checkout updates with drop/pickup slot reservation via Supabase RPC.
+
+The architecture is solid: Zod validates all API boundaries, the unsubscribe JWT uses `jose` with a proper expiry, the broadcast route checks auth before parsing the body, and the reservation rollback logic in checkout is careful. Ten issues were found: one critical (timing-safe secret comparison), five warnings, and four informational items.
 
 ---
 
 ## Critical Issues
 
-### CR-01: Unescaped email address in HTML string template (broadcast route)
+### CR-01: Non-timing-safe bearer token comparison in broadcast route
 
-**File:** `app/api/admin/broadcast/route.ts:98-103`
-**Issue:** The `unsubscribeUrl` is built from `subscriber.email` pulled directly from the database, then interpolated into a raw HTML template string. Although `encodeURIComponent` is applied to the token (good), the email is not used directly in the URL; the concern is the broader pattern: `html` passed in the POST body is also appended verbatim without sanitization. More concretely, if an attacker ever manages to insert a crafted email value (e.g., `"></a><script>...` escaped past Supabase's validation), it would be written directly into every recipient's email. Even ignoring attacker-controlled emails, the caller-supplied `html` body is rendered without any sanitization whatsoever — a compromised admin credential results in full HTML injection into every subscriber's inbox.
-
-Both surfaces should be tightened:
-1. The `html` field should be treated as untrusted content and at minimum stripped of `<script>` tags server-side, or the API contract should document that only pre-approved templates are accepted.
-2. The token URL interpolation is safe as-is, but the pattern of building raw HTML via string templates is fragile.
-
+**File:** `app/api/admin/broadcast/route.ts:29`
+**Issue:** The `authorize()` function compares the bearer secret with the JavaScript `===` operator. String equality in JS is not timing-safe — a patient attacker can use response-time differences to determine the correct secret character-by-character. This endpoint triggers a mass email send to all subscribers, making it a high-value target worth protecting with a timing-safe comparison.
 **Fix:**
 ```typescript
-// Minimal: strip script tags from caller-supplied html before appending footer
-function sanitizeHtml(raw: string): string {
-  return raw.replace(/<script[\s\S]*?<\/script>/gi, "");
+import { timingSafeEqual } from "crypto";
+
+function authorize(requestHeaders: Headers): boolean {
+  const secret = process.env.BROADCAST_SECRET;
+  if (!secret || secret.length < 16) return false;
+  const authHeader = requestHeaders.get("authorization");
+  if (!authHeader) return false;
+  const expected = `Bearer ${secret}`;
+  // Lengths must match before comparing bytes; unequal length is itself a safe reject.
+  if (authHeader.length !== expected.length) return false;
+  return timingSafeEqual(Buffer.from(authHeader), Buffer.from(expected));
 }
-
-// In the send loop:
-const safeHtml = sanitizeHtml(html);
-const finalHtml = `${safeHtml}\n<hr .../>...`;
 ```
-
-For a more robust solution, consider restricting the broadcast payload to a whitelist of template IDs rather than accepting raw HTML from the caller.
 
 ---
 
 ## Warnings
 
-### WR-01: broadcast `html` field has no maximum length, enabling oversized payloads
+### WR-01: Silent re-subscribe failure — unsubscribed users cannot rejoin the list
 
-**File:** `app/api/admin/broadcast/route.ts:10-14`
-**Issue:** The Zod schema enforces `min(1)` on `html` but sets no upper bound. A large payload would be sent to every subscriber, potentially hitting Resend's per-email size limit and causing silent failures for the whole batch. The `subject` field is capped at 200 characters but `html` is unconstrained.
-
-**Fix:**
+**File:** `app/api/mailing-list/route.ts:28-38`
+**Issue:** The route performs a plain `insert` and silently returns 200 on a `23505` unique-violation error. This correctly handles a user who tries to sign up twice, but it also silently swallows the case where a previously-unsubscribed user (whose row has `subscribed = false`) tries to rejoin. The 200 response tells them "You're on the list!" but their `subscribed` column remains `false` in the database — they will receive no emails from future broadcasts.
+**Fix:** Use an upsert to set `subscribed = true` on conflict so re-subscribes are handled correctly. This also eliminates the `23505` special-case:
 ```typescript
-const schema = z.object({
-  subject: z.string().min(1).max(200),
-  html: z.string().min(1).max(100_000), // ~100 KB is a generous but reasonable ceiling
-  dropId: z.string().optional()
-});
+const { error } = await supabase
+  .from("mailing_list")
+  .upsert(
+    { email: parsed.data.email, subscribed: true },
+    { onConflict: "email", ignoreDuplicates: false }
+  );
+
+if (error) {
+  logError("mailing-list upsert failed", error, requestId);
+  return NextResponse.json(
+    { error: "Signup failed. Please try again.", requestId },
+    { status: 500 }
+  );
+}
 ```
 
-### WR-02: `unsubscribeToken.ts` silently falls back to `BROADCAST_SECRET`
+### WR-02: UNSUBSCRIBE_SECRET falls back to BROADCAST_SECRET — keys should not be shared
 
 **File:** `lib/unsubscribeToken.ts:7-13`
-**Issue:** `getSecret()` falls back to `BROADCAST_SECRET` when `UNSUBSCRIBE_SECRET` is not set. This means accidentally deleting `UNSUBSCRIBE_SECRET` from `.env.local` does not throw — it silently uses a different secret. Any tokens signed before and after the key rotation would both verify, but with different keys, causing tokens to fail in production unexpectedly. The fallback also means `BROADCAST_SECRET` effectively becomes a second signing key, widening the attack surface.
-
-**Fix:**
+**Issue:** `getSecret()` falls back from `UNSUBSCRIBE_SECRET` to `BROADCAST_SECRET`. These serve different purposes: `BROADCAST_SECRET` is an HTTP bearer credential; `UNSUBSCRIBE_SECRET` is a JWT signing key embedded in end-user emails that live for 30 days. Sharing them creates two problems: (1) rotating the broadcast credential for security reasons immediately invalidates all outstanding unsubscribe links — every previously sent email now contains a broken link; (2) anyone who obtains `BROADCAST_SECRET` (e.g., through a log leak) can forge valid unsubscribe JWTs for arbitrary email addresses, silently unsubscribing any recipient. The `.env.example` already documents `UNSUBSCRIBE_SECRET` as its own variable; the fallback undercuts that.
+**Fix:** Remove the fallback and require `UNSUBSCRIBE_SECRET` explicitly:
 ```typescript
 function getSecret(): Uint8Array {
   const secret = process.env.UNSUBSCRIBE_SECRET;
   if (!secret || secret.length < 32) {
     throw new Error(
-      "Missing or too-short UNSUBSCRIBE_SECRET. Set it in .env.local to a 32+ character value."
+      "Missing or too-short UNSUBSCRIBE_SECRET. Set it in .env.local to a 32+ character random value."
     );
   }
   return new TextEncoder().encode(secret);
 }
 ```
 
-### WR-03: Unsubscribe route uses `await headers()` pattern inconsistently with other routes
+### WR-03: Pickup slot sold-out gate uses AND, missing early rejection for single-product carts
 
-**File:** `app/api/unsubscribe/route.ts:15-16`
-**Issue:** This route imports and awaits `headers()` from `next/headers` to read `x-request-id`, while every other API route in the project reads headers directly from `request.headers` (e.g., `request.headers.get("x-request-id")`). The `await headers()` pattern will cause the route to opt out of any static optimization and is inconsistent with project conventions. More importantly, `request.headers` is already available on the `Request` parameter — the `next/headers` import is unnecessary.
-
-**Fix:**
+**File:** `app/api/checkout/route.ts:101-108`
+**Issue:** The early guard fires only when both product types are exhausted at the slot:
 ```typescript
-// Remove: import { headers } from "next/headers";
-// Remove: const headerList = await headers();
+const pickupSoldOut =
+  pickupRow.reserved_pulled_pork >= pickupRow.capacity_pulled_pork &&
+  pickupRow.reserved_brisket >= pickupRow.capacity_brisket;
+```
+A customer ordering only pulled pork passes this gate even when pulled pork capacity is full — they reach the `reserve_pickup_slot` RPC, which correctly rejects the reservation, but the error message they receive is the generic RPC message rather than the user-friendly "This pickup slot is sold out." The gate should check whether the products actually in the cart are available.
 
-export async function POST(request: Request) {
-  const requestId = request.headers.get("x-request-id") ?? crypto.randomUUID();
-  // ...
-}
+Note: the gate currently runs before the `totals` map is built, so the fix requires reordering as well.
+**Fix:** Move the gate to after the `totals` map is built (after line 117), then check per product:
+```typescript
+const pickupSoldOut = [...totals.entries()].some(([productName]) => {
+  if (productName === "pulled_pork") {
+    return pickupRow.reserved_pulled_pork >= pickupRow.capacity_pulled_pork;
+  }
+  if (productName === "brisket") {
+    return pickupRow.reserved_brisket >= pickupRow.capacity_brisket;
+  }
+  return false;
+});
 ```
 
-### WR-04: Inline mailing list form in `OrderLanding` "no active drop" state is non-functional
+### WR-04: broadcast `html` payload has no maximum length
 
-**File:** `components/OrderLanding.tsx:59-72`
-**Issue:** When there is no active drop, a "Notify Me" form is rendered. Its `onSubmit` handler only calls `event.preventDefault()` — it never posts to `/api/mailing-list`. Users who submit this form will see no feedback and will not be subscribed. This is a silent failure path that defeats the page's stated purpose.
-
+**File:** `app/api/admin/broadcast/route.ts:10-14`
+**Issue:** The Zod schema caps `subject` at 200 characters but places no upper bound on `html`. A very large payload would be sent in full to every subscriber, potentially hitting Resend's per-email byte limit and causing silent send failures for the entire batch. This is an admin-only path but should still be bounded.
 **Fix:**
-Replace the stub form with the existing `<MailingListSection />` component, or wire the form to call `/api/mailing-list` the same way `Footer` and `MailingListSection` do:
+```typescript
+const schema = z.object({
+  subject: z.string().min(1).max(200),
+  html: z.string().min(1).max(100_000), // 100 KB is a generous but reasonable ceiling
+  dropId: z.string().optional()
+});
+```
 
-```tsx
-// Simplest fix — reuse the working component:
-import { MailingListSection } from "./MailingListSection";
+### WR-05: Unreliable test — module cache not reset before re-importing with changed secret
 
-// Replace the inline form block with:
-<MailingListSection />
+**File:** `tests/unsubscribeToken.test.ts:29-36`
+**Issue:** The test "rejects a token signed with a different secret" changes `process.env.UNSUBSCRIBE_SECRET` on line 32 and then immediately calls `import("../lib/unsubscribeToken")`. Because no `vi.resetModules()` call precedes the re-import, Vitest returns the cached module instance, which still holds a reference to the `TextEncoder`-encoded bytes of the *original* secret captured when `getSecret()` was first called. The test therefore verifies nothing — it passes because `jwtVerify` happens to reject the token for some other reason, or it becomes silently correct by coincidence. This is a flaky-test risk.
+**Fix:** Reset the module registry before changing the secret:
+```typescript
+it("rejects a token signed with a different secret", async () => {
+  const { signUnsubscribeToken } = await import("../lib/unsubscribeToken");
+  const token = await signUnsubscribeToken("a@b.com");
+
+  vi.resetModules(); // flush cached module so new env var is picked up
+  process.env.UNSUBSCRIBE_SECRET = "different-secret-at-least-32-characters-long-yyyyyyyyyyyyyy";
+  const { verifyUnsubscribeToken } = await import("../lib/unsubscribeToken");
+  await expect(verifyUnsubscribeToken(token)).rejects.toThrow();
+});
 ```
 
 ---
 
 ## Info
 
-### IN-01: Draft copy comment left in production file
+### IN-01: Draft copy note left in production About page
 
 **File:** `app/about/page.tsx:28-30`
-**Issue:** A `<p>` tag with the text "Draft copy — Matt will revise before launch." is rendered on the live `/about` page. This is visible to users and should be removed before the page goes live.
+**Issue:** A paragraph reading "Draft copy — Matt will revise before launch." is rendered on the live `/about` page and is visible to all users.
+**Fix:** Remove or replace the paragraph before going live.
 
-**Fix:** Remove lines 28-30 before launch.
+### IN-02: `NEXT_PUBLIC_SITE_URL` is consumed by broadcast route but absent from `.env.example`
 
-### IN-02: `NEXT_PUBLIC_SITE_URL` used in broadcast but missing from `.env.example`
-
-**File:** `app/api/admin/broadcast/route.ts:17` / `.env.example`
-**Issue:** `getBaseUrl()` checks `process.env.NEXT_PUBLIC_SITE_URL` first. This variable is never mentioned in `.env.example`, so developers will not know to set it. Without it, the fallback reads `x-forwarded-proto` and `host` headers, which is reasonable for production Vercel deployments, but can silently produce wrong URLs in local development or behind certain proxies.
-
+**File:** `app/api/admin/broadcast/route.ts:17` and `.env.example`
+**Issue:** `getBaseUrl()` checks `process.env.NEXT_PUBLIC_SITE_URL` first when building unsubscribe URLs. This variable does not appear in `.env.example`, so developers and deployment checklists have no prompt to set it. Without it, the fallback reads `x-forwarded-proto` and `host` from request headers, which works fine on Vercel but can silently generate `http://localhost:3000` URLs in local broadcast testing.
 **Fix:** Add to `.env.example`:
 ```
-# Optional: override base URL for unsubscribe links in broadcast emails
+# Optional: canonical site URL; used in broadcast email unsubscribe links.
 NEXT_PUBLIC_SITE_URL=
 ```
 
-### IN-03: `SupabaseClient` singleton may carry stale credentials across hot-reloads in development
+### IN-03: `newIdempotencyKey` sorts inputs — ordering cannot be used for disambiguation
 
-**File:** `lib/supabase.ts:5`
-**Issue:** The `_client` module-level singleton is initialized once and cached for the lifetime of the Node process. In Next.js dev mode with hot module replacement, the module can be re-evaluated but the singleton pattern does not guard against env var changes between reloads. This is a low-risk dev-only concern, but it has tripped teams up when rotating credentials locally. Not a production bug.
+**File:** `lib/idempotency.ts:4-7`
+**Issue:** Inputs are sorted before hashing (`[...inputs].sort().join("|")`), so `["a", "b"]` and `["b", "a"]` produce the same key. Every current call site uses a unique suffix ("customer", "order", "invoice", "publish"), so there are no collisions today, but this is a non-obvious invariant. A future caller that relies on input order for uniqueness would silently produce key collisions.
+**Fix:** Either remove the sort and document that call sites must pass inputs in a stable order, or add a comment explaining why the sort is intentional:
+```typescript
+// Inputs are sorted so key is stable regardless of caller order.
+// Each call site must use a unique suffix token to prevent collision between operations.
+```
 
-**Fix:** No change required for production. If it causes friction during development, consider reading `process.env` on every call instead of caching, or document the "restart dev server after credential change" requirement in `CLAUDE.md`.
+### IN-04: Dead code — `?? "no-order"` and `?? "no-invoice"` fallbacks in publish idempotency key are unreachable
+
+**File:** `app/api/checkout/route.ts:270-271`
+**Issue:** Inside the `publishInvoice` call, the idempotency key includes `orderId ?? "no-order"` and `invoiceId ?? "no-invoice"`. At that point in the code both variables are guaranteed non-null: `orderId` is checked by the guard at lines 245-257 (which returns early if absent) and `invoiceId` is checked by the guard at lines 296-309. The `?? "..."` fallbacks are dead code and create the false impression that null is possible.
+**Fix:** Use the variables directly without the null-coalescing fallback (TypeScript should narrow their types after the guards):
+```typescript
+idempotencyKey: newIdempotencyKey([
+  customer.email,
+  parsed.data.dropId,
+  invoiceId,
+  String(invoiceVersion ?? 0),
+  "publish"
+])
+```
 
 ---
 
-_Reviewed: 2026-04-19T00:00:00Z_
+_Reviewed: 2026-04-21_
 _Reviewer: Claude (gsd-code-reviewer)_
 _Depth: standard_
