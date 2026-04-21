@@ -168,7 +168,10 @@ export async function POST(request: Request) {
           host: env.host,
           accessToken: env.accessToken,
           requestId,
-          idempotencyKey: newIdempotencyKey(),
+          idempotencyKey: newIdempotencyKey([
+            customer.email,
+            "customer"
+          ]),
           body: {
             given_name: customer.firstName,
             family_name: customer.lastName,
@@ -206,7 +209,13 @@ export async function POST(request: Request) {
         host: env.host,
         accessToken: env.accessToken,
         requestId,
-        idempotencyKey: newIdempotencyKey(),
+        idempotencyKey: newIdempotencyKey([
+          customer.email,
+          parsed.data.dropId,
+          parsed.data.pickupOptionId,
+          ...cart.map((c) => `${c.variationId}:${c.quantity}`),
+          "order"
+        ]),
         body: {
           order: {
             location_id: env.locationId,
@@ -254,7 +263,13 @@ export async function POST(request: Request) {
         host: env.host,
         accessToken: env.accessToken,
         requestId,
-        idempotencyKey: newIdempotencyKey(),
+        idempotencyKey: newIdempotencyKey([
+          customer.email,
+          parsed.data.dropId,
+          parsed.data.pickupOptionId,
+          orderId ?? "no-order",
+          "invoice"
+        ]),
         body: {
           invoice: {
             location_id: env.locationId,
@@ -299,7 +314,13 @@ export async function POST(request: Request) {
         requestId,
         invoiceId,
         version: invoiceVersion,
-        idempotencyKey: newIdempotencyKey()
+        idempotencyKey: newIdempotencyKey([
+          customer.email,
+          parsed.data.dropId,
+          invoiceId ?? "no-invoice",
+          String(invoiceVersion ?? 0),
+          "publish"
+        ])
       });
     } catch (squareError) {
       // Square call failed — release reserved capacity so the slot is not stranded.

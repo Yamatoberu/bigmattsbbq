@@ -44,7 +44,11 @@ export async function POST(request: Request) {
       requestId,
       locationId: env.locationId,
       changes: parsed.data.counts,
-      idempotencyKey: newIdempotencyKey()
+      idempotencyKey: newIdempotencyKey([
+        "dev",
+        "set-inventory",
+        new Date().toISOString().slice(0, 10)
+      ])
     });
 
     return NextResponse.json({ status: "ok" });
