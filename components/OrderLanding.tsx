@@ -56,24 +56,12 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
                 <p className="mt-6 text-base text-[#f3e7d8]">
                   Join the list and we&apos;ll notify you the moment a new drop opens.
                 </p>
-                <form
-                  className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center"
-                  onSubmit={(event) => event.preventDefault()}
-                >
-                  <input
-                    type="email"
-                    placeholder="your@email.com"
-                    className="input-field sm:w-72"
-                    aria-label="Email address"
-                  />
-                  <button type="submit" className="button-primary px-6 py-3 text-sm">
-                    Notify Me
-                  </button>
-                </form>
               </div>
             </div>
           </div>
         </section>
+
+        <MailingListSection />
       </main>
     );
   }
