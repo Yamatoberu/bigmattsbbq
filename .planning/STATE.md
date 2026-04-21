@@ -74,6 +74,12 @@ Recent decisions affecting current work:
 
 None yet.
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260421-cs6 | Fix NavBar breakpoint from 640px to 960px | 2026-04-21 | c44faff | [260421-cs6-fix-navbar-breakpoint-from-640px-to-960p](.planning/quick/260421-cs6-fix-navbar-breakpoint-from-640px-to-960p/) |
+
 ### Blockers/Concerns
 
 - Resend domain DNS verification for bigmattsbbq.com must be initiated before Phase 3 coding begins (up to 48-hour propagation)
