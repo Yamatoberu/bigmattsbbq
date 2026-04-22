@@ -1,93 +1,71 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.0
-milestone_name: milestone
-status: verifying
-stopped_at: Phase 5 UI-SPEC approved
-last_updated: "2026-04-15T03:15:52.442Z"
-last_activity: 2026-04-04
+milestone_name: Website Refresh & Frozen Drops
+status: complete
+stopped_at: Milestone v1.0 complete — archived 2026-04-22
+last_updated: "2026-04-22T17:00:00.000Z"
+last_activity: 2026-04-22
 progress:
   total_phases: 5
-  completed_phases: 3
-  total_plans: 11
-  completed_plans: 9
-  percent: 82
+  completed_phases: 5
+  total_plans: 19
+  completed_plans: 19
+  percent: 100
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-03)
+See: .planning/PROJECT.md (updated 2026-04-22 after v1.0 milestone)
 
 **Core value:** Customers can preorder frozen BBQ from a live drop without overselling — capacity is enforced, pickup is clear, and confirmation is immediate.
-**Current focus:** Phase 01 — foundation
+**Current focus:** v1.0 milestone complete — planning next milestone
 
 ## Current Position
 
-Phase: 2
-Plan: Not started
-Status: Phase complete — ready for verification
-Last activity: 2026-04-04
+Phase: All 5 phases complete
+Status: Milestone v1.0 archived 2026-04-22
+Last activity: 2026-04-22
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██████████] 100%
 
-## Performance Metrics
+## Milestone Summary
 
-**Velocity:**
+**v1.0 — Website Refresh & Frozen Drops**
+- 5 phases, 19 plans completed
+- 3,730 LOC TypeScript
+- Timeline: 2026-04-03 → 2026-04-22 (19 days)
+- See: .planning/milestones/v1.0-ROADMAP.md
 
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: 0 hours
+## Deferred Items
 
-**By Phase:**
+Items acknowledged and deferred at milestone close on 2026-04-22:
 
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| - | - | - | - |
+| Category | Item | Status |
+|----------|------|--------|
+| uat_gap | Phase 04: opt-in checkbox UI + E2E order save (2 scenarios) | partial |
+| uat_gap | Phase 05: NavBar full UX verification (1 scenario) | partial |
+| verification_gap | Phase 04: 04-VERIFICATION.md | human_needed |
+| verification_gap | Phase 05: 05-VERIFICATION.md | human_needed |
+| quick_task | 260417-rpl-fix-checkout-square-error-logging-update | missing summary |
+| quick_task | 260421-cs6-fix-navbar-breakpoint-from-640px-to-960p | missing summary |
+| quick_task | 260421-d21-replace-nav-custom-css-classes-with-tail | missing summary |
 
-**Recent Trend:**
-
-- Last 5 plans: —
-- Trend: —
-
-*Updated after each plan completion*
-| Phase 01-foundation P01 | 3 | 2 tasks | 8 files |
-| Phase 01-foundation P02 | 5 | 1 tasks | 2 files |
+Known deferred items at close: 7 (see above)
 
 ## Accumulated Context
 
-### Decisions
+### Open Blockers for Next Milestone
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
-
-- Initialization: Keep Square for catalog/inventory/payments; Supabase for drops, orders, mailing list, email logs; Resend for email
-- Initialization: Enable RLS on all Supabase tables at creation time (before any app code)
-- Initialization: Write Supabase slot reservation before Square API calls; email failures are fire-and-forget
-- [Phase 01-foundation]: v_count declared as int (not bool) for GET DIAGNOSTICS ROW_COUNT in reserve_pickup_slot RPC function
-- [Phase 01-foundation]: Single migration file for all DDL, RLS, functions, and seed data — simpler to inspect and replay
-- [Phase 01-foundation]: lib/supabase.ts reads process.env directly rather than via getSupabaseEnv() — simpler for server-only singleton
-- [Phase 01-foundation]: Cleared stale .next/ cache before TypeScript check — tsconfig includes .next/types/** which had phantom errors from pages not yet created in future phases
-
-### Pending Todos
-
-None yet.
-
-### Quick Tasks Completed
-
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 260421-cs6 | Fix NavBar breakpoint from 640px to 960px | 2026-04-21 | c44faff | [260421-cs6-fix-navbar-breakpoint-from-640px-to-960p](.planning/quick/260421-cs6-fix-navbar-breakpoint-from-640px-to-960p/) |
-| 260421-d21 | Replace nav custom CSS classes with Tailwind custom breakpoint at 960px | 2026-04-22 | 0cf5ab8 | [260421-d21-replace-nav-custom-css-classes-with-tail](.planning/quick/260421-d21-replace-nav-custom-css-classes-with-tail/) |
-
-### Blockers/Concerns
-
-- Resend domain DNS verification for bigmattsbbq.com must be initiated before Phase 3 coding begins (up to 48-hour propagation)
-- Square API version `2024-12-18` reaches end-of-life ~June 2026 — bump during or before Phase 3
+- Square API version `2024-12-18` reaches end-of-life ~June 2026 — bump during v1.1 work
+- Resend domain DNS verification for bigmattsbbq.com needed before transactional email can go live
+- NavBar UX human verification pending (visual/animation check — see 05-HUMAN-UAT.md)
+- productName mapping in CheckoutClient slugifies Square names — fragile if Square catalog names deviate (see v1.0-MILESTONE-AUDIT.md INT-02)
 
 ## Session Continuity
 
-Last session: 2026-04-15T03:15:52.431Z
-Stopped at: Phase 5 UI-SPEC approved
-Resume file: .planning/phases/05-content-mailing-list/05-UI-SPEC.md
+Last session: 2026-04-22
+Stopped at: Milestone v1.0 complete
+Resume: Run /gsd-new-milestone to plan v1.1
