@@ -79,6 +79,7 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260421-cs6 | Fix NavBar breakpoint from 640px to 960px | 2026-04-21 | c44faff | [260421-cs6-fix-navbar-breakpoint-from-640px-to-960p](.planning/quick/260421-cs6-fix-navbar-breakpoint-from-640px-to-960p/) |
+| 260421-d21 | Replace nav custom CSS classes with Tailwind custom breakpoint at 960px | 2026-04-22 | 0cf5ab8 | [260421-d21-replace-nav-custom-css-classes-with-tail](.planning/quick/260421-d21-replace-nav-custom-css-classes-with-tail/) |
 
 ### Blockers/Concerns
 
