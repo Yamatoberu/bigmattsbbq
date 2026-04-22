@@ -127,29 +127,33 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
           <div className="grid gap-6 md:grid-cols-3">
             {PACKAGES.map((pkg) => {
               const resolved = resolvePackageToCartItems(pkg, frozenItems);
-              const available =
-                resolved.length === pkg.items.length &&
+              const canResolve = resolved.length === pkg.items.length;
+              const inStock =
+                canResolve &&
                 resolved.every((item) => (variationMap.get(item.variationId)?.remaining ?? 0) > 0);
               return (
                 <PackageCard
                   key={pkg.id}
                   pkg={pkg}
                   onAdd={() => addItems(resolved)}
-                  isDisabled={!available || isLoading || Boolean(error)}
+                  soldOut={canResolve && !inStock}
+                  isDisabled={!canResolve || isLoading || Boolean(error)}
                 />
               );
             })}
           </div>
-          <div className="mt-8 text-xs uppercase tracking-[0.3em] text-smoke-700">
-            Estimated total: {formatMoney(estimatedTotalCents)}
-          </div>
+          {estimatedTotalCents > 0 && (
+            <div className="mt-8 text-xs uppercase tracking-[0.3em] text-smoke-700">
+              Estimated total: {formatMoney(estimatedTotalCents)}
+            </div>
+          )}
         </div>
       </section>
 
       <section className="section-spacing">
         <div className="mx-auto max-w-5xl">
           <SectionHeader
-            eyebrow="Build Your Own"
+            eyebrow="Individual Items"
             title="Build Your Own"
             subtitle="Mix and match individual items while supplies last."
           />
@@ -187,7 +191,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
       <section className="section-spacing bg-[#120c09]">
         <div className="mx-auto max-w-5xl">
           <SectionHeader
-            eyebrow="Social proof"
+            eyebrow="Social Proof"
             title="Trusted by BBQ Lovers Across Utah County"
             subtitle="Real talk from customers stocking their freezers."
           />
