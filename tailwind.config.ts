@@ -4,6 +4,9 @@ const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      screens: {
+        nav: "960px"
+      },
       colors: {
         ember: {
           50: "#fff2ec",

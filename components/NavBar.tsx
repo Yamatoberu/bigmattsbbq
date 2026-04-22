@@ -51,7 +51,7 @@ export function NavBar() {
 
           {/* Desktop nav — row right of logo */}
           <nav
-            className="nav-desktop"
+            className="hidden nav:flex nav:flex-row nav:items-center nav:gap-8"
             aria-label="Primary"
           >
             {navLinks.map((link) => (
@@ -73,7 +73,7 @@ export function NavBar() {
 
           {/* Right cluster */}
           <div className="flex flex-row items-center gap-3">
-            <Link href="/#order" className="nav-order-btn button-primary px-4 py-2 text-[0.65rem] uppercase tracking-[0.25em]">
+            <Link href="/#order" className="hidden nav:inline-flex button-primary px-4 py-2 text-[0.65rem] uppercase tracking-[0.25em]">
               Order Now
             </Link>
             <Link
@@ -95,7 +95,7 @@ export function NavBar() {
               aria-expanded={isOpen}
               aria-controls="mobile-nav-drawer"
               aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
-              className="nav-mobile-only inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-md border border-[#4a3222] bg-[#1c130f] text-smoke-900 hover:text-[#f0c16a] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-500"
+              className="inline-flex nav:hidden items-center justify-center min-h-[44px] min-w-[44px] rounded-md border border-[#4a3222] bg-[#1c130f] text-smoke-900 hover:text-[#f0c16a] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-500"
             >
               {isOpen ? (
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -114,7 +114,7 @@ export function NavBar() {
       {/* Overlay — mobile only, visible when isOpen */}
       <div
         className={
-          "nav-mobile-only fixed inset-0 z-30 bg-black/60 transition-opacity duration-200 " +
+          "nav:hidden fixed inset-0 z-30 bg-black/60 transition-opacity duration-200 " +
           (isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none")
         }
         onClick={() => setIsOpen(false)}
@@ -125,7 +125,7 @@ export function NavBar() {
       <aside
         id="mobile-nav-drawer"
         className={
-          "nav-mobile-only fixed inset-y-0 left-0 z-40 w-64 h-screen border-r border-[#2b2b2f] bg-[#14100d] transition-transform duration-200 " +
+          "nav:hidden fixed inset-y-0 left-0 z-40 w-64 h-screen border-r border-[#2b2b2f] bg-[#14100d] transition-transform duration-200 " +
           (isOpen ? "translate-x-0" : "-translate-x-full")
         }
         aria-hidden={!isOpen}
