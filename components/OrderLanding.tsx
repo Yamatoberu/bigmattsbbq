@@ -83,26 +83,35 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
                 <p>Fully smoked and vacuum sealed.</p>
                 <p>Heat, slice, serve.</p>
               </div>
-              <div className="mt-6 flex flex-wrap items-center gap-3">
+              <div className="mt-6 flex flex-wrap items-center gap-2">
+                <span className="badge">{drop.title}</span>
+                {drop.orderCutoffAt && (
+                  <span className="badge bg-[#b31414] text-white">
+                    Orders close {formatDenverDateTime(drop.orderCutoffAt)}
+                  </span>
+                )}
+              </div>
+              <div className="mt-5 flex flex-wrap items-center gap-3">
                 <Link
-                  href="/checkout"
-                  className="button-secondary relative inline-flex items-center justify-center px-5 py-3 text-sm"
-                  aria-label={`Review cart with ${cartCount} items`}
+                  href="#order"
+                  className="button-primary"
+                  aria-label="Shop this drop — scroll to order section"
                 >
-                  Review Cart
-                  {cartCount > 0 && (
+                  Shop This Drop
+                </Link>
+                {cartCount > 0 && (
+                  <Link
+                    href="/checkout"
+                    className="button-secondary relative"
+                    aria-label={`Review cart with ${cartCount} items`}
+                  >
+                    Review Cart
                     <span className="absolute -right-2.5 -top-2.5 flex h-6 min-w-[24px] items-center justify-center rounded-full bg-[#b31414] px-1.5 text-xs font-semibold text-white shadow">
                       {cartCount}
                     </span>
-                  )}
-                </Link>
-              </div>
-              <p className="mt-4 text-xs uppercase tracking-[0.35em] text-[#d9c7b3]">
-                {drop.title}
-                {drop.orderCutoffAt && (
-                  <> — Orders close {formatDenverDateTime(drop.orderCutoffAt)}</>
+                  </Link>
                 )}
-              </p>
+              </div>
             </div>
           </div>
         </div>
