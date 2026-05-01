@@ -1,6 +1,0 @@
-1:"$Sreact.fragment"
-2:I[22016,["/_next/static/chunks/b213183804e2d645.js","/_next/static/chunks/7c92e96509cd355e.js"],""]
-3:I[97367,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/d2be314c3ece3fbe.js"],"OutletBoundary"]
-4:"$Sreact.suspense"
-0:{"buildId":"rLmGX_bX3QNRVkqsQGDYr","rsc":["$","$1","c",{"children":[["$","main",null,{"className":"section-spacing bg-ember-radial bg-grain","children":["$","div",null,{"className":"mx-auto max-w-xl","children":["$","div",null,{"className":"glass-card border border-smoke-100 p-8 text-center","children":[["$","p",null,{"className":"text-xs font-semibold uppercase tracking-[0.4em] text-ember-500","children":"Coming Soon"}],["$","h1",null,{"className":"mt-3 text-3xl font-semibold text-smoke-900","style":{"fontFamily":"var(--font-display)"},"children":"Order history is on the way."}],["$","p",null,{"className":"mt-3 text-sm text-smoke-600","children":"We're preparing a secure login experience so you can review past frozen drops."}],["$","div",null,{"className":"mt-6","children":["$","$L2",null,{"href":"/","className":"button-primary","children":"Back to Menu"}]}]]}]}]}],[["$","script","script-0",{"src":"/_next/static/chunks/7c92e96509cd355e.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
-5:null
