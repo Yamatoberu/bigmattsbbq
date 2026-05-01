@@ -7,7 +7,7 @@ const pkg: PackageConfig = {
   name: "Family",
   description: "",
   items: [
-    { itemName: "Brisket", variationName: "1 lb", quantity: 1 },
+    { itemName: "Brisket", variationName: "1 lb", quantity: 2 },
     { itemName: "Sauce", variationName: "Jar", quantity: 2 }
   ]
 };
@@ -32,11 +32,35 @@ const frozenItems = [
 ];
 
 describe("resolvePackageToCartItems", () => {
-  it("maps package config to variation ids", () => {
+  it("maps package config to variation ids and preserves quantity", () => {
     const result = resolvePackageToCartItems(pkg, frozenItems);
     expect(result).toEqual([
-      { variationId: "var-1", quantity: 1 },
+      { variationId: "var-1", quantity: 2 },
       { variationId: "var-2", quantity: 2 }
     ]);
+  });
+
+  it("requires an exact normalized variation-name match", () => {
+    const ambiguousPkg: PackageConfig = {
+      id: "ambiguous",
+      name: "Ambiguous",
+      description: "",
+      items: [{ itemName: "Sauce", variationName: "Bottle", quantity: 2 }]
+    };
+
+    const ambiguousItems = [
+      {
+        itemId: "item-3",
+        name: "BBQ Sauce",
+        description: "",
+        variations: [
+          { variationId: "var-bottle", name: "Bottle", priceCents: 500, currency: "USD", remaining: 20 },
+          { variationId: "var-bottles", name: "Bottles", priceCents: 900, currency: "USD", remaining: 20 }
+        ]
+      }
+    ];
+
+    const result = resolvePackageToCartItems(ambiguousPkg, ambiguousItems);
+    expect(result).toEqual([{ variationId: "var-bottle", quantity: 2 }]);
   });
 });

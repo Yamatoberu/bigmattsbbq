@@ -34,7 +34,7 @@ export function resolvePackageToCartItems(
       if (item) {
         if (entry.variationName) {
           const variation = item.variations.find((candidate) =>
-            normalizeMatch(candidate.name).includes(normalizeMatch(entry.variationName!))
+            normalizeMatch(candidate.name) === normalizeMatch(entry.variationName!)
           );
           variationId = variation?.variationId;
         } else {

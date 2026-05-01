@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { CheckoutClient } from "../../components/CheckoutClient";
-import { NavBar } from "../../components/NavBar";
 import { getSquareEnv } from "../../lib/env";
 import { fetchActiveDrop } from "../../lib/drops";
 import { logError } from "../../lib/logger";
@@ -20,7 +19,6 @@ export default async function CheckoutPage() {
   }
   return (
     <main className="bg-ember-radial bg-grain">
-      <NavBar />
       <CheckoutClient sauceVariationId={env.sauceVariationId} drop={drop} />
     </main>
   );

@@ -25,9 +25,10 @@ export function FrozenItemCard({ item, onAdd, soldOut = false }: FrozenItemCardP
           return (
             <div key={variation.variationId} className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold text-smoke-800">{variation.name}</p>
-                <p className="text-xs text-smoke-600">
-                  {formatMoney(variation.priceCents, variation.currency)} · {variation.remaining} left
+                <p className="text-xs text-smoke-500">{variation.name}</p>
+                <p className="text-sm font-semibold text-smoke-900">
+                  {formatMoney(variation.priceCents, variation.currency)}
+                  <span className="ml-2 text-xs font-normal text-smoke-600">· {variation.remaining} left</span>
                 </p>
               </div>
               <button

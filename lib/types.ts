@@ -22,6 +22,7 @@ export interface PackageItemConfig {
   variationId?: string;
   itemName?: string;
   variationName?: string;
+  displayVariationName?: string;
   quantity: number;
 }
 

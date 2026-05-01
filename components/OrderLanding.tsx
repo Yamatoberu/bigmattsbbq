@@ -120,7 +120,6 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
       <section id="order" className="section-spacing bg-[#120c09]">
         <div className="mx-auto max-w-5xl">
           <SectionHeader
-            eyebrow="Step 1"
             title="Choose Your Drop"
             subtitle="Start with a package or build your own."
           />

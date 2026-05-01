@@ -26,14 +26,14 @@ export function PackageCard({ pkg, onAdd, isDisabled, soldOut = false }: Package
           <li key={`${pkg.id}-${item.itemName}-${item.variationName}`} className="flex items-start gap-2">
             <span className="mt-1 text-xs text-[#b8893a]">•</span>
             <span>
-              {item.quantity} {item.itemName} {item.variationName ? `(${item.variationName})` : ""}
+              {item.quantity} {item.itemName}{" "}
+              {item.variationName
+                ? `(${item.displayVariationName ?? item.variationName})`
+                : ""}
             </span>
           </li>
         ))}
       </ul>
-      <div className="mt-2 rounded-md border border-[#3a2a20] bg-[#1c140f] p-3 text-xs text-smoke-700">
-        Makes a hearty spread.
-      </div>
       <div className="mt-auto flex flex-col gap-3">
         <div className="h-28 rounded-md border border-[#3a2a20] bg-[linear-gradient(120deg,#201510,#2a1c14)]" />
         <button

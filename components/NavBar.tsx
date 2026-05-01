@@ -44,8 +44,8 @@ export function NavBar() {
         <div className="flex flex-row items-center gap-6 px-6 py-3 md:px-12">
           {/* Logo */}
           <Link href="/" className="shrink-0 flex items-center text-[#f7f1e6]">
-            <span className="relative h-[125px] w-[125px] overflow-hidden rounded-2xl border border-[#2f3036] bg-[#1b1c22] logo-glow">
-              <Image src="/logo.png" alt="Big Matt's BBQ logo" fill sizes="125px" className="object-cover" />
+            <span className="relative h-[100px] w-[100px] overflow-hidden rounded-lg border border-[#2f3036] bg-[#1b1c22] logo-glow">
+              <Image src="/logo.png" alt="Big Matt's BBQ logo" fill sizes="100px" className="object-cover" />
             </span>
           </Link>
 
