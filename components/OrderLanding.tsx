@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { SectionHeader } from "./SectionHeader";
 import { PackageCard } from "./PackageCard";
@@ -8,7 +8,6 @@ import { FrozenItemCard } from "./FrozenItemCard";
 import { Testimonials } from "./Testimonials";
 import { Faq } from "./Faq";
 import { CateringSection } from "./CateringSection";
-import { MailingListSection } from "./MailingListSection";
 import { useFrozenItems } from "./hooks/useFrozenItems";
 import { useActiveDrop } from "./hooks/useActiveDrop";
 import { useCart } from "./cart/CartContext";
@@ -55,6 +54,30 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
     [frozenItems, bundleVariationIds]
   );
 
+  type MailingListState = "idle" | "submitting" | "success" | "error";
+  const [mlEmail, setMlEmail] = useState("");
+  const [mlState, setMlState] = useState<MailingListState>("idle");
+  const [mlError, setMlError] = useState<string | undefined>(undefined);
+
+  async function handleMailingListSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (mlState === "submitting") return;
+    setMlState("submitting");
+    setMlError(undefined);
+    try {
+      const response = await fetch("/api/mailing-list", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: mlEmail })
+      });
+      if (!response.ok) throw new Error("request failed");
+      setMlState("success");
+    } catch {
+      setMlState("error");
+      setMlError("Something went wrong. Try again in a moment.");
+    }
+  }
+
   if (!drop || drop.status !== "active") {
     return (
       <main className="bg-ember-radial bg-grain">
@@ -63,18 +86,48 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
             <div className="hero-panel">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(255,255,255,0.3),transparent_55%)]" aria-hidden />
               <div className="hero-content text-center">
-                <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
-                  Next Drop Coming Soon
+                <span className="badge">Next Drop</span>
+                <h1 className="mt-3 text-3xl font-semibold leading-tight md:text-4xl" style={{ fontFamily: "var(--font-display)" }}>
+                  Be first to know when the next drop opens.
                 </h1>
-                <p className="mt-6 text-base text-[#f3e7d8]">
-                  Join the list and we&apos;ll notify you the moment a new drop opens.
-                </p>
+                {mlState === "success" ? (
+                  <p className="mt-4 text-sm font-semibold text-[#f0c16a]">
+                    You&apos;re on the list! We&apos;ll let you know about the next drop.
+                  </p>
+                ) : (
+                  <form
+                    className="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-center"
+                    onSubmit={handleMailingListSubmit}
+                    noValidate
+                  >
+                    <input
+                      type="email"
+                      required
+                      value={mlEmail}
+                      onChange={(event) => setMlEmail(event.target.value)}
+                      placeholder="your@email.com"
+                      className="input-field sm:w-72"
+                      aria-label="Email address"
+                      disabled={mlState === "submitting"}
+                    />
+                    <button
+                      type="submit"
+                      className="button-primary px-6 py-3 text-sm"
+                      disabled={mlState === "submitting" || mlEmail.length === 0}
+                    >
+                      {mlState === "submitting" ? "…" : "Notify Me"}
+                    </button>
+                  </form>
+                )}
+                {mlState === "error" && mlError && (
+                  <p className="mt-3 text-sm text-ember-300" role="alert">
+                    {mlError}
+                  </p>
+                )}
               </div>
             </div>
           </div>
         </section>
-
-        <MailingListSection />
       </main>
     );
   }
@@ -86,17 +139,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
           <div className="hero-panel">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(255,255,255,0.3),transparent_55%)]" aria-hidden />
             <div className="hero-content">
-              <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
-                Pit-Smoked Barbecue.
-                <br />
-                Ready in 30 Minutes.
-              </h1>
-              <div className="mt-4 space-y-1 text-sm text-[#f3e7d8] md:text-base">
-                <p>Small-batch brisket and pulled pork.</p>
-                <p>Fully smoked and vacuum sealed.</p>
-                <p>Heat, slice, serve.</p>
-              </div>
-              <div className="mt-6 flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="badge">{drop.title}</span>
                 {drop.orderCutoffAt && (
                   <span className="badge bg-[#b31414] text-white">
@@ -104,7 +147,12 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
                   </span>
                 )}
               </div>
-              <div className="mt-5 flex flex-wrap items-center gap-3">
+              <div className="mt-3 space-y-1 text-sm text-[#f3e7d8]">
+                {drop.pickupOptions.map((opt) => (
+                  <p key={opt.id}>{opt.pickupDateLabel} · {opt.locationLabel}</p>
+                ))}
+              </div>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
                 <Link
                   href="#order"
                   className="button-primary"
@@ -230,8 +278,6 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
           <Faq />
         </div>
       </section>
-
-      <MailingListSection />
 
       <section className="section-spacing bg-[#0f0b08]">
         <div className="mx-auto max-w-5xl">
