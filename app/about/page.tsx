@@ -84,14 +84,20 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <div className="mt-10 border-t border-[#3a2a20] pt-8">
-        <p className="text-sm text-smoke-600 leading-relaxed">
+      <section aria-labelledby="about-matt-heading" className="mt-10 border-t border-[#3a2a20] pt-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+          The Pitmaster
+        </p>
+        <h2 id="about-matt-heading" className="mt-1 text-xl font-semibold text-smoke-900" style={fontDisplay}>
+          Matt Gregory
+        </h2>
+        <p className="mt-3 text-sm text-smoke-600 leading-relaxed">
           Matt Gregory grew up in Preston, Idaho and moved to Salt Lake City in 2017 to start a
           career in software — first QA, now development. He&apos;s called Utah County home since
           2018, alongside his wife Becky, whose support has been the backbone of every cook. The
           long-term goal: make BBQ the main gig and let software become the side hustle.
         </p>
-      </div>
+      </section>
     </section>
   );
 }
