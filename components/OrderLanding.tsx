@@ -8,6 +8,7 @@ import { FrozenItemCard } from "./FrozenItemCard";
 import { Testimonials } from "./Testimonials";
 import { Faq } from "./Faq";
 import { CateringSection } from "./CateringSection";
+import { MailingListSection } from "./MailingListSection";
 import { useFrozenItems } from "./hooks/useFrozenItems";
 import { useActiveDrop } from "./hooks/useActiveDrop";
 import { useCart } from "./cart/CartContext";
@@ -278,6 +279,8 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
           <Faq />
         </div>
       </section>
+
+      <MailingListSection />
 
       <section className="section-spacing bg-[#0f0b08]">
         <div className="mx-auto max-w-5xl">
