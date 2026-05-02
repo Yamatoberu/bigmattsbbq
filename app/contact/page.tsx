@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <section className="section-spacing mx-auto max-w-2xl">
+    <section className="section-spacing mx-auto max-w-2xl pb-24">
       <header>
         <h1
           className="text-4xl font-semibold text-smoke-900"

@@ -80,7 +80,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
     return (
       <div className="bg-ember-radial bg-grain">
         <section className="hero-panel">
-          <div className="hero-content mx-auto max-w-5xl text-center">
+          <div className="hero-content mx-auto max-w-5xl pb-32 text-center">
             <span className="badge">Next Drop</span>
             <h1 className="mt-3 text-3xl font-semibold leading-tight md:text-4xl" style={{ fontFamily: "var(--font-display)" }}>
               Be first to know when the next drop opens.

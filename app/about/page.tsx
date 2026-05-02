@@ -7,7 +7,7 @@ const fontDisplay = { fontFamily: "var(--font-display)" };
 
 export default function AboutPage() {
   return (
-    <section className="section-spacing mx-auto max-w-2xl">
+    <section className="section-spacing mx-auto max-w-2xl pb-20">
       <header>
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
           The Story
