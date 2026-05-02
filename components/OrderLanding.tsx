@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
-import Link from "next/link";
 import { SectionHeader } from "./SectionHeader";
 import { PackageCard } from "./PackageCard";
 import { FrozenItemCard } from "./FrozenItemCard";
@@ -21,8 +20,6 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
   const { items: frozenItems, isLoading, error, reload } = useFrozenItems();
   const { items: cartItems, addItem, addItems, setPackage } = useCart();
   const { drop } = useActiveDrop(initialDrop);
-  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
   const variationMap = useMemo(() => {
     const map = new Map<string, { priceCents: number; currency: string; remaining: number }>();
     for (const item of frozenItems) {
@@ -131,8 +128,8 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
   return (
     <main className="bg-ember-radial bg-grain">
       <section className="hero-panel">
-        <div className="hero-content mx-auto max-w-5xl">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="hero-content mx-auto max-w-5xl text-center">
+          <div className="flex flex-wrap items-center justify-center gap-2">
             <span className="badge">{drop.title}</span>
             {drop.orderCutoffAt && (
               <span className="badge bg-[#b31414] text-white">
@@ -147,20 +144,6 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
             {drop.pickupOptions.map((opt) => (
               <p key={opt.id}>{opt.pickupDateLabel} · {opt.locationLabel}</p>
             ))}
-          </div>
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            {cartCount > 0 && (
-              <Link
-                href="/checkout"
-                className="button-secondary relative"
-                aria-label={`Review cart with ${cartCount} items`}
-              >
-                Review Cart
-                <span className="absolute -right-2.5 -top-2.5 flex h-6 min-w-[24px] items-center justify-center rounded-full bg-[#b31414] px-1.5 text-xs font-semibold text-white shadow">
-                  {cartCount}
-                </span>
-              </Link>
-            )}
           </div>
         </div>
       </section>
