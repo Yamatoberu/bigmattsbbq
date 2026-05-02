@@ -28,7 +28,7 @@ export default function ContactPage() {
           </p>
           <a
             href="mailto:bigmattsbarbecue@gmail.com"
-            className="mt-2 inline-block text-base text-smoke-900 underline hover:text-[#f0c16a]"
+            className="button-primary mt-3 inline-block"
           >
             bigmattsbarbecue@gmail.com
           </a>
@@ -51,10 +51,10 @@ export default function ContactPage() {
 
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
-            Service Area
+            Proudly Serving
           </p>
           <p className="mt-2 text-base text-smoke-800">
-            Cache Valley and Utah County.
+            Northern Cache Valley down through Utah County
           </p>
         </div>
       </div>

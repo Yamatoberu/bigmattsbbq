@@ -35,10 +35,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${playfair.variable} ${nunitoSans.variable}`}>
-      <body className="font-[var(--font-body)]">
+      <body className="flex min-h-screen flex-col font-[var(--font-body)]">
         <Providers>
           <NavBar />
-          {children}
+          <main className="flex-1">{children}</main>
           <Footer />
         </Providers>
       </body>

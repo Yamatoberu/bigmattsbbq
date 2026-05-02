@@ -74,7 +74,7 @@ main {
 }
 
 .hero-content {
-  @apply relative z-10 px-6 pb-2 pt-14 text-[#f8f2e7] md:px-12 md:pb-2.5 md:pt-20;
+  @apply relative z-10 px-6 pb-12 pt-14 text-[#f8f2e7] md:px-12 md:pb-16 md:pt-20;
 }
 
 .logo-glow {

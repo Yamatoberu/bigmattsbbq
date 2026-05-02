@@ -30,9 +30,10 @@ export function Footer() {
 
   return (
     <footer className="border-t border-[#cbbda7]">
-      <div className="px-6 py-8 text-xs text-smoke-500 md:px-12">
+      <div className="px-6 py-8 text-xs text-smoke-800 md:px-12">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-6">
+          <p>© 2026 Big Matt&apos;s BBQ. Frozen drops, done right.</p>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             {state === "success" ? (
               <p className="text-sm font-semibold text-[#f0c16a]">You&apos;re on the list!</p>
             ) : (
@@ -56,7 +57,6 @@ export function Footer() {
                 </button>
               </form>
             )}
-            <p>© 2026 Big Matt&apos;s BBQ. Frozen drops, done right.</p>
           </div>
           <p>Questions? Email bigmattsbarbecue@gmail.com</p>
         </div>

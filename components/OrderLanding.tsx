@@ -1,12 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState, type FormEvent } from "react";
 import { SectionHeader } from "./SectionHeader";
 import { PackageCard } from "./PackageCard";
 import { FrozenItemCard } from "./FrozenItemCard";
 import { Testimonials } from "./Testimonials";
 import { Faq } from "./Faq";
-import { CateringSection } from "./CateringSection";
 import { MailingListSection } from "./MailingListSection";
 import { useFrozenItems } from "./hooks/useFrozenItems";
 import { useActiveDrop } from "./hooks/useActiveDrop";
@@ -108,7 +108,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
                 <button
                   type="submit"
                   className="button-primary px-6 py-3 text-sm"
-                  disabled={mlState === "submitting" || mlEmail.length === 0}
+                  disabled={mlState === "submitting"}
                 >
                   {mlState === "submitting" ? "…" : "Notify Me"}
                 </button>
@@ -258,7 +258,11 @@ Orders are open!
             title="Event-ready BBQ"
             subtitle="Simple pricing tiers and a direct line to us."
           />
-          <CateringSection showFullMenuLink />
+          <div className="mt-6 text-center">
+            <Link href="/catering" className="button-secondary text-sm">
+              See full catering menu →
+            </Link>
+          </div>
         </div>
       </section>
     </main>
