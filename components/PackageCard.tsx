@@ -47,7 +47,7 @@ export function PackageCard({ pkg, onAdd, isDisabled, soldOut = false }: Package
           onClick={soldOut ? undefined : onAdd}
           disabled={isDisabled || soldOut}
         >
-          {soldOut ? "Sold Out" : "Order Now"}
+          {soldOut ? "Sold Out" : "Add to Cart"}
         </button>
       </div>
     </article>

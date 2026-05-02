@@ -8,7 +8,6 @@ import { useCart } from "./cart/CartContext";
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Frozen Drops", href: "/#order" },
   { label: "Catering", href: "/catering" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" }
@@ -59,7 +58,7 @@ export function NavBar() {
                 key={link.href}
                 href={link.href}
                 className={
-                  "text-sm font-semibold uppercase tracking-[0.25em] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-500 " +
+                  "text-[1.092rem] font-semibold uppercase tracking-[0.25em] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-500 " +
                   (isActive(link.href) ? "text-[#f0c16a]" : "text-smoke-800 hover:text-[#f0c16a]")
                 }
               >
@@ -73,12 +72,9 @@ export function NavBar() {
 
           {/* Right cluster */}
           <div className="flex flex-row items-center gap-3">
-            <Link href="/#order" className="hidden nav:inline-flex button-primary px-4 py-2 text-[0.65rem] uppercase tracking-[0.25em]">
-              Order Now
-            </Link>
-            <Link
+<Link
               href="/checkout"
-              className="relative inline-flex items-center justify-center rounded-md border border-[#4a3222] bg-[#1c130f] px-4 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-smoke-900 shadow-none transition hover:border-[#b8893a] hover:text-[#f0c16a]"
+              className="relative inline-flex items-center justify-center rounded-md border border-[#4a3222] bg-[#1c130f] px-4 py-2 text-[0.811rem] font-semibold uppercase tracking-[0.25em] text-smoke-900 shadow-none transition hover:border-[#b8893a] hover:text-[#f0c16a]"
               aria-label={`Cart with ${itemCount} items`}
             >
               Cart
@@ -137,7 +133,7 @@ export function NavBar() {
               href={link.href}
               onClick={() => setIsOpen(false)}
               className={
-                "block rounded-md px-4 py-3 text-sm font-semibold uppercase tracking-[0.25em] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-500 " +
+                "block rounded-md px-4 py-3 text-[1.092rem] font-semibold uppercase tracking-[0.25em] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-500 " +
                 (isActive(link.href) ? "text-[#f0c16a]" : "text-smoke-800 hover:text-[#f0c16a]")
               }
             >
