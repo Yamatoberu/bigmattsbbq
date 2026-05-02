@@ -138,7 +138,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
             )}
           </div>
           <h1 className="mt-4 text-3xl font-semibold leading-tight md:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
-            Frozen BBQ,<br />straight from the pit.
+Orders are open.
           </h1>
           <div className="mt-3 space-y-1 text-sm text-[#f3e7d8]">
             {drop.pickupOptions.map((opt) => (
