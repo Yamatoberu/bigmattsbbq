@@ -149,13 +149,6 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
             ))}
           </div>
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            <Link
-              href="#order"
-              className="button-primary"
-              aria-label="Shop this drop — scroll to order section"
-            >
-              Shop This Drop
-            </Link>
             {cartCount > 0 && (
               <Link
                 href="/checkout"
