@@ -82,51 +82,46 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
   if (!drop || drop.status !== "active") {
     return (
       <main className="bg-ember-radial bg-grain">
-        <section className="px-4 pb-10 pt-6 md:px-10">
-          <div className="mx-auto max-w-3xl">
-            <div className="hero-panel">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(255,255,255,0.3),transparent_55%)]" aria-hidden />
-              <div className="hero-content text-center">
-                <span className="badge">Next Drop</span>
-                <h1 className="mt-3 text-3xl font-semibold leading-tight md:text-4xl" style={{ fontFamily: "var(--font-display)" }}>
-                  Be first to know when the next drop opens.
-                </h1>
-                {mlState === "success" ? (
-                  <p className="mt-4 text-sm font-semibold text-[#f0c16a]">
-                    You&apos;re on the list! We&apos;ll let you know about the next drop.
-                  </p>
-                ) : (
-                  <form
-                    className="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-center"
-                    onSubmit={handleMailingListSubmit}
-                    noValidate
-                  >
-                    <input
-                      type="email"
-                      required
-                      value={mlEmail}
-                      onChange={(event) => setMlEmail(event.target.value)}
-                      placeholder="your@email.com"
-                      className="input-field sm:w-72"
-                      aria-label="Email address"
-                      disabled={mlState === "submitting"}
-                    />
-                    <button
-                      type="submit"
-                      className="button-primary px-6 py-3 text-sm"
-                      disabled={mlState === "submitting" || mlEmail.length === 0}
-                    >
-                      {mlState === "submitting" ? "…" : "Notify Me"}
-                    </button>
-                  </form>
-                )}
-                {mlState === "error" && mlError && (
-                  <p className="mt-3 text-sm text-ember-300" role="alert">
-                    {mlError}
-                  </p>
-                )}
-              </div>
-            </div>
+        <section className="hero-panel">
+          <div className="hero-content mx-auto max-w-5xl text-center">
+            <span className="badge">Next Drop</span>
+            <h1 className="mt-3 text-3xl font-semibold leading-tight md:text-4xl" style={{ fontFamily: "var(--font-display)" }}>
+              Be first to know when the next drop opens.
+            </h1>
+            {mlState === "success" ? (
+              <p className="mt-4 text-sm font-semibold text-[#f0c16a]">
+                You&apos;re on the list! We&apos;ll let you know about the next drop.
+              </p>
+            ) : (
+              <form
+                className="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-center"
+                onSubmit={handleMailingListSubmit}
+                noValidate
+              >
+                <input
+                  type="email"
+                  required
+                  value={mlEmail}
+                  onChange={(event) => setMlEmail(event.target.value)}
+                  placeholder="your@email.com"
+                  className="input-field sm:w-72"
+                  aria-label="Email address"
+                  disabled={mlState === "submitting"}
+                />
+                <button
+                  type="submit"
+                  className="button-primary px-6 py-3 text-sm"
+                  disabled={mlState === "submitting" || mlEmail.length === 0}
+                >
+                  {mlState === "submitting" ? "…" : "Notify Me"}
+                </button>
+              </form>
+            )}
+            {mlState === "error" && mlError && (
+              <p className="mt-3 text-sm text-ember-300" role="alert">
+                {mlError}
+              </p>
+            )}
           </div>
         </section>
       </main>
@@ -135,46 +130,44 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
 
   return (
     <main className="bg-ember-radial bg-grain">
-      <section className="px-4 pb-10 pt-6 md:px-10">
-        <div className="mx-auto max-w-6xl">
-          <div className="hero-panel">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(255,255,255,0.3),transparent_55%)]" aria-hidden />
-            <div className="hero-content">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="badge">{drop.title}</span>
-                {drop.orderCutoffAt && (
-                  <span className="badge bg-[#b31414] text-white">
-                    Orders close {formatDenverDateTime(drop.orderCutoffAt)}
-                  </span>
-                )}
-              </div>
-              <div className="mt-3 space-y-1 text-sm text-[#f3e7d8]">
-                {drop.pickupOptions.map((opt) => (
-                  <p key={opt.id}>{opt.pickupDateLabel} · {opt.locationLabel}</p>
-                ))}
-              </div>
-              <div className="mt-4 flex flex-wrap items-center gap-3">
-                <Link
-                  href="#order"
-                  className="button-primary"
-                  aria-label="Shop this drop — scroll to order section"
-                >
-                  Shop This Drop
-                </Link>
-                {cartCount > 0 && (
-                  <Link
-                    href="/checkout"
-                    className="button-secondary relative"
-                    aria-label={`Review cart with ${cartCount} items`}
-                  >
-                    Review Cart
-                    <span className="absolute -right-2.5 -top-2.5 flex h-6 min-w-[24px] items-center justify-center rounded-full bg-[#b31414] px-1.5 text-xs font-semibold text-white shadow">
-                      {cartCount}
-                    </span>
-                  </Link>
-                )}
-              </div>
-            </div>
+      <section className="hero-panel">
+        <div className="hero-content mx-auto max-w-5xl">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="badge">{drop.title}</span>
+            {drop.orderCutoffAt && (
+              <span className="badge bg-[#b31414] text-white">
+                Orders close {formatDenverDateTime(drop.orderCutoffAt)}
+              </span>
+            )}
+          </div>
+          <h1 className="mt-4 text-3xl font-semibold leading-tight md:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
+            Frozen BBQ,<br />straight from the pit.
+          </h1>
+          <div className="mt-3 space-y-1 text-sm text-[#f3e7d8]">
+            {drop.pickupOptions.map((opt) => (
+              <p key={opt.id}>{opt.pickupDateLabel} · {opt.locationLabel}</p>
+            ))}
+          </div>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Link
+              href="#order"
+              className="button-primary"
+              aria-label="Shop this drop — scroll to order section"
+            >
+              Shop This Drop
+            </Link>
+            {cartCount > 0 && (
+              <Link
+                href="/checkout"
+                className="button-secondary relative"
+                aria-label={`Review cart with ${cartCount} items`}
+              >
+                Review Cart
+                <span className="absolute -right-2.5 -top-2.5 flex h-6 min-w-[24px] items-center justify-center rounded-full bg-[#b31414] px-1.5 text-xs font-semibold text-white shadow">
+                  {cartCount}
+                </span>
+              </Link>
+            )}
           </div>
         </div>
       </section>
