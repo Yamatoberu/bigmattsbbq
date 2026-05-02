@@ -7,32 +7,30 @@ type CateringSectionProps = {
 const TIERS = [
   {
     name: "Basic",
-    price: "$22 / person",
+    price: "$15 / person",
     included: [
-      "Choice of 1 meat (pulled pork or brisket)",
-      "2 classic sides",
-      "Buns and house BBQ sauce"
+      "Choice of 2 meats",
+      "2 sides",
+      "Dinner rolls"
     ]
   },
   {
     name: "Plus",
-    price: "$30 / person",
+    price: "$18 / person",
     included: [
-      "Choice of 2 meats",
-      "3 classic sides",
-      "Buns, pickles, house BBQ sauce",
-      "Disposable serveware"
+      "Choice of 3 meats",
+      "2 sides",
+      "Dinner rolls"
     ]
   },
   {
     name: "Ultra",
-    price: "$38 / person",
+    price: "$21 / person",
     included: [
-      "All 3 meats (pulled pork, brisket, smoked chicken)",
-      "4 classic sides",
-      "Buns, pickles, house + hot BBQ sauce",
-      "Disposable serveware and utensils",
-      "On-site setup"
+      "Choice of 3 meats",
+      "2 sides",
+      "Dinner rolls",
+      "Dessert"
     ]
   }
 ] as const;

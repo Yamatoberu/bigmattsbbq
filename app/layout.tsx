@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { Playfair_Display, Source_Sans_3 } from "next/font/google";
+import { Playfair_Display, Nunito_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { NavBar } from "../components/NavBar";
@@ -12,7 +12,7 @@ const playfair = Playfair_Display({
   display: "swap"
 });
 
-const sourceSans = Source_Sans_3({
+const nunitoSans = Nunito_Sans({
   subsets: ["latin"],
   variable: "--font-body",
   display: "swap"
@@ -34,7 +34,7 @@ export default function RootLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${sourceSans.variable}`}>
+    <html lang="en" className={`${playfair.variable} ${nunitoSans.variable}`}>
       <body className="font-[var(--font-body)]">
         <Providers>
           <NavBar />
