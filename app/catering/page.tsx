@@ -165,11 +165,8 @@ export default function CateringPage() {
   return (
     <section className="section-spacing mx-auto max-w-4xl">
       <header className="text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
-          Catering
-        </p>
         <h1 className="mt-2 text-4xl font-semibold text-smoke-900" style={fontDisplay}>
-          Big Matt&apos;s BBQ
+          Catering
         </h1>
         <p className="mt-4 text-base text-smoke-700">
           Order by the pound, build a package, or leave it to us. Simple pricing, no surprises.
