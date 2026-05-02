@@ -23,10 +23,10 @@ export function Testimonials() {
       {testimonials.map((testimonial) => (
         <div key={testimonial.name} className="glass-card p-5">
           <p className="text-sm text-smoke-700">“{testimonial.quote}”</p>
-          <div className="mt-4 flex items-center justify-between text-xs uppercase tracking-[0.3em] text-[#f0c16a]">
+          <p className="mt-4 flex items-center justify-between text-xs uppercase tracking-[0.3em] text-[#f0c16a]">
             <span>{testimonial.name}</span>
             <span className="text-[#d8b56a]">★★★★★</span>
-          </div>
+          </p>
         </div>
       ))}
     </div>

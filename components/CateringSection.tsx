@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CATERING_EMAIL } from "../lib/config";
 
 type CateringSectionProps = {
   showFullMenuLink?: boolean;
@@ -20,7 +21,7 @@ export function CateringSection({ showFullMenuLink = false }: CateringSectionPro
             Need a full spread? We keep catering straightforward and premium.
           </p>
         </div>
-        <a href="mailto:catering@bigmattsbbq.com" className="button-primary">
+        <a href={`mailto:${CATERING_EMAIL}`} className="button-primary">
           Email for Catering
         </a>
       </div>

@@ -34,7 +34,7 @@ The hamburger button likely has a CSS class that hides it at all breakpoints, or
 
 ---
 
-## Issue 2 — Nested `<main>` Elements (Invalid HTML) - TODO
+## Issue 2 — ~~Nested `<main>` Elements (Invalid HTML)~~ - DONE
 **Severity:** 🔴 Critical
 **Affected Pages:** Home page (/)
 
@@ -125,7 +125,7 @@ Also add keyboard handler for Enter and Space keys if not using `<button>`.
 
 ---
 
-## Issue 5 — Individual Item Product Descriptions Use Raw Dash-Text Instead of Lists - TODO
+## Issue 5 — ~~Individual Item Product Descriptions Use Raw Dash-Text Instead of Lists~~ - DONE
 **Severity:** 🟠 High
 **Affected Pages:** Home (/) — Individual Items section
 
@@ -154,7 +154,7 @@ This likely requires updating the product data source (CMS, JSON, or hardcoded a
 
 ---
 
-## Issue 6 — Location Pickup Badges Have No Semantic Context - TODO
+## Issue 6 — ~~Location Pickup Badges Have No Semantic Context~~ - DONE
 **Severity:** 🟡 Medium
 **Affected Pages:** Home (/) — Hero section
 
@@ -188,7 +188,7 @@ Alternatively, wrap in a `<p>` with a visually hidden prefix:
 
 ---
 
-## Issue 7 — "Regular" Price Label Has Low Contrast and Zero Informational Value - TODO
+## Issue 7 — ~~"Regular" Price Label Has Low Contrast and Zero Informational Value~~ - DONE
 **Severity:** 🟡 Medium
 **Affected Pages:** Home (/) — Individual Items section
 
@@ -292,7 +292,7 @@ Ensure the heading level (`h2`) is consistent with the rest of the page's headin
 
 ---
 
-## Issue 11 — Section Label Badges Use `<div>` Instead of Semantic Inline Elements - TODO
+## Issue 11 — ~~Section Label Badges Use `<div>` Instead of Semantic Inline Elements~~ - DONE
 **Severity:** 🟢 Low
 **Affected Pages:** All pages
 
@@ -340,16 +340,16 @@ On a 1280px viewport, the catering page content sits in a narrow single column (
 | # | Issue | Severity | Pages Affected |
 |---|-------|----------|----------------|
 | 1 | Mobile hamburger menu not visible | 🔴 Critical | All |
-| 2 | Nested `<main>` elements | 🔴 Critical | Home |
+| 2 | ~~Nested `<main>` elements~~ | 🔴 Critical | Home |
 | 3 | Excessive blank whitespace at page bottom | 🟠 High | All |
 | 4 | FAQ accordion missing keyboard/ARIA support | 🟠 High | Home, Catering |
-| 5 | Individual item descriptions use dash-text not `<ul>` | 🟠 High | Home |
-| 6 | Location badges lack semantic grouping | 🟡 Medium | Home |
-| 7 | "Regular" label — low contrast + no value | 🟡 Medium | Home |
+| 5 | ~~Individual item descriptions use dash-text not `<ul>`~~ | 🟠 High | Home |
+| 6 | ~~Location badges lack semantic grouping~~ | 🟡 Medium | Home |
+| 7 | ~~"Regular" label — low contrast + no value~~ | 🟡 Medium | Home |
 | 8 | Footer cluttered + duplicate email CTA | 🟡 Medium | All |
 | 9 | ~~Inconsistent email addresses~~ | 🟡 Medium | Contact, Catering, Footer |
 | 10 | ~~About page bio missing heading/section~~ | 🟢 Low | About |
-| 11 | Section eyebrow labels use `<div>` not semantic elements | 🟢 Low | All |
+| 11 | ~~Section eyebrow labels use `<div>` not semantic elements~~ | 🟢 Low | All |
 | 12 | ~~Catering content too narrow on desktop~~ | 🟢 Low | Catering |
 
 ---

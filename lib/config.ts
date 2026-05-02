@@ -1,5 +1,8 @@
 import { PackageConfig } from "./types";
 
+export const CONTACT_EMAIL = 'bigmattsbarbecue@gmail.com';
+export const CATERING_EMAIL = 'catering@bigmattsbbq.com';
+
 export const PACKAGES: PackageConfig[] = [
   {
     id: "family-night",

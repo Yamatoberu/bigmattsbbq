@@ -1,3 +1,5 @@
+import { CONTACT_EMAIL, CATERING_EMAIL } from "../../lib/config";
+
 export const metadata = {
   title: "Contact Big Matt's BBQ",
   description: "Reach out about drops, catering, or anything else. We answer every email."
@@ -27,10 +29,10 @@ export default function ContactPage() {
             General Inquiries
           </p>
           <a
-            href="mailto:bigmattsbarbecue@gmail.com"
+            href={`mailto:${CONTACT_EMAIL}`}
             className="button-primary mt-3 inline-block"
           >
-            bigmattsbarbecue@gmail.com
+            {CONTACT_EMAIL}
           </a>
         </div>
 
@@ -42,10 +44,10 @@ export default function ContactPage() {
             For event quotes, tier details, and booking.
           </p>
           <a
-            href="mailto:catering@bigmattsbbq.com"
+            href={`mailto:${CATERING_EMAIL}`}
             className="button-primary mt-3 inline-block"
           >
-            catering@bigmattsbbq.com
+            {CATERING_EMAIL}
           </a>
         </div>
 

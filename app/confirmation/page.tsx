@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CONTACT_EMAIL } from "../../lib/config";
 
 interface ConfirmationPageProps {
   searchParams: { orderId?: string; pickupNote?: string };
@@ -29,7 +30,7 @@ export default function ConfirmationPage({ searchParams }: ConfirmationPageProps
             <Link href="/" className="button-primary">
               Back to Menu
             </Link>
-            <a href="mailto:bigmattsbarbecue@gmail.com" className="button-secondary">
+            <a href={`mailto:${CONTACT_EMAIL}`} className="button-secondary">
               Need Help?
             </a>
           </div>

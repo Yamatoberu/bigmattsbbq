@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { CONTACT_EMAIL } from "../lib/config";
 
 type FormState = "idle" | "submitting" | "success" | "error";
 
@@ -58,7 +59,7 @@ export function Footer() {
               </form>
             )}
           </div>
-          <p>Questions? Email bigmattsbarbecue@gmail.com</p>
+          <p>Questions? Email {CONTACT_EMAIL}</p>
         </div>
         {state === "error" && (
           <p className="mt-3 text-sm text-ember-300" role="alert">

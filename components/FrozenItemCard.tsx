@@ -19,7 +19,20 @@ export function FrozenItemCard({ item, onAdd, soldOut = false }: FrozenItemCardP
           <h3 className="text-lg font-semibold text-smoke-900" style={{ fontFamily: "var(--font-display)" }}>
             {item.name}
           </h3>
-          {item.description && <p className="mt-2 text-sm text-smoke-600">{item.description}</p>}
+          {item.description && (
+            item.description.startsWith("- ") ? (
+              <ul className="mt-2 space-y-0.5 text-sm text-smoke-600">
+                {item.description.split(/ - /).filter(Boolean).map((part) => (
+                  <li key={part} className="flex items-start gap-1.5">
+                    <span className="mt-0.5 text-xs text-[#b8893a]">•</span>
+                    <span>{part.replace(/^-\s*/, "")}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-2 text-sm text-smoke-600">{item.description}</p>
+            )
+          )}
         </div>
         <div className="relative h-16 w-20 overflow-hidden rounded-md border border-[#3a2a20] bg-[#201510]">
           <Image src={image.src} alt={image.alt} fill sizes="80px" className="object-cover" />
@@ -31,10 +44,14 @@ export function FrozenItemCard({ item, onAdd, soldOut = false }: FrozenItemCardP
           return (
             <div key={variation.variationId} className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p className="text-xs text-smoke-500">{variation.name}</p>
+                {variation.name.toLowerCase() !== "regular" && (
+                  <p className="text-xs text-smoke-500">{variation.name}</p>
+                )}
                 <p className="text-sm font-semibold text-smoke-900">
                   {formatMoney(variation.priceCents, variation.currency)}
-                  <span className="ml-2 text-xs font-normal text-smoke-600">· {variation.remaining} left</span>
+                </p>
+                <p className="text-xs text-smoke-600" aria-live="polite">
+                  <span aria-label={`${variation.remaining} items left in stock`}>{variation.remaining} left</span>
                 </p>
               </div>
               <button

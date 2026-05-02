@@ -78,7 +78,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
 
   if (!drop || drop.status !== "active") {
     return (
-      <main className="bg-ember-radial bg-grain">
+      <div className="bg-ember-radial bg-grain">
         <section className="hero-panel">
           <div className="hero-content mx-auto max-w-5xl text-center">
             <span className="badge">Next Drop</span>
@@ -121,12 +121,12 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
             )}
           </div>
         </section>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="bg-ember-radial bg-grain">
+    <div className="bg-ember-radial bg-grain">
       <section className="hero-panel">
         <div className="hero-content mx-auto max-w-5xl text-center">
           <div className="flex flex-wrap items-center justify-center gap-2">
@@ -140,11 +140,11 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
           <h1 className="mt-4 text-3xl font-semibold leading-tight md:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
 Orders are open!
           </h1>
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+          <ul aria-label="Pickup locations" className="mt-3 flex list-none flex-wrap items-center justify-center gap-2 p-0">
             {drop.pickupOptions.map((opt) => (
-              <span key={opt.id} className="badge">{opt.locationLabel}</span>
+              <li key={opt.id} className="badge">{opt.locationLabel}</li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
 
@@ -182,9 +182,9 @@ Orders are open!
             })}
           </div>
           {estimatedTotalCents > 0 && (
-            <div className="mt-8 text-xs uppercase tracking-[0.3em] text-smoke-700">
+            <p className="mt-8 text-xs uppercase tracking-[0.3em] text-smoke-700">
               Estimated total: {formatMoney(estimatedTotalCents)}
-            </div>
+            </p>
           )}
         </div>
       </section>
@@ -265,6 +265,6 @@ Orders are open!
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }
