@@ -19,7 +19,7 @@ import { DropDTO } from "../lib/types";
 
 export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
   const { items: frozenItems, isLoading, error, reload } = useFrozenItems();
-  const { items: cartItems, addItem, addItems } = useCart();
+  const { items: cartItems, addItem, addItems, setPackage } = useCart();
   const { drop } = useActiveDrop(initialDrop);
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -41,6 +41,19 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
     const info = variationMap.get(item.variationId);
     return sum + (info?.priceCents ?? 0) * item.quantity;
   }, 0);
+
+  const bundleVariationIds = useMemo(() => {
+    const ids = new Set<string>();
+    for (const pkg of PACKAGES) {
+      if (pkg.bundleVariationId) ids.add(pkg.bundleVariationId);
+    }
+    return ids;
+  }, []);
+
+  const individualItems = useMemo(
+    () => frozenItems.filter((item) => !item.variations.some((v) => bundleVariationIds.has(v.variationId))),
+    [frozenItems, bundleVariationIds]
+  );
 
   if (!drop || drop.status !== "active") {
     return (
@@ -125,18 +138,27 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
           />
           <div className="grid gap-6 md:grid-cols-3">
             {PACKAGES.map((pkg) => {
-              const resolved = resolvePackageToCartItems(pkg, frozenItems);
-              const canResolve = resolved.length === pkg.items.length;
-              const inStock =
-                canResolve &&
-                resolved.every((item) => (variationMap.get(item.variationId)?.remaining ?? 0) > 0);
+              const hasBundleVariation = Boolean(pkg.bundleVariationId && variationMap.has(pkg.bundleVariationId));
+              const bundleRemaining = pkg.bundleVariationId ? (variationMap.get(pkg.bundleVariationId)?.remaining ?? 0) : 0;
+              const resolved = hasBundleVariation ? [] : resolvePackageToCartItems(pkg, frozenItems);
+              const canAdd = hasBundleVariation || resolved.length === pkg.items.length;
+              const inStock = hasBundleVariation
+                ? bundleRemaining > 0
+                : resolved.every((item) => (variationMap.get(item.variationId)?.remaining ?? 0) > 0);
               return (
                 <PackageCard
                   key={pkg.id}
                   pkg={pkg}
-                  onAdd={() => addItems(resolved)}
-                  soldOut={canResolve && !inStock}
-                  isDisabled={!canResolve || isLoading || Boolean(error)}
+                  onAdd={() => {
+                    if (pkg.bundleVariationId) {
+                      addItem({ variationId: pkg.bundleVariationId, quantity: 1 });
+                    } else {
+                      addItems(resolved);
+                    }
+                    setPackage(pkg.id);
+                  }}
+                  soldOut={canAdd && !inStock}
+                  isDisabled={!canAdd || isLoading || Boolean(error)}
                 />
               );
             })}
@@ -168,7 +190,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
             <p className="text-sm text-smoke-500">Loading frozen menu...</p>
           ) : (
             <div className="mt-6 grid gap-5 md:grid-cols-3">
-              {frozenItems.map((item) => {
+              {individualItems.map((item) => {
                 const nameLower = item.name.toLowerCase();
                 const itemSoldOut =
                   (nameLower.includes("pulled pork") && drop.soldOut.pulledPork) ||

@@ -1,0 +1,22 @@
+<svg width="640" height="360" viewBox="0 0 640 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="360" rx="28" fill="#140C08"/>
+  <rect x="18" y="18" width="604" height="324" rx="22" fill="url(#bg)"/>
+  <ellipse cx="500" cy="82" rx="120" ry="54" fill="#EFA74A" fill-opacity="0.18"/>
+  <ellipse cx="138" cy="282" rx="166" ry="68" fill="#3F2317" fill-opacity="0.56"/>
+  <rect x="184" y="104" width="108" height="68" rx="18" fill="#8E4A28"/>
+  <rect x="202" y="122" width="108" height="68" rx="18" fill="#A85D30"/>
+  <rect x="330" y="102" width="108" height="68" rx="18" fill="#8E4A28"/>
+  <rect x="348" y="120" width="108" height="68" rx="18" fill="#A85D30"/>
+  <path d="M208 228H436" stroke="#D5E6F5" stroke-width="20" stroke-linecap="round"/>
+  <path d="M228 228V262" stroke="#D5E6F5" stroke-width="16" stroke-linecap="round"/>
+  <path d="M320 228V262" stroke="#D5E6F5" stroke-width="16" stroke-linecap="round"/>
+  <path d="M412 228V262" stroke="#D5E6F5" stroke-width="16" stroke-linecap="round"/>
+  <text x="42" y="304" fill="#F4E8D6" font-family="Georgia, serif" font-size="38" font-weight="700">Freezer Stock-Up</text>
+  <text x="44" y="330" fill="#D5B79A" font-family="Arial, sans-serif" font-size="18">Bulk portions to keep the freezer ready through the month</text>
+  <defs>
+    <linearGradient id="bg" x1="54" y1="34" x2="590" y2="322" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2A1811"/>
+      <stop offset="1" stop-color="#1A110C"/>
+    </linearGradient>
+  </defs>
+</svg>

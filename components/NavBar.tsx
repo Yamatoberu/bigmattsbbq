@@ -45,7 +45,7 @@ export function NavBar() {
           {/* Logo */}
           <Link href="/" className="shrink-0 flex items-center text-[#f7f1e6]">
             <span className="relative h-[100px] w-[100px] overflow-hidden rounded-lg border border-[#2f3036] bg-[#1b1c22] logo-glow">
-              <Image src="/logo.png" alt="Big Matt's BBQ logo" fill sizes="100px" className="object-cover" />
+              <Image src="/logo.png" alt="Big Matt's BBQ logo" fill sizes="100px" loading="eager" className="object-cover" />
             </span>
           </Link>
 

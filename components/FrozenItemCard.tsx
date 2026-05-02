@@ -1,5 +1,7 @@
+import Image from "next/image";
 import { FrozenItemDTO } from "../lib/types";
 import { formatMoney } from "../lib/format";
+import { getFrozenItemImage } from "../lib/productImages";
 
 interface FrozenItemCardProps {
   item: FrozenItemDTO;
@@ -8,6 +10,8 @@ interface FrozenItemCardProps {
 }
 
 export function FrozenItemCard({ item, onAdd, soldOut = false }: FrozenItemCardProps) {
+  const image = getFrozenItemImage(item);
+
   return (
     <article className={`glass-card flex h-full flex-col gap-4 p-5${soldOut ? " opacity-60" : ""}`}>
       <div className="flex items-start gap-4">
@@ -17,7 +21,9 @@ export function FrozenItemCard({ item, onAdd, soldOut = false }: FrozenItemCardP
           </h3>
           {item.description && <p className="mt-2 text-sm text-smoke-600">{item.description}</p>}
         </div>
-        <div className="h-16 w-20 rounded-md border border-[#3a2a20] bg-[linear-gradient(120deg,#201510,#2a1c14)]" />
+        <div className="relative h-16 w-20 overflow-hidden rounded-md border border-[#3a2a20] bg-[#201510]">
+          <Image src={image.src} alt={image.alt} fill sizes="80px" className="object-cover" />
+        </div>
       </div>
       <div className="flex flex-col gap-3">
         {item.variations.map((variation) => {

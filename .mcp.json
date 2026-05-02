@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "square-sandbox": {
+      "command": "node",
+      "args": ["/Users/matt/Development/BigMattsBbq/mcp-servers/square/server.mjs"]
+    }
+  }
+}

@@ -1,0 +1,20 @@
+<svg width="640" height="360" viewBox="0 0 640 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="360" rx="28" fill="#150D08"/>
+  <rect x="18" y="18" width="604" height="324" rx="22" fill="url(#bg)"/>
+  <ellipse cx="498" cy="88" rx="116" ry="54" fill="#F0AB49" fill-opacity="0.18"/>
+  <ellipse cx="160" cy="276" rx="154" ry="62" fill="#412317" fill-opacity="0.52"/>
+  <circle cx="320" cy="170" r="92" fill="#2A1811"/>
+  <circle cx="320" cy="170" r="78" fill="#F2E3D1"/>
+  <rect x="254" y="144" width="78" height="28" rx="14" fill="#A35A30"/>
+  <rect x="236" y="170" width="94" height="24" rx="12" fill="#8B4627"/>
+  <rect x="344" y="142" width="42" height="78" rx="14" fill="#7C2A1D"/>
+  <rect x="354" y="126" width="22" height="22" rx="6" fill="#E8C18E"/>
+  <text x="42" y="304" fill="#F4E8D6" font-family="Georgia, serif" font-size="38" font-weight="700">Family Night</text>
+  <text x="44" y="330" fill="#D5B79A" font-family="Arial, sans-serif" font-size="18">Brisket, pork, and sauce for a quick dinner spread</text>
+  <defs>
+    <linearGradient id="bg" x1="60" y1="34" x2="584" y2="320" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#291710"/>
+      <stop offset="1" stop-color="#1A110C"/>
+    </linearGradient>
+  </defs>
+</svg>

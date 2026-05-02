@@ -19,7 +19,7 @@ function normalizeMatch(value: string) {
 
 export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) {
   const router = useRouter();
-  const { items, setQuantity, addItem, clear } = useCart();
+  const { items, setQuantity, addItem, clear, selectedPackageId } = useCart();
   const { items: frozenItems, isLoading } = useFrozenItems();
   const firstAvailable = drop.pickupOptions.find((o) => !o.isSoldOut);
   const [pickupOptionId, setPickupOptionId] = useState<string | undefined>(firstAvailable?.id);
@@ -129,6 +129,7 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
         body: JSON.stringify({
           dropId: drop.id,
           pickupOptionId,
+          packageId: selectedPackageId,
           customer: {
             firstName: formState.firstName,
             lastName: formState.lastName,

@@ -1,4 +1,6 @@
+import Image from "next/image";
 import { PackageConfig } from "../lib/types";
+import { getPackageImage } from "../lib/productImages";
 
 interface PackageCardProps {
   pkg: PackageConfig;
@@ -8,6 +10,8 @@ interface PackageCardProps {
 }
 
 export function PackageCard({ pkg, onAdd, isDisabled, soldOut = false }: PackageCardProps) {
+  const image = getPackageImage(pkg);
+
   return (
     <article
       className={`glass-card relative flex h-full flex-col gap-4 p-6 transition hover:-translate-y-1 ${
@@ -35,7 +39,9 @@ export function PackageCard({ pkg, onAdd, isDisabled, soldOut = false }: Package
         ))}
       </ul>
       <div className="mt-auto flex flex-col gap-3">
-        <div className="h-28 rounded-md border border-[#3a2a20] bg-[linear-gradient(120deg,#201510,#2a1c14)]" />
+        <div className="relative h-28 overflow-hidden rounded-md border border-[#3a2a20] bg-[#201510]">
+          <Image src={image.src} alt={image.alt} fill sizes="(min-width: 768px) 280px, 100vw" className="object-cover" />
+        </div>
         <button
           className={soldOut ? "button-secondary cursor-not-allowed opacity-60" : "button-primary"}
           onClick={soldOut ? undefined : onAdd}

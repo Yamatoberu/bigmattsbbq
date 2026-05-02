@@ -31,6 +31,7 @@ export interface PackageConfig {
   name: string;
   description: string;
   highlight?: boolean;
+  bundleVariationId?: string;
   items: PackageItemConfig[];
 }
 

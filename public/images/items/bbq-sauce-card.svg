@@ -1,0 +1,20 @@
+<svg width="480" height="320" viewBox="0 0 480 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="480" height="320" rx="28" fill="#140C08"/>
+  <rect x="18" y="18" width="444" height="284" rx="22" fill="url(#bg)"/>
+  <ellipse cx="360" cy="78" rx="88" ry="42" fill="#F1A240" fill-opacity="0.16"/>
+  <ellipse cx="120" cy="244" rx="138" ry="58" fill="#3D2115" fill-opacity="0.48"/>
+  <rect x="190" y="78" width="100" height="24" rx="8" fill="#F3DCC3"/>
+  <rect x="202" y="56" width="76" height="30" rx="10" fill="#E8C18E"/>
+  <rect x="172" y="98" width="136" height="140" rx="28" fill="#7B2A1D"/>
+  <rect x="186" y="114" width="108" height="76" rx="16" fill="#F2E2CC"/>
+  <path d="M210 138H270" stroke="#A2431E" stroke-width="8" stroke-linecap="round"/>
+  <path d="M210 158H254" stroke="#A2431E" stroke-width="8" stroke-linecap="round"/>
+  <path d="M194 206C210 216 225 220 240 220C256 220 270 216 286 206" stroke="#E18B34" stroke-width="10" stroke-linecap="round"/>
+  <text x="38" y="278" fill="#F4E8D6" font-family="Georgia, serif" font-size="34" font-weight="700">BBQ Sauce</text>
+  <defs>
+    <linearGradient id="bg" x1="60" y1="28" x2="418" y2="288" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#261610"/>
+      <stop offset="1" stop-color="#19100B"/>
+    </linearGradient>
+  </defs>
+</svg>

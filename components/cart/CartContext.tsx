@@ -6,10 +6,12 @@ import { CartItem, mergeCartItems } from "../../lib/cart";
 interface CartContextValue {
   items: CartItem[];
   isReady: boolean;
+  selectedPackageId: string | undefined;
   addItem: (item: CartItem) => void;
   addItems: (items: CartItem[]) => void;
   setQuantity: (variationId: string, quantity: number) => void;
   removeItem: (variationId: string) => void;
+  setPackage: (id: string | undefined) => void;
   clear: () => void;
 }
 
@@ -20,6 +22,7 @@ const STORAGE_KEY = "big-matts-bbq-cart";
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isReady, setIsReady] = useState(false);
+  const [selectedPackageId, setSelectedPackageId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const stored = typeof window !== "undefined" ? window.localStorage.getItem(STORAGE_KEY) : null;
@@ -62,11 +65,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems((prev) => prev.filter((item) => item.variationId !== variationId));
   };
 
-  const clear = () => setItems([]);
+  const setPackage = (id: string | undefined) => setSelectedPackageId(id);
+
+  const clear = () => {
+    setItems([]);
+    setSelectedPackageId(undefined);
+  };
 
   const value = useMemo(
-    () => ({ items, isReady, addItem, addItems, setQuantity, removeItem, clear }),
-    [items, isReady]
+    () => ({ items, isReady, selectedPackageId, addItem, addItems, setQuantity, removeItem, setPackage, clear }),
+    [items, isReady, selectedPackageId]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

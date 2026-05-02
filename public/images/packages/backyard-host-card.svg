@@ -1,0 +1,22 @@
+<svg width="640" height="360" viewBox="0 0 640 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="360" rx="28" fill="#150D08"/>
+  <rect x="18" y="18" width="604" height="324" rx="22" fill="url(#bg)"/>
+  <ellipse cx="510" cy="86" rx="120" ry="56" fill="#F2B04A" fill-opacity="0.18"/>
+  <ellipse cx="138" cy="282" rx="164" ry="66" fill="#432417" fill-opacity="0.54"/>
+  <circle cx="320" cy="176" r="102" fill="#2A1811"/>
+  <circle cx="320" cy="176" r="88" fill="#F4E6D6"/>
+  <rect x="230" y="150" width="82" height="26" rx="13" fill="#9E562E"/>
+  <rect x="222" y="180" width="96" height="22" rx="11" fill="#8A4426"/>
+  <rect x="336" y="148" width="84" height="26" rx="13" fill="#9E562E"/>
+  <rect x="330" y="178" width="98" height="22" rx="11" fill="#8A4426"/>
+  <rect x="304" y="210" width="40" height="72" rx="14" fill="#7C2A1D"/>
+  <rect x="313" y="194" width="22" height="22" rx="6" fill="#E8C18E"/>
+  <text x="42" y="304" fill="#F4E8D6" font-family="Georgia, serif" font-size="38" font-weight="700">Backyard Host</text>
+  <text x="44" y="330" fill="#D5B79A" font-family="Arial, sans-serif" font-size="18">A larger spread for the table with double portions</text>
+  <defs>
+    <linearGradient id="bg" x1="56" y1="34" x2="586" y2="324" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2B1911"/>
+      <stop offset="1" stop-color="#1B120D"/>
+    </linearGradient>
+  </defs>
+</svg>

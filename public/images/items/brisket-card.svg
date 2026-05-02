@@ -1,0 +1,18 @@
+<svg width="480" height="320" viewBox="0 0 480 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="480" height="320" rx="28" fill="#160D09"/>
+  <rect x="18" y="18" width="444" height="284" rx="22" fill="url(#bg)"/>
+  <ellipse cx="365" cy="68" rx="104" ry="48" fill="#F0B24D" fill-opacity="0.18"/>
+  <ellipse cx="132" cy="232" rx="128" ry="56" fill="#4A2716" fill-opacity="0.55"/>
+  <rect x="86" y="122" width="236" height="90" rx="45" fill="#6E3922"/>
+  <rect x="110" y="104" width="236" height="90" rx="45" fill="#8A4929"/>
+  <rect x="132" y="86" width="236" height="90" rx="45" fill="#A65B2F"/>
+  <path d="M144 146C173 132 219 130 254 136C290 143 318 158 336 178" stroke="#F4C17A" stroke-width="12" stroke-linecap="round"/>
+  <path d="M118 208C155 224 225 228 292 218" stroke="#2A140D" stroke-width="14" stroke-linecap="round"/>
+  <text x="38" y="278" fill="#F4E8D6" font-family="Georgia, serif" font-size="34" font-weight="700">Brisket</text>
+  <defs>
+    <linearGradient id="bg" x1="60" y1="40" x2="416" y2="282" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2A1811"/>
+      <stop offset="1" stop-color="#1C120D"/>
+    </linearGradient>
+  </defs>
+</svg>

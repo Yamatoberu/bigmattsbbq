@@ -14,6 +14,7 @@ import {
 import { logError } from "../../../lib/logger";
 import { getSupabaseClient } from "../../../lib/supabase";
 import { checkDropReady } from "../../../lib/drops";
+import { PACKAGES } from "../../../lib/config";
 
 export const runtime = "nodejs";
 
@@ -26,6 +27,7 @@ export const cartSchema = z.object({
 const checkoutSchema = z.object({
   dropId: z.string().uuid(),
   pickupOptionId: z.string().uuid(),
+  packageId: z.string().optional(),
   customer: z.object({
     firstName: z.string().min(1),
     lastName: z.string().min(1),
@@ -220,10 +222,20 @@ export async function POST(request: Request) {
           order: {
             location_id: env.locationId,
             customer_id: customerId,
-            line_items: cart.map((item) => ({
-              quantity: item.quantity.toString(),
-              catalog_object_id: item.variationId
-            })),
+            line_items: [
+              ...cart.map((item) => ({
+                quantity: item.quantity.toString(),
+                catalog_object_id: item.variationId
+              })),
+              ...((() => {
+                const pkg = parsed.data.packageId
+                  ? PACKAGES.find((p) => p.id === parsed.data.packageId)
+                  : undefined;
+                return pkg?.bundleVariationId
+                  ? [{ quantity: "1", catalog_object_id: pkg.bundleVariationId, base_price_money: { amount: 0, currency: "USD" } }]
+                  : [];
+              })())
+            ],
             fulfillments: [
               {
                 type: "PICKUP",
