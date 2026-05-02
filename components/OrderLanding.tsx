@@ -192,8 +192,8 @@ Orders are open!
       <section className="section-spacing">
         <div className="mx-auto max-w-5xl">
           <SectionHeader
-            eyebrow="Individual Items"
-            title="Build Your Own"
+            eyebrow="Build Your Own"
+            title="Individual Items"
             subtitle="Mix and match individual items while supplies last."
           />
           {error && (
