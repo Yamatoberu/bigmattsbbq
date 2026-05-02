@@ -69,12 +69,12 @@ main {
 
 .hero-panel::after {
   content: "";
-  @apply pointer-events-none absolute inset-x-0 bottom-0 h-6;
+  @apply pointer-events-none absolute inset-x-0 bottom-0 h-3;
   background: linear-gradient(to bottom, transparent, #120c09);
 }
 
 .hero-content {
-  @apply relative z-10 px-6 pb-4 pt-14 text-[#f8f2e7] md:px-12 md:pb-5 md:pt-20;
+  @apply relative z-10 px-6 pb-2 pt-14 text-[#f8f2e7] md:px-12 md:pb-2.5 md:pt-20;
 }
 
 .logo-glow {
