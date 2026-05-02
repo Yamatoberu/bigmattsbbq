@@ -321,7 +321,7 @@ The "MAY 2026 DROP" badge in particular could benefit from a `<time>` element. T
 
 ---
 
-## Issue 12 — Catering Page Content Too Narrow on Wide Viewports - TODO
+## Issue 12 — ~~Catering Page Content Too Narrow on Wide Viewports~~ - DONE
 **Severity:** 🟢 Low
 **Affected Pages:** Catering (/catering)
 
@@ -350,7 +350,7 @@ On a 1280px viewport, the catering page content sits in a narrow single column (
 | 9 | ~~Inconsistent email addresses~~ | 🟡 Medium | Contact, Catering, Footer |
 | 10 | ~~About page bio missing heading/section~~ | 🟢 Low | About |
 | 11 | Section eyebrow labels use `<div>` not semantic elements | 🟢 Low | All |
-| 12 | Catering content too narrow on desktop | 🟢 Low | Catering |
+| 12 | ~~Catering content too narrow on desktop~~ | 🟢 Low | Catering |
 
 ---
 

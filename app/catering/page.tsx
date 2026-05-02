@@ -1,3 +1,5 @@
+import { CATERING_EMAIL } from "../../lib/config";
+
 export const metadata = {
   title: "Catering by Big Matt's BBQ",
   description: "Full catering menu with pricing — meats, sides, desserts, and meal packages for groups of any size."
@@ -163,7 +165,7 @@ function PackageTierCard({ tier }: { tier: PackageTier }) {
 
 export default function CateringPage() {
   return (
-    <section className="section-spacing mx-auto max-w-4xl">
+    <section className="section-spacing mx-auto max-w-5xl">
       <header className="text-center">
         <h1 className="mt-2 text-4xl font-semibold text-smoke-900" style={fontDisplay}>
           Catering
@@ -174,7 +176,7 @@ export default function CateringPage() {
       </header>
 
       <div className="mt-10 text-center">
-        <a href="mailto:bigmattsbarbecue@gmail.com" className="button-primary">
+        <a href={`mailto:${CATERING_EMAIL}`} className="button-primary">
           Email for Catering
         </a>
       </div>
@@ -331,7 +333,7 @@ export default function CateringPage() {
       </div>
 
       <div className="mt-10 text-center">
-        <a href="mailto:bigmattsbarbecue@gmail.com" className="button-primary">
+        <a href={`mailto:${CATERING_EMAIL}`} className="button-primary">
           Email for Catering
         </a>
       </div>
