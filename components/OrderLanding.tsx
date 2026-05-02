@@ -231,7 +231,7 @@ Orders are open!
         <div className="mx-auto max-w-5xl">
           <SectionHeader
             eyebrow="Social Proof"
-            title="Trusted by BBQ Lovers Across Utah County"
+            title="Trusted by BBQ Lovers Across Utah"
             subtitle="Real talk from customers stocking their freezers."
           />
           <Testimonials />

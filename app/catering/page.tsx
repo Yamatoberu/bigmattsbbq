@@ -327,8 +327,8 @@ export default function CateringPage() {
             Where we cater
           </summary>
           <p className="mt-3 text-sm text-smoke-600">
-            Cache Valley and Utah County. If your event is outside this radius, email us — we may
-            be able to make it work for the right event.
+            Cache Valley, Utah County, and Salt Lake County. If your event is outside this radius,
+            email us — we may be able to make it work for the right event.
           </p>
         </details>
       </div>

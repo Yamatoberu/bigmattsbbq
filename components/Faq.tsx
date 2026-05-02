@@ -5,6 +5,11 @@ const faqs = [
       "Order during the drop, choose your pickup window, and we email an invoice for payment. Pickup and reheat when ready."
   },
   {
+    question: "What's the best way to reheat?",
+    answer:
+      "Everything is fully pre-cooked. Thaw and eat if you're in a hurry. For the best result, reheat by boiling in the bag — it comes out nearly as good as fresh off the smoker."
+  },
+  {
     question: "How long does the BBQ stay frozen?",
     answer:
       "Vacuum-sealed portions keep their quality for months when stored frozen and reheated gently."
