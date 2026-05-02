@@ -138,11 +138,11 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
             )}
           </div>
           <h1 className="mt-4 text-3xl font-semibold leading-tight md:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
-Orders are open.
+Orders are open!
           </h1>
-          <div className="mt-3 space-y-1 text-sm text-[#f3e7d8]">
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
             {drop.pickupOptions.map((opt) => (
-              <p key={opt.id}>{opt.pickupDateLabel} · {opt.locationLabel}</p>
+              <span key={opt.id} className="badge">{opt.locationLabel}</span>
             ))}
           </div>
         </div>
