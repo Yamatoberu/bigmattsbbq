@@ -68,7 +68,7 @@ main {
 }
 
 .hero-content {
-  @apply relative z-10 max-w-xl px-6 py-12 text-[#f8f2e7] md:px-12 md:py-16;
+  @apply relative z-10 max-w-xl px-6 py-5 text-[#f8f2e7] md:px-12 md:py-8;
 }
 
 .logo-glow {
