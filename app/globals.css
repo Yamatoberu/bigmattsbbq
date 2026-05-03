@@ -109,3 +109,20 @@ main {
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+details > summary::after {
+  content: "›";
+  float: right;
+  font-size: 1.2em;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+details[open] > summary::after {
+  transform: rotate(90deg);
+}
