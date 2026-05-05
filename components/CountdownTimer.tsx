@@ -49,9 +49,22 @@ export function CountdownTimer({ deadline, fallbackLabel }: CountdownTimerProps)
   const pad = (n: number) => String(n).padStart(2, "0");
 
   return (
-    <span className="badge bg-[#b31414] text-white tabular-nums">
-      {timeLeft.days > 0 && <>{timeLeft.days}d </>}
-      {pad(timeLeft.hours)}h {pad(timeLeft.minutes)}m {pad(timeLeft.seconds)}s
+    <span
+      className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-white tabular-nums"
+      style={{
+        background: "linear-gradient(135deg, #b31414 0%, #7b0c0c 100%)",
+        border: "1px solid #5a0b0b",
+        boxShadow: "0 0 18px rgba(179,20,20,0.55), inset 0 1px 0 rgba(255,255,255,0.15)",
+        fontSize: "0.78rem",
+        fontWeight: 700,
+        letterSpacing: "0.04em",
+      }}
+    >
+      <span className="text-[#f5a0a0] font-semibold tracking-wide uppercase text-[0.62rem]">Window Closes in</span>
+      <span>
+        {timeLeft.days > 0 && <>{timeLeft.days}d </>}
+        {pad(timeLeft.hours)}h {pad(timeLeft.minutes)}m {pad(timeLeft.seconds)}s
+      </span>
     </span>
   );
 }
