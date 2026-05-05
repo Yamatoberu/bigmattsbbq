@@ -2,6 +2,7 @@ import Image from "next/image";
 import { FrozenItemDTO } from "../lib/types";
 import { formatMoney } from "../lib/format";
 import { getFrozenItemImage } from "../lib/productImages";
+import { SoldOutCapture } from "./SoldOutCapture";
 
 interface FrozenItemCardProps {
   item: FrozenItemDTO;
@@ -54,13 +55,16 @@ export function FrozenItemCard({ item, onAdd, soldOut = false }: FrozenItemCardP
                   <span aria-label={`${variation.remaining} items left in stock`}>{variation.remaining} left</span>
                 </p>
               </div>
-              <button
-                className="button-primary px-4 py-2 text-xs"
-                onClick={() => onAdd(variation.variationId)}
-                disabled={isSoldOut}
-              >
-                {isSoldOut ? "Sold Out" : "Add to Cart"}
-              </button>
+              {isSoldOut ? (
+                <SoldOutCapture />
+              ) : (
+                <button
+                  className="button-primary px-4 py-2 text-xs"
+                  onClick={() => onAdd(variation.variationId)}
+                >
+                  Add to Cart
+                </button>
+              )}
             </div>
           );
         })}
