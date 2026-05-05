@@ -273,7 +273,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
             Feeding a crowd?
           </h2>
           <p className="mt-4 text-base leading-relaxed text-smoke-700">
-            We cater events across Utah — weddings, reunions, corporate lunches, rodeos. Simple per-person pricing, fresh-cooked the day of, and the same low-and-slow brisket and pulled pork you get from the drops.
+            We cater events across Utah — weddings, reunions, corporate lunches, rodeos. Simple per-person pricing and the same low-and-slow brisket and pulled pork you get from the drops.
           </p>
           <Link
             href="/catering"
