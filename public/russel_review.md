@@ -253,17 +253,17 @@ turned into catering, turned into frozen drops. One-man operation out of Springv
 
 ## Summary: Prioritized Fix List
 
-| Priority | Issue | Effort | Impact | Status |
-|----------|-------|--------|--------|--------|
-| 1 | Sold-Out email capture (Issue 2) | Medium | Very High | TODO |
-| 2 | Hero headline rewrite (Issue 1) | Low | High | ✓ Done |
-| 3 | Pre-sell copy block before product grid (Issue 3) | Low | High | ✓ Done |
-| 4 | Social proof rendering fix + repositioning (Issue 4) | Low–Medium | High | ✓ Done |
-| 5 | Live countdown timer (Issue 7) | Low | Medium | TODO |
-| 6 | Catering page restructure (Issue 6) | Low | Medium | TODO |
-| 7 | Homepage catering cross-sell block (Issue 5) | Low | Medium | TODO |
-| 8 | Inline origin story on homepage (Issue 8) | Low | Medium | ✓ Done |
-| 9 | Value ladder / Drop Club / upsell (Issue 5) | High | Very High (long-term) | TODO |
+| Status | Priority | Issue | Effort | Impact |
+|--------|----------|-------|--------|--------|
+| TODO | 1 | Sold-Out email capture (Issue 2) | Medium | Very High |
+| ✓ Done | 2 | Hero headline rewrite (Issue 1) | Low | High |
+| ✓ Done | 3 | Pre-sell copy block before product grid (Issue 3) | Low | High |
+| ✓ Done | 4 | Social proof rendering fix + repositioning (Issue 4) | Low–Medium | High |
+| TODO | 5 | Live countdown timer (Issue 7) | Low | Medium |
+| TODO | 6 | Catering page restructure (Issue 6) | Low | Medium |
+| TODO | 7 | Homepage catering cross-sell block (Issue 5) | Low | Medium |
+| ✓ Done | 8 | Inline origin story on homepage (Issue 8) | Low | Medium |
+| TODO | 9 | Value ladder / Drop Club / upsell (Issue 5) | High | Very High (long-term) |
 
 ---
 
