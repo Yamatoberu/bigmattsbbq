@@ -11,7 +11,7 @@ Big Matt's BBQ has strong brand aesthetics, a compelling origin story, and a leg
 
 ---
 
-##  Issue 1: The Hero Section Has No Hook - TODO
+##  Issue 1: The Hero Section Has No Hook - DONE
 
 ### Problem
 The headline "Orders are open!" is a status notification, not a sales hook. A first-time visitor landing on the page has no idea what Big Matt's BBQ is, who it's for, or why they should care — before being asked to choose a package. The above-the-fold section answers none of the three critical questions a funnel headline must answer:
@@ -70,7 +70,7 @@ When stock = 0, swap the "Add to Cart" / "Sold Out" button for a compact inline 
 
 ---
 
-## Issue 3: No Pre-Sell Copy Between the Hero and the Product Grid - TODO
+## Issue 3: No Pre-Sell Copy Between the Hero and the Product Grid - DONE
 
 ### Problem
 The funnel jumps directly from "Orders are open!" to a product grid with no emotional bridge. There is no copy that:
@@ -99,7 +99,7 @@ tastes like a weekend cookout. No restaurant markup. No grill. Just heat and eat
 
 ---
 
-## Issue 4: Social Proof Placement and Rendering - TODO
+## Issue 4: Social Proof Placement and Rendering - DONE
 
 ### Problem
 The testimonials section ("Trusted by BBQ Lovers Across Utah") appears after the product grid, below the individual items section. This means social proof is doing zero work at the conversion decision point. Additionally, the testimonial cards were not rendering visually during review — appearing as an empty section — suggesting a possible CSS or hydration issue.
@@ -226,7 +226,7 @@ Replace or augment the static deadline badge with a live countdown timer compone
 
 ---
 
-## Issue 8: About Page Story is Isolated and Underused - TODO
+## Issue 8: About Page Story is Isolated and Underused - DONE
 
 ### Problem
 The About page contains the single most persuasive piece of content on the entire site — a complete origin story (BBQ Pitmasters → Covid hobby → friends paying → catering events → frozen drops). This story builds trust, explains the product model, and humanizes the brand. It is buried on a nav page that most visitors will never click.
@@ -253,17 +253,17 @@ turned into catering, turned into frozen drops. One-man operation out of Springv
 
 ## Summary: Prioritized Fix List
 
-| Priority | Issue | Effort | Impact |
-|----------|-------|--------|--------|
-| 1 | Sold-Out email capture (Issue 2) | Medium | Very High |
-| 2 | Hero headline rewrite (Issue 1) | Low | High |
-| 3 | Pre-sell copy block before product grid (Issue 3) | Low | High |
-| 4 | Social proof rendering fix + repositioning (Issue 4) | Low–Medium | High |
-| 5 | Live countdown timer (Issue 7) | Low | Medium |
-| 6 | Catering page restructure (Issue 6) | Low | Medium |
-| 7 | Homepage catering cross-sell block (Issue 5) | Low | Medium |
-| 8 | Inline origin story on homepage (Issue 8) | Low | Medium |
-| 9 | Value ladder / Drop Club / upsell (Issue 5) | High | Very High (long-term) |
+| Priority | Issue | Effort | Impact | Status |
+|----------|-------|--------|--------|--------|
+| 1 | Sold-Out email capture (Issue 2) | Medium | Very High | TODO |
+| 2 | Hero headline rewrite (Issue 1) | Low | High | ✓ Done |
+| 3 | Pre-sell copy block before product grid (Issue 3) | Low | High | ✓ Done |
+| 4 | Social proof rendering fix + repositioning (Issue 4) | Low–Medium | High | ✓ Done |
+| 5 | Live countdown timer (Issue 7) | Low | Medium | TODO |
+| 6 | Catering page restructure (Issue 6) | Low | Medium | TODO |
+| 7 | Homepage catering cross-sell block (Issue 5) | Low | Medium | TODO |
+| 8 | Inline origin story on homepage (Issue 8) | Low | Medium | ✓ Done |
+| 9 | Value ladder / Drop Club / upsell (Issue 5) | High | Very High (long-term) | TODO |
 
 ---
 
