@@ -15,6 +15,7 @@ import { PACKAGES } from "../lib/config";
 import { formatDenverDateTime, formatMoney } from "../lib/format";
 import { resolvePackageToCartItems } from "../lib/cart";
 import { DropDTO } from "../lib/types";
+import { CountdownTimer } from "./CountdownTimer";
 
 export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
   const { items: frozenItems, isLoading, error, reload } = useFrozenItems();
@@ -132,9 +133,10 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
           <div className="flex flex-wrap items-center justify-center gap-2">
             <span className="badge">{drop.title}</span>
             {drop.orderCutoffAt && (
-              <span className="badge bg-[#b31414] text-white">
-                Orders close {formatDenverDateTime(drop.orderCutoffAt)}
-              </span>
+              <CountdownTimer
+                deadline={drop.orderCutoffAt}
+                fallbackLabel={`Orders close ${formatDenverDateTime(drop.orderCutoffAt)}`}
+              />
             )}
           </div>
           <h1 className="mt-4 text-3xl font-semibold leading-tight md:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
