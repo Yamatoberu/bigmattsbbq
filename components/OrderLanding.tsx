@@ -138,13 +138,24 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
             )}
           </div>
           <h1 className="mt-4 text-3xl font-semibold leading-tight md:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
-Orders are open!
+            Real Pit-Smoked BBQ —<br className="hidden sm:block" /> Straight to Your Freezer.
           </h1>
+          <p className="mt-3 text-base text-smoke-700 md:text-lg">
+            Brisket and pulled pork smoked low and slow for 12–14 hours, vacuum-sealed at peak flavor, and ready to heat any night of the week.
+          </p>
           <ul aria-label="Pickup locations" className="mt-3 flex list-none flex-wrap items-center justify-center gap-2 p-0">
             {drop.pickupOptions.map((opt) => (
               <li key={opt.id} className="badge">{opt.locationLabel}</li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      <section className="section-spacing">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-base leading-relaxed text-smoke-700 md:text-lg">
+            Every batch starts the night before. Pulled pork and brisket go on the smoker around midnight — cherry, oak, and pecan wood — and come off 12 to 14 hours later. Vacuum-sealed at peak flavor and frozen within hours of leaving the pit. The result: a Tuesday dinner that tastes like a weekend cookout. No restaurant markup. No grill. Just heat and eat.
+          </p>
         </div>
       </section>
 
@@ -246,6 +257,32 @@ Orders are open!
             subtitle="Short answers before you lock in your order."
           />
           <Faq />
+        </div>
+      </section>
+
+      <section className="section-spacing bg-[#120c09]">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+            The Pitmaster
+          </p>
+          <h2
+            className="mt-4 text-3xl font-semibold text-smoke-900"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            One smoker. Twelve-hour cooks. Real BBQ.
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-smoke-700">
+            Big Matt&apos;s BBQ started as a Covid hobby — watching <em>BBQ Pitmasters</em>, then cooking
+            for friends, then requests to pay for it. One thing led to another: catering events, family
+            reunions, rodeos. Eventually, frozen drops. One-man operation out of Springville, Utah,
+            cooking every batch low and slow with no shortcuts.
+          </p>
+          <a
+            href="/about"
+            className="mt-6 inline-block text-sm font-semibold text-[#f0c16a] underline-offset-4 hover:underline"
+          >
+            Read the full story →
+          </a>
         </div>
       </section>
 
