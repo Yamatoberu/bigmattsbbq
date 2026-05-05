@@ -322,7 +322,6 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
       </section>
 
       <MailingListSection />
-
     </div>
   );
 }
