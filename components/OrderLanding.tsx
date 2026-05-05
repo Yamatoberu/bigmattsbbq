@@ -261,6 +261,29 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
         </div>
       </section>
 
+      <section className="section-spacing bg-[#120c09]">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+            Catering
+          </p>
+          <h2
+            className="mt-4 text-3xl font-semibold text-smoke-900"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            Feeding a crowd?
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-smoke-700">
+            We cater events across Utah — weddings, reunions, corporate lunches, rodeos. Simple per-person pricing, fresh-cooked the day of, and the same low-and-slow brisket and pulled pork you get from the drops.
+          </p>
+          <Link
+            href="/catering"
+            className="mt-6 inline-block text-sm font-semibold text-[#f0c16a] underline-offset-4 hover:underline"
+          >
+            See Catering Packages →
+          </Link>
+        </div>
+      </section>
+
       <section className="section-spacing">
         <div className="mx-auto max-w-4xl">
           <SectionHeader
@@ -299,21 +322,6 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
       </section>
 
       <MailingListSection />
-
-      <section className="section-spacing bg-[#0f0b08]">
-        <div className="mx-auto max-w-5xl">
-          <SectionHeader
-            eyebrow="Catering"
-            title="Event-ready BBQ"
-            subtitle="Simple pricing tiers and a direct line to us."
-          />
-          <div className="mt-6 text-center">
-            <Link href="/catering" className="button-secondary text-sm">
-              See full catering menu →
-            </Link>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
