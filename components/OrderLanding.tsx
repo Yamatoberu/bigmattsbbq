@@ -159,6 +159,12 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
         </div>
       </section>
 
+      <section className="px-6 py-8 md:px-12">
+        <div className="mx-auto max-w-5xl">
+          <Testimonials variant="strip" />
+        </div>
+      </section>
+
       <section id="order" className="section-spacing bg-[#120c09]">
         <div className="mx-auto max-w-5xl">
           <SectionHeader
@@ -235,17 +241,6 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
               })}
             </div>
           )}
-        </div>
-      </section>
-
-      <section className="section-spacing bg-[#120c09]">
-        <div className="mx-auto max-w-5xl">
-          <SectionHeader
-            eyebrow="Social Proof"
-            title="Trusted by BBQ Lovers Across Utah"
-            subtitle="Real talk from customers stocking their freezers."
-          />
-          <Testimonials />
         </div>
       </section>
 
