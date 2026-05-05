@@ -125,7 +125,7 @@ Social proof should surround and support the buy decision, not come after it.
 
 ---
 
-## Issue 5: No Value Ladder / Customer Ascension Path - TODO
+## Issue 5: No Value Ladder / Customer Ascension Path - PARTIAL DONE
 
 ### Problem
 The site has two disconnected revenue streams — frozen drops and catering — with no bridge between them. There is no mechanism to:
@@ -167,7 +167,7 @@ At checkout or order confirmation, offer an add-on:
 
 ---
 
-## Issue 6: The Catering Page Sells with Price, Not Desire - TODO
+## Issue 6: The Catering Page Sells with Price, Not Desire - DONE
 
 ### Problem
 The Catering page opens with the title "Catering," a single line of subtext, and an "Email for Catering" button — then immediately presents a pricing menu. There is no:
@@ -260,8 +260,8 @@ turned into catering, turned into frozen drops. One-man operation out of Springv
 | ✓ Done | 3 | Pre-sell copy block before product grid (Issue 3) | Low | High |
 | ✓ Done | 4 | Social proof rendering fix + repositioning (Issue 4) | Low–Medium | High |
 | ✓ Done | 5 | Live countdown timer (Issue 7) | Low | Medium |
-| TODO | 6 | Catering page restructure (Issue 6) | Low | Medium |
-| TODO | 7 | Homepage catering cross-sell block (Issue 5) | Low | Medium |
+| ✓ Done | 6 | Catering page restructure (Issue 6) | Low | Medium |
+| ✓ Done | 7 | Homepage catering cross-sell block (Issue 5) | Low | Medium |
 | ✓ Done | 8 | Inline origin story on homepage (Issue 8) | Low | Medium |
 | TODO | 9 | Value ladder / Drop Club / upsell (Issue 5) | High | Very High (long-term) |
 
