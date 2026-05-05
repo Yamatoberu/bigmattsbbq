@@ -37,7 +37,7 @@ Subheadline: Brisket and pulled pork smoked low and slow for 12–14 hours, vacu
 
 ---
 
-## Issue 2: No Email Capture at the Point of Maximum Interest (Sold-Out Dead End) - TODO
+## Issue 2: No Email Capture at the Point of Maximum Interest (Sold-Out Dead End) - DONE
 
 ### Problem
 Every "Sold Out" button is a dead end. When a visitor interacts with a sold-out product — which is the state of ALL products at the time of this review — they receive zero engagement, no retention mechanism, and no path forward. These visitors are **warm, high-intent leads** who have already signaled they want to buy. They are being silently discarded.
@@ -255,7 +255,7 @@ turned into catering, turned into frozen drops. One-man operation out of Springv
 
 | Status | Priority | Issue | Effort | Impact |
 |--------|----------|-------|--------|--------|
-| TODO | 1 | Sold-Out email capture (Issue 2) | Medium | Very High |
+| ✓ Done | 1 | Sold-Out email capture (Issue 2) | Medium | Very High |
 | ✓ Done | 2 | Hero headline rewrite (Issue 1) | Low | High |
 | ✓ Done | 3 | Pre-sell copy block before product grid (Issue 3) | Low | High |
 | ✓ Done | 4 | Social proof rendering fix + repositioning (Issue 4) | Low–Medium | High |
