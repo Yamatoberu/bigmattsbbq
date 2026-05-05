@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 interface CountdownTimerProps {
   deadline: string;
   fallbackLabel: string;
+  bare?: boolean;
 }
 
 interface TimeLeft {
@@ -25,7 +26,7 @@ function getTimeLeft(deadline: string): TimeLeft | null {
   };
 }
 
-export function CountdownTimer({ deadline, fallbackLabel }: CountdownTimerProps) {
+export function CountdownTimer({ deadline, fallbackLabel, bare }: CountdownTimerProps) {
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null | undefined>(undefined);
 
   useEffect(() => {
@@ -34,19 +35,25 @@ export function CountdownTimer({ deadline, fallbackLabel }: CountdownTimerProps)
     return () => clearInterval(id);
   }, [deadline]);
 
-  // undefined = not yet hydrated (avoid SSR mismatch); show static badge until first tick
   if (timeLeft === undefined) {
-    return (
-      <span className="badge bg-[#b31414] text-white">
-        {fallbackLabel}
-      </span>
-    );
+    return bare
+      ? <span className="tabular-nums text-lg font-bold text-white">{fallbackLabel}</span>
+      : <span className="badge bg-[#b31414] text-white">{fallbackLabel}</span>;
   }
 
-  // null = expired
   if (timeLeft === null) return null;
 
   const pad = (n: number) => String(n).padStart(2, "0");
+  const time = (
+    <>
+      {timeLeft.days > 0 && <>{timeLeft.days}d </>}
+      {pad(timeLeft.hours)}h {pad(timeLeft.minutes)}m {pad(timeLeft.seconds)}s
+    </>
+  );
+
+  if (bare) {
+    return <span className="tabular-nums text-lg font-bold text-white">{time}</span>;
+  }
 
   return (
     <span
@@ -61,10 +68,7 @@ export function CountdownTimer({ deadline, fallbackLabel }: CountdownTimerProps)
       }}
     >
       <span className="text-[#f5a0a0] font-semibold tracking-wide uppercase text-[0.62rem]">Window Closes in</span>
-      <span>
-        {timeLeft.days > 0 && <>{timeLeft.days}d </>}
-        {pad(timeLeft.hours)}h {pad(timeLeft.minutes)}m {pad(timeLeft.seconds)}s
-      </span>
+      <span>{time}</span>
     </span>
   );
 }

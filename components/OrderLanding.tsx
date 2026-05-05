@@ -130,14 +130,29 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
     <div className="bg-ember-radial bg-grain">
       <section className="hero-panel">
         <div className="hero-content mx-auto max-w-5xl text-center">
-          <div className="flex flex-col items-center gap-2">
-            <span className="badge">{drop.title} — ORDERS OPEN</span>
-            {drop.orderCutoffAt && (
-              <CountdownTimer
-                deadline={drop.orderCutoffAt}
-                fallbackLabel={`Orders close ${formatDenverDateTime(drop.orderCutoffAt)}`}
-              />
-            )}
+          <div className="inline-flex overflow-hidden rounded-lg mx-auto" style={{
+            background: "#130e0b",
+            border: "1px solid #2e1a10",
+            boxShadow: "0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(179,20,20,0.12)",
+          }}>
+            <div className="w-[3px] self-stretch bg-[#c01818]" />
+            <div className="px-5 py-3 text-left">
+              <p className="text-[0.6rem] font-semibold uppercase tracking-[0.35em] text-[#c87060]">
+                {drop.title} — Orders Open
+              </p>
+              {drop.orderCutoffAt && (
+                <div className="mt-1.5 flex items-baseline gap-2.5">
+                  <span className="text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-[#7a4a3a]">
+                    Window Closes In
+                  </span>
+                  <CountdownTimer
+                    deadline={drop.orderCutoffAt}
+                    fallbackLabel={formatDenverDateTime(drop.orderCutoffAt)}
+                    bare
+                  />
+                </div>
+              )}
+            </div>
           </div>
           <h1 className="mt-4 text-3xl font-semibold leading-tight md:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
             Real Pit-Smoked BBQ —<br className="hidden sm:block" /> Straight to Your Freezer.
