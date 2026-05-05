@@ -136,13 +136,13 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
             boxShadow: "0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(179,20,20,0.12)",
           }}>
             <div className="w-[3px] self-stretch bg-[#c01818]" />
-            <div className="px-5 py-3 text-left">
-              <p className="text-[0.6rem] font-semibold uppercase tracking-[0.35em] text-[#c87060]">
+            <div className="px-6 py-4 text-left">
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.35em] text-[#f0b8a8]">
                 {drop.title} — Orders Open
               </p>
               {drop.orderCutoffAt && (
-                <div className="mt-1.5 flex items-baseline gap-2.5">
-                  <span className="text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-[#7a4a3a]">
+                <div className="mt-2 flex items-baseline gap-3">
+                  <span className="text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-[#c08878]">
                     Window Closes In
                   </span>
                   <CountdownTimer

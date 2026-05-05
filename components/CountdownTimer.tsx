@@ -52,7 +52,7 @@ export function CountdownTimer({ deadline, fallbackLabel, bare }: CountdownTimer
   );
 
   if (bare) {
-    return <span className="tabular-nums text-lg font-bold text-white">{time}</span>;
+    return <span className="tabular-nums text-[1.35rem] font-bold text-white">{time}</span>;
   }
 
   return (
