@@ -163,19 +163,44 @@ function PackageTierCard({ tier }: { tier: PackageTier }) {
   );
 }
 
+const EVENT_TYPES = [
+  "Weddings",
+  "Family Reunions",
+  "Corporate Lunches",
+  "Rodeos",
+  "Backyard Dinners",
+  "Birthday Parties",
+];
+
 export default function CateringPage() {
   return (
     <section className="section-spacing mx-auto max-w-5xl">
       <header className="text-center">
-        <h1 className="mt-2 text-4xl font-semibold text-smoke-900" style={fontDisplay}>
-          Catering
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+          Catering by Big Matt&apos;s BBQ
+        </p>
+        <h1 className="mt-3 text-4xl font-semibold text-smoke-900 md:text-5xl" style={fontDisplay}>
+          Your guests rave about the food.<br className="hidden sm:block" /> You stress about nothing.
         </h1>
-        <p className="mt-4 text-base text-smoke-700">
-          Order by the pound, build a package, or leave it to us. Simple pricing, no surprises.
+        <p className="mt-5 mx-auto max-w-2xl text-base text-smoke-700 leading-relaxed">
+          Big Matt&apos;s BBQ has catered weddings, family reunions, rodeos, and corporate lunches
+          across Utah. One point of contact, clear per-person pricing, and BBQ cooked fresh the
+          day of your event — low and slow, no shortcuts.
         </p>
       </header>
 
-      <div className="mt-10 text-center">
+      <div className="mt-8 flex flex-wrap justify-center gap-2">
+        {EVENT_TYPES.map((type) => (
+          <span
+            key={type}
+            className="rounded-full border border-[#3a2a20] bg-[#1c140f] px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-smoke-700"
+          >
+            {type}
+          </span>
+        ))}
+      </div>
+
+      <div className="mt-8 text-center">
         <a href={`mailto:${CATERING_EMAIL}`} className="button-primary">
           Email for Catering
         </a>
