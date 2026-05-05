@@ -131,7 +131,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
       <section className="hero-panel">
         <div className="hero-content mx-auto max-w-5xl text-center">
           <div className="flex flex-col items-center gap-2">
-            <span className="badge">{drop.title}</span>
+            <span className="badge">{drop.title} — ORDERS OPEN</span>
             {drop.orderCutoffAt && (
               <CountdownTimer
                 deadline={drop.orderCutoffAt}
