@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseClient } from "../../../lib/supabase";
 import { logError } from "../../../lib/logger";
+import { getSquareEnv } from "../../../lib/env";
 
 export const runtime = "nodejs";
 
@@ -8,6 +9,11 @@ export async function GET() {
   const requestId = crypto.randomUUID();
 
   try {
+    const env = getSquareEnv();
+    if (env.environment !== "sandbox") {
+      return NextResponse.json({ error: "Not found." }, { status: 404 });
+    }
+
     const supabase = getSupabaseClient();
 
     // 1. Query drops table — should return the seeded test drop
