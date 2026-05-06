@@ -579,14 +579,14 @@ At minimum, document the expected format in `lib/square.ts` next to `mapCatalogT
 
 | Status | Priority | Issue | Severity | Effort | Files |
 |--------|----------|-------|----------|--------|-------|
-| TODO | 1 | `/api/test-seed` has no access control | 🔴 Critical | Low | `app/api/test-seed/route.ts` |
-| TODO | 2 | Capacity release duplicated 4× in checkout route | 🔴 Critical | Medium | `app/api/checkout/route.ts` |
+| DONE | 1 | `/api/test-seed` has no access control | 🔴 Critical | Low | `app/api/test-seed/route.ts` |
+| DONE | 2 | Capacity release duplicated 4× in checkout route | 🔴 Critical | Medium | `app/api/checkout/route.ts` |
 | TODO | 3 | Nested `<main>` persists on checkout/confirmation/orders pages | 🟠 High | Low | 3 page files + `app/layout.tsx` |
 | TODO | 4 | `CartContext` `useMemo` has incomplete dependency array | 🟠 High | Low | `components/cart/CartContext.tsx` |
-| TODO | 5 | `CheckoutClient` compares item ID to variation ID (dead branch / type confusion) | 🟠 High | Low | `components/CheckoutClient.tsx` |
+| DONE | 5 | `CheckoutClient` compares item ID to variation ID (dead branch / type confusion) | 🟠 High | Low | `components/CheckoutClient.tsx` |
 | TODO | 6 | Broadcast emails sent sequentially — will time out at scale | 🟡 Medium | Medium | `app/api/admin/broadcast/route.ts` |
 | TODO | 7 | `UNSUBSCRIBE_SECRET` falls back to `BROADCAST_SECRET` | 🟡 Medium | Low | `lib/unsubscribeToken.ts` |
-| TODO | 8 | `confirmation/page.tsx` uses sync `searchParams` (deprecated in Next.js 15+) | 🟡 Medium | Low | `app/confirmation/page.tsx` |
+| DONE | 8 | `confirmation/page.tsx` uses sync `searchParams` (deprecated in Next.js 15+) | 🟡 Medium | Low | `app/confirmation/page.tsx` |
 | TODO | 9 | `normalizeMatch` duplicated in `lib/cart.ts` and `CheckoutClient.tsx` | 🟡 Medium | Low | Both files |
 | TODO | 10 | IIFE inside order payload obscures intent | 🟡 Medium | Low | `app/api/checkout/route.ts` |
 | TODO | 11 | Catering FAQ duplicates `SectionHeader` inline | 🟡 Medium | Low | `app/catering/page.tsx` |
