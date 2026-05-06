@@ -60,16 +60,8 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
   }, [frozenItems]);
 
   const sauceVariationIds = useMemo(() => {
-    const ids = new Set<string>();
-    if (sauceVariationId) {
-      ids.add(sauceVariationId);
-    }
+    const ids = new Set<string>([sauceVariationId].filter(Boolean));
     for (const item of frozenItems) {
-      if (item.itemId === sauceVariationId) {
-        for (const variation of item.variations) {
-          ids.add(variation.variationId);
-        }
-      }
       if (normalizeMatch(item.name).includes("sauce")) {
         for (const variation of item.variations) {
           ids.add(variation.variationId);
