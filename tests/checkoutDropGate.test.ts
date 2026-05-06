@@ -10,7 +10,8 @@ const activeRow: DropReadinessRow = {
   capacity_brisket: 200,
   reserved_pulled_pork: 50,
   reserved_brisket: 50,
-  order_cutoff_at: "2099-12-31T23:59:59Z"
+  order_cutoff_at: "2099-12-31T23:59:59Z",
+  capacity_enforced: true
 };
 
 describe("checkDropReady", () => {
@@ -94,5 +95,28 @@ describe("checkDropReady", () => {
       order_cutoff_at: null
     });
     expect(result).toEqual({ ok: true });
+  });
+
+  it("returns ok even when globally sold out if capacity_enforced is false", () => {
+    const result = checkDropReady({
+      ...activeRow,
+      reserved_pulled_pork: 200,
+      reserved_brisket: 200,
+      capacity_enforced: false
+    });
+    expect(result).toEqual({ ok: true });
+  });
+
+  it("still returns 409 closed when status is closed even if capacity_enforced is false", () => {
+    const result = checkDropReady({
+      ...activeRow,
+      status: "closed",
+      capacity_enforced: false
+    });
+    expect(result).toEqual({
+      ok: false,
+      status: 409,
+      error: "This drop has closed. Orders are no longer being accepted."
+    });
   });
 });

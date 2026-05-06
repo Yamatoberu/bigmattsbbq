@@ -11,6 +11,7 @@ interface DropRow {
   capacity_brisket: number;
   reserved_pulled_pork: number;
   reserved_brisket: number;
+  capacity_enforced: boolean;
 }
 
 interface PickupRow {
@@ -75,7 +76,8 @@ describe("fetchActiveDrop", () => {
       capacity_pulled_pork: 200,
       capacity_brisket: 200,
       reserved_pulled_pork: 50,
-      reserved_brisket: 50
+      reserved_brisket: 50,
+      capacity_enforced: true
     };
     const pickupRows: PickupRow[] = [
       {
@@ -145,7 +147,8 @@ describe("fetchActiveDrop", () => {
       capacity_pulled_pork: 200,
       capacity_brisket: 200,
       reserved_pulled_pork: 200,
-      reserved_brisket: 100
+      reserved_brisket: 100,
+      capacity_enforced: true
     };
 
     mockSupabaseModule(
@@ -169,7 +172,8 @@ describe("fetchActiveDrop", () => {
       capacity_pulled_pork: 200,
       capacity_brisket: 200,
       reserved_pulled_pork: 100,
-      reserved_brisket: 100
+      reserved_brisket: 100,
+      capacity_enforced: true
     };
     const pickupRows: PickupRow[] = [
       {
@@ -217,5 +221,54 @@ describe("fetchActiveDrop", () => {
 
     const { fetchActiveDrop } = await import("../lib/drops");
     await expect(fetchActiveDrop()).rejects.toThrow("RLS denied");
+  });
+
+  it("forces soldOut booleans to false when capacity_enforced is false", async () => {
+    const dropRow: DropRow = {
+      id: "d4",
+      title: "Unenforced Drop",
+      status: "active",
+      order_cutoff_at: null,
+      capacity_pulled_pork: 200,
+      capacity_brisket: 200,
+      reserved_pulled_pork: 200,
+      reserved_brisket: 200,
+      capacity_enforced: false
+    };
+
+    mockSupabaseModule(
+      buildMockClient({ data: dropRow, error: null }, { data: [], error: null })
+    );
+
+    const { fetchActiveDrop } = await import("../lib/drops");
+    const result = await fetchActiveDrop();
+
+    expect(result).not.toBeNull();
+    expect(result!.soldOut.pulledPork).toBe(false);
+    expect(result!.soldOut.brisket).toBe(false);
+  });
+
+  it("exposes capacityEnforced on the DTO", async () => {
+    const dropRow: DropRow = {
+      id: "d5",
+      title: "Enforced Drop",
+      status: "active",
+      order_cutoff_at: null,
+      capacity_pulled_pork: 200,
+      capacity_brisket: 200,
+      reserved_pulled_pork: 50,
+      reserved_brisket: 50,
+      capacity_enforced: true
+    };
+
+    mockSupabaseModule(
+      buildMockClient({ data: dropRow, error: null }, { data: [], error: null })
+    );
+
+    const { fetchActiveDrop } = await import("../lib/drops");
+    const result = await fetchActiveDrop();
+
+    expect(result).not.toBeNull();
+    expect(result!.capacityEnforced).toBe(true);
   });
 });
