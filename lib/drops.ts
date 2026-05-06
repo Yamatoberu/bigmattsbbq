@@ -17,7 +17,7 @@ export async function fetchActiveDrop(): Promise<DropDTO | null> {
   const { data: drop, error: dropErr } = await supabase
     .from("drops")
     .select(
-      "id, title, status, order_cutoff_at, capacity_pulled_pork, capacity_brisket, reserved_pulled_pork, reserved_brisket"
+      "id, title, status, order_cutoff_at, capacity_pulled_pork, capacity_brisket, reserved_pulled_pork, reserved_brisket, capacity_enforced"
     )
     .eq("status", "active")
     .order("created_at", { ascending: false })
@@ -53,6 +53,7 @@ export async function fetchActiveDrop(): Promise<DropDTO | null> {
       row.reserved_brisket >= row.capacity_brisket
   }));
 
+  const capacityEnforced = drop.capacity_enforced !== false;
   return {
     id: drop.id,
     title: drop.title,
@@ -63,10 +64,11 @@ export async function fetchActiveDrop(): Promise<DropDTO | null> {
       brisket: { total: drop.capacity_brisket, reserved: drop.reserved_brisket }
     },
     soldOut: {
-      pulledPork: drop.reserved_pulled_pork >= drop.capacity_pulled_pork,
-      brisket: drop.reserved_brisket >= drop.capacity_brisket
+      pulledPork: capacityEnforced && drop.reserved_pulled_pork >= drop.capacity_pulled_pork,
+      brisket: capacityEnforced && drop.reserved_brisket >= drop.capacity_brisket
     },
-    pickupOptions
+    pickupOptions,
+    capacityEnforced
   };
 }
 
@@ -77,6 +79,7 @@ export interface DropReadinessRow {
   reserved_pulled_pork: number;
   reserved_brisket: number;
   order_cutoff_at: string | null;
+  capacity_enforced: boolean;
 }
 
 export type DropReadiness =
@@ -103,6 +106,9 @@ export function checkDropReady(drop: DropReadinessRow | null): DropReadiness {
         error: "This drop has closed. Orders are no longer being accepted."
       };
     }
+  }
+  if (!drop.capacity_enforced) {
+    return { ok: true };
   }
   // Coarse gate: block only when every product type is globally exhausted.
   // Per-product capacity (e.g. pulled pork sold out but brisket available) is

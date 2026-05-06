@@ -77,6 +77,7 @@ export interface DropDTO {
     brisket: boolean;
   };
   pickupOptions: PickupOptionDTO[];
+  capacityEnforced: boolean;
 }
 
 export interface CheckoutResponseBody {

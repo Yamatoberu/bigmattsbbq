@@ -56,7 +56,7 @@ export async function POST(request: Request) {
 
     const { data: dropRow, error: dropErr } = await supabase
       .from("drops")
-      .select("id, status, order_cutoff_at, capacity_pulled_pork, capacity_brisket, reserved_pulled_pork, reserved_brisket")
+      .select("id, status, order_cutoff_at, capacity_pulled_pork, capacity_brisket, reserved_pulled_pork, reserved_brisket, capacity_enforced")
       .eq("id", parsed.data.dropId)
       .maybeSingle();
 
@@ -75,6 +75,8 @@ export async function POST(request: Request) {
         { status: readiness.status }
       );
     }
+
+    const capacityEnforced = dropRow?.capacity_enforced ?? true;
 
     const { data: pickupRow, error: pickupErr } = await supabase
       .from("drop_pickup_options")
@@ -100,14 +102,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const pickupSoldOut =
-      pickupRow.reserved_pulled_pork >= pickupRow.capacity_pulled_pork &&
-      pickupRow.reserved_brisket >= pickupRow.capacity_brisket;
-    if (pickupSoldOut) {
-      return NextResponse.json(
-        { error: "This pickup slot is sold out. Please choose another.", requestId },
-        { status: 409 }
-      );
+    if (capacityEnforced) {
+      const pickupSoldOut =
+        pickupRow.reserved_pulled_pork >= pickupRow.capacity_pulled_pork &&
+        pickupRow.reserved_brisket >= pickupRow.capacity_brisket;
+      if (pickupSoldOut) {
+        return NextResponse.json(
+          { error: "This pickup slot is sold out. Please choose another.", requestId },
+          { status: 409 }
+        );
+      }
     }
 
     // Aggregate cart quantities by product type before reserving capacity.
@@ -120,32 +124,34 @@ export async function POST(request: Request) {
 
     // Reserve capacity slots before touching Square. Roll back on any failure.
     const reserved: Array<{ productName: string; quantity: number }> = [];
-    for (const [productName, quantity] of totals) {
-      const { data: reserveResult, error: reserveErr } = await supabase.rpc("reserve_pickup_slot", {
-        p_drop_id: parsed.data.dropId,
-        p_pickup_option_id: parsed.data.pickupOptionId,
-        p_product_name: productName,
-        p_quantity: quantity
-      });
-      const reserveData = reserveResult as { ok: boolean; reason?: string } | null;
-      if (reserveErr || !reserveData?.ok) {
-        for (const r of reserved) {
-          await supabase.rpc("release_pickup_slot", {
-            p_drop_id: parsed.data.dropId,
-            p_pickup_option_id: parsed.data.pickupOptionId,
-            p_product_name: r.productName,
-            p_quantity: r.quantity
-          });
+    if (capacityEnforced) {
+      for (const [productName, quantity] of totals) {
+        const { data: reserveResult, error: reserveErr } = await supabase.rpc("reserve_pickup_slot", {
+          p_drop_id: parsed.data.dropId,
+          p_pickup_option_id: parsed.data.pickupOptionId,
+          p_product_name: productName,
+          p_quantity: quantity
+        });
+        const reserveData = reserveResult as { ok: boolean; reason?: string } | null;
+        if (reserveErr || !reserveData?.ok) {
+          for (const r of reserved) {
+            await supabase.rpc("release_pickup_slot", {
+              p_drop_id: parsed.data.dropId,
+              p_pickup_option_id: parsed.data.pickupOptionId,
+              p_product_name: r.productName,
+              p_quantity: r.quantity
+            });
+          }
+          return NextResponse.json(
+            {
+              error: reserveData?.reason ?? "Capacity unavailable for selected pickup.",
+              requestId
+            },
+            { status: 409 }
+          );
         }
-        return NextResponse.json(
-          {
-            error: reserveData?.reason ?? "Capacity unavailable for selected pickup.",
-            requestId
-          },
-          { status: 409 }
-        );
+        reserved.push({ productName, quantity });
       }
-      reserved.push({ productName, quantity });
     }
 
     let orderId: string | undefined;

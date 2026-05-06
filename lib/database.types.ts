@@ -61,6 +61,7 @@ export type Database = {
       drops: {
         Row: {
           capacity_brisket: number
+          capacity_enforced: boolean
           capacity_pulled_pork: number
           created_at: string
           id: string
@@ -72,6 +73,7 @@ export type Database = {
         }
         Insert: {
           capacity_brisket?: number
+          capacity_enforced?: boolean
           capacity_pulled_pork?: number
           created_at?: string
           id?: string
@@ -83,6 +85,7 @@ export type Database = {
         }
         Update: {
           capacity_brisket?: number
+          capacity_enforced?: boolean
           capacity_pulled_pork?: number
           created_at?: string
           id?: string
