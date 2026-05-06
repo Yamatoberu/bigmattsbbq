@@ -37,6 +37,30 @@ const checkoutSchema = z.object({
   cart: z.array(cartSchema).min(1)
 });
 
+async function releaseReserved(
+  supabase: ReturnType<typeof getSupabaseClient>,
+  reserved: Array<{ productName: string; quantity: number }>,
+  dropId: string,
+  pickupOptionId: string,
+  requestId: string
+): Promise<void> {
+  const results = await Promise.allSettled(
+    reserved.map((r) =>
+      supabase.rpc("release_pickup_slot", {
+        p_drop_id: dropId,
+        p_pickup_option_id: pickupOptionId,
+        p_product_name: r.productName,
+        p_quantity: r.quantity
+      })
+    )
+  );
+  for (const result of results) {
+    if (result.status === "rejected") {
+      logError("release_pickup_slot failed", result.reason, requestId);
+    }
+  }
+}
+
 export async function POST(request: Request) {
   const headerList = await headers();
   const requestId = headerList.get("x-request-id") ?? crypto.randomUUID();
@@ -134,14 +158,7 @@ export async function POST(request: Request) {
         });
         const reserveData = reserveResult as { ok: boolean; reason?: string } | null;
         if (reserveErr || !reserveData?.ok) {
-          for (const r of reserved) {
-            await supabase.rpc("release_pickup_slot", {
-              p_drop_id: parsed.data.dropId,
-              p_pickup_option_id: parsed.data.pickupOptionId,
-              p_product_name: r.productName,
-              p_quantity: r.quantity
-            });
-          }
+          await releaseReserved(supabase, reserved, parsed.data.dropId, parsed.data.pickupOptionId, requestId);
           return NextResponse.json(
             {
               error: reserveData?.reason ?? "Capacity unavailable for selected pickup.",
@@ -192,14 +209,7 @@ export async function POST(request: Request) {
       }
 
       if (!customerId) {
-        for (const r of reserved) {
-          await supabase.rpc("release_pickup_slot", {
-            p_drop_id: parsed.data.dropId,
-            p_pickup_option_id: parsed.data.pickupOptionId,
-            p_product_name: r.productName,
-            p_quantity: r.quantity
-          });
-        }
+        await releaseReserved(supabase, reserved, parsed.data.dropId, parsed.data.pickupOptionId, requestId);
         return NextResponse.json(
           { error: "Unable to create customer record.", requestId },
           { status: 500 }
@@ -261,14 +271,7 @@ export async function POST(request: Request) {
       orderId = orderResponse.order?.id;
 
       if (!orderId) {
-        for (const r of reserved) {
-          await supabase.rpc("release_pickup_slot", {
-            p_drop_id: parsed.data.dropId,
-            p_pickup_option_id: parsed.data.pickupOptionId,
-            p_product_name: r.productName,
-            p_quantity: r.quantity
-          });
-        }
+        await releaseReserved(supabase, reserved, parsed.data.dropId, parsed.data.pickupOptionId, requestId);
         return NextResponse.json(
           { error: "Unable to create order.", requestId },
           { status: 500 }
@@ -312,14 +315,7 @@ export async function POST(request: Request) {
       const invoiceVersion = invoiceResponse.invoice?.version;
 
       if (!invoiceId || invoiceVersion === undefined) {
-        for (const r of reserved) {
-          await supabase.rpc("release_pickup_slot", {
-            p_drop_id: parsed.data.dropId,
-            p_pickup_option_id: parsed.data.pickupOptionId,
-            p_product_name: r.productName,
-            p_quantity: r.quantity
-          });
-        }
+        await releaseReserved(supabase, reserved, parsed.data.dropId, parsed.data.pickupOptionId, requestId);
         return NextResponse.json(
           { error: "Unable to create invoice.", requestId },
           { status: 500 }
@@ -342,14 +338,7 @@ export async function POST(request: Request) {
       });
     } catch (squareError) {
       // Square call failed — release reserved capacity so the slot is not stranded.
-      for (const r of reserved) {
-        await supabase.rpc("release_pickup_slot", {
-          p_drop_id: parsed.data.dropId,
-          p_pickup_option_id: parsed.data.pickupOptionId,
-          p_product_name: r.productName,
-          p_quantity: r.quantity
-        });
-      }
+      await releaseReserved(supabase, reserved, parsed.data.dropId, parsed.data.pickupOptionId, requestId);
       throw squareError;
     }
 
