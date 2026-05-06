@@ -40,17 +40,11 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
     return sum + (info?.priceCents ?? 0) * item.quantity;
   }, 0);
 
-  const bundleVariationIds = useMemo(() => {
-    const ids = new Set<string>();
-    for (const pkg of PACKAGES) {
-      if (pkg.bundleVariationId) ids.add(pkg.bundleVariationId);
-    }
-    return ids;
-  }, []);
+  const bundleItemNames = useMemo(() => PACKAGES.map((p) => p.name.toLowerCase()), []);
 
   const individualItems = useMemo(
-    () => frozenItems.filter((item) => !item.variations.some((v) => bundleVariationIds.has(v.variationId))),
-    [frozenItems, bundleVariationIds]
+    () => frozenItems.filter((item) => !bundleItemNames.some((name) => item.name.toLowerCase().includes(name))),
+    [frozenItems, bundleItemNames]
   );
 
   return (
