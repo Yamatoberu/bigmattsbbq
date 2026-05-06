@@ -55,6 +55,8 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
 
   return (
     <div className="bg-ember-radial bg-grain">
+      {(!drop || drop.status !== "active") && <MailingListSection />}
+
       {drop && drop.status === "active" && (
         <section className="hero-panel">
           <div className="hero-content mx-auto max-w-5xl text-center">
@@ -254,7 +256,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
         </div>
       </section>
 
-      <MailingListSection />
+      {drop && drop.status === "active" && <MailingListSection />}
     </div>
   );
 }
