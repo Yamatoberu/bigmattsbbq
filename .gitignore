@@ -54,7 +54,6 @@ tsconfig.tsbuildinfo
 # local tooling / artifacts
 .claude/
 screenshots/
-.planning/
 
 # System Files
 .DS_Store
