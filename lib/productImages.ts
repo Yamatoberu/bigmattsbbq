@@ -34,9 +34,9 @@ const PACKAGE_IMAGE_BY_ID: Record<string, ProductImageConfig> = {
     src: "/images/packages/backyard-host-card.svg",
     alt: "Backyard Host bundle with larger portions for a group"
   },
-  "freezer-stock-up": {
+  "freezer-filler": {
     src: "/images/packages/freezer-stock-up-card.svg",
-    alt: "Freezer Stock-Up bundle with bulk barbecue portions"
+    alt: "Freezer Filler bundle with bulk barbecue portions"
   }
 };
 

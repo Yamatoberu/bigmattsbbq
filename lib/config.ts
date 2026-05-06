@@ -48,9 +48,9 @@ export const PACKAGES: PackageConfig[] = [
     ]
   },
   {
-    id: "freezer-stock-up",
+    id: "freezer-filler",
     bundleVariationId: "NKLG3CMIWO5GLE4IQHUP4ZDV",
-    name: "Freezer Stock-Up",
+    name: "Freezer Filler",
     description: "A deep-freeze reset with plenty of sauce. Feeds 14+.",
     items: [
       {
