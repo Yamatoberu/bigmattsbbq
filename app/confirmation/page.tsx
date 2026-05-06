@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { CONTACT_EMAIL } from "../../lib/config";
 
-interface ConfirmationPageProps {
-  searchParams: { orderId?: string; pickupNote?: string };
-}
-
-export default function ConfirmationPage({ searchParams }: ConfirmationPageProps) {
-  const pickupNote = searchParams.pickupNote || "Pickup scheduled";
-  const orderId = searchParams.orderId || "";
+export default async function ConfirmationPage({
+  searchParams
+}: {
+  searchParams: Promise<{ orderId?: string; pickupNote?: string }>;
+}) {
+  const { orderId = "", pickupNote = "Pickup scheduled" } = await searchParams;
 
   return (
     <main className="section-spacing bg-ember-radial bg-grain">
