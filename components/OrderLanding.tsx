@@ -99,16 +99,24 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
         </section>
       )}
 
-      <section className="section-spacing">
+      <section className="px-6 pt-3 pb-6 md:px-12">
         <div className="mx-auto max-w-2xl text-center">
+          <SectionHeader
+            title="Straight Off the Pit"
+            subtitle="No shortcuts. Just smoke, time, and heat."
+          />
           <p className="text-base leading-relaxed text-smoke-700 md:text-lg">
             Every batch starts the night before. Pulled pork and brisket go on the smoker around midnight — cherry, oak, and pecan wood — and come off 12 to 14 hours later. Vacuum-sealed at peak flavor and frozen within hours of leaving the pit. The result: a Tuesday dinner that tastes like a weekend cookout. No restaurant markup. No grill. Just heat and eat.
           </p>
         </div>
       </section>
 
-      <section className="px-6 py-8 md:px-12">
+      <section className="px-6 pt-4 pb-8 md:px-12">
         <div className="mx-auto max-w-5xl">
+          <SectionHeader
+            title="What People Are Saying"
+            subtitle="Real reviews from real customers."
+          />
           <Testimonials variant="strip" />
         </div>
       </section>
