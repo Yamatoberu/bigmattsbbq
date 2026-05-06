@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCart } from "./cart/CartContext";
+import { useActiveDrop } from "./hooks/useActiveDrop";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -17,6 +18,8 @@ export function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const { items } = useCart();
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
+  const { drop } = useActiveDrop();
+  const dropIsActive = drop?.status === "active";
   const pathname = usePathname();
 
   const isActive = (href: string) => {
@@ -72,7 +75,7 @@ export function NavBar() {
 
           {/* Right cluster */}
           <div className="flex flex-row items-center gap-3">
-<Link
+{dropIsActive && <Link
               href="/checkout"
               className="relative inline-flex items-center justify-center rounded-md border border-[#4a3222] bg-[#1c130f] px-4 py-2 text-[0.811rem] font-semibold uppercase tracking-[0.25em] text-smoke-900 shadow-none transition hover:border-[#b8893a] hover:text-[#f0c16a]"
               aria-label={`Cart with ${itemCount} items`}
@@ -83,7 +86,7 @@ export function NavBar() {
                   {itemCount}
                 </span>
               )}
-            </Link>
+            </Link>}
             {/* Hamburger — mobile only */}
             <button
               type="button"
