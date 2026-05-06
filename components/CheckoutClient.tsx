@@ -208,7 +208,7 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
                   </div>
                 </div>
               ))}
-              <div className="flex items-center justify-between border-t border-[#3a2a20] pt-4">
+              <div className="flex items-center justify-between border-t border-smoke-400 pt-4">
                 <span className="text-sm font-semibold text-smoke-700">Estimated total</span>
                 <span className="text-sm font-semibold text-smoke-900">
                   {formatMoney(estimatedTotalCents)}
@@ -226,10 +226,10 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
               const disabled = option.isSoldOut;
               const baseClasses = "rounded-lg border p-5 text-left min-h-[72px] transition-colors";
               const stateClasses = disabled
-                ? "border-[#3a2a20] bg-[#16100c] opacity-60 cursor-not-allowed"
+                ? "border-smoke-400 bg-pit-card opacity-60 cursor-not-allowed"
                 : isSelected
-                  ? "border-[#d8b56a] bg-[#16100c] ring-1 ring-[#d8b56a]/40"
-                  : "border-[#3a2a20] bg-[#16100c] hover:border-[#b8893a]";
+                  ? "border-gold-400 bg-pit-card ring-1 ring-gold-400/40"
+                  : "border-smoke-400 bg-pit-card hover:border-gold-600";
               return (
                 <button
                   key={option.id}

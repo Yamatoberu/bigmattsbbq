@@ -16,7 +16,7 @@ export function PackageCard({ pkg, onAdd, isDisabled, soldOut = false }: Package
   return (
     <article
       className={`glass-card relative flex h-full flex-col gap-4 p-6 transition hover:-translate-y-1 ${
-        pkg.highlight ? "md:scale-[1.03] md:border-[#d8b56a]" : ""
+        pkg.highlight ? "md:scale-[1.03] md:border-gold-400" : ""
       }`}
     >
       {pkg.highlight && (
@@ -29,7 +29,7 @@ export function PackageCard({ pkg, onAdd, isDisabled, soldOut = false }: Package
       <ul className="text-sm text-smoke-800">
         {pkg.items.map((item) => (
           <li key={`${pkg.id}-${item.itemName}-${item.variationName}`} className="flex items-start gap-2">
-            <span className="mt-1 text-xs text-[#b8893a]">•</span>
+            <span className="mt-1 text-xs text-gold-600">•</span>
             <span>
               {item.quantity} {item.itemName}{" "}
               {item.variationName
@@ -40,7 +40,7 @@ export function PackageCard({ pkg, onAdd, isDisabled, soldOut = false }: Package
         ))}
       </ul>
       <div className="mt-auto flex flex-col gap-3">
-        <div className="relative h-28 overflow-hidden rounded-md border border-[#3a2a20] bg-[#201510]">
+        <div className="relative h-28 overflow-hidden rounded-md border border-smoke-400 bg-pit-img">
           <Image src={image.src} alt={image.alt} fill sizes="(min-width: 768px) 280px, 100vw" className="object-cover" />
         </div>
         {soldOut ? (

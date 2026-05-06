@@ -10,7 +10,7 @@ export function SectionHeader({
   return (
     <div className="mb-8 text-center">
       {eyebrow && (
-        <p className="text-xs font-semibold uppercase tracking-[0.45em] text-[#f0c16a]">
+        <p className="text-xs font-semibold uppercase tracking-[0.45em] text-gold-300">
           {eyebrow}
         </p>
       )}

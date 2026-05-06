@@ -28,7 +28,7 @@ export function SoldOutCapture() {
 
   if (state === "success") {
     return (
-      <p className="text-xs font-semibold text-[#f0c16a]">
+      <p className="text-xs font-semibold text-gold-300">
         You&apos;re on the list for the next drop.
       </p>
     );

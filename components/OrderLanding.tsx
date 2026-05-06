@@ -116,7 +116,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
       </section>
 
       {drop && drop.status === "active" && (
-        <section id="order" className="section-spacing bg-[#120c09]">
+        <section id="order" className="section-spacing bg-pit-surface">
           <div className="mx-auto max-w-5xl">
             <SectionHeader
               title="Choose Your Drop"
@@ -199,9 +199,9 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
         </section>
       )}
 
-      <section className="section-spacing bg-[#120c09]">
+      <section className="section-spacing bg-pit-surface">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-300">
             Catering
           </p>
           <h2
@@ -215,7 +215,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
           </p>
           <Link
             href="/catering"
-            className="mt-6 inline-block text-sm font-semibold text-[#f0c16a] underline-offset-4 hover:underline"
+            className="mt-6 inline-block text-sm font-semibold text-gold-300 underline-offset-4 hover:underline"
           >
             See Catering Packages →
           </Link>
@@ -233,9 +233,9 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
         </div>
       </section>
 
-      <section className="section-spacing bg-[#120c09]">
+      <section className="section-spacing bg-pit-surface">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-300">
             The Pitmaster
           </p>
           <h2
@@ -252,7 +252,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
           </p>
           <a
             href="/about"
-            className="mt-6 inline-block text-sm font-semibold text-[#f0c16a] underline-offset-4 hover:underline"
+            className="mt-6 inline-block text-sm font-semibold text-gold-300 underline-offset-4 hover:underline"
           >
             Read the full story →
           </a>

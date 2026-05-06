@@ -26,7 +26,7 @@ export function FrozenItemCard({ item, onAdd, soldOut = false, ignoreStock = fal
               <ul className="mt-2 space-y-0.5 text-sm text-smoke-600">
                 {item.description.split(/ - /).filter(Boolean).map((part) => (
                   <li key={part} className="flex items-start gap-1.5">
-                    <span className="mt-0.5 text-xs text-[#b8893a]">•</span>
+                    <span className="mt-0.5 text-xs text-gold-600">•</span>
                     <span>{part.replace(/^-\s*/, "")}</span>
                   </li>
                 ))}
@@ -36,7 +36,7 @@ export function FrozenItemCard({ item, onAdd, soldOut = false, ignoreStock = fal
             )
           )}
         </div>
-        <div className="relative h-16 w-20 overflow-hidden rounded-md border border-[#3a2a20] bg-[#201510]">
+        <div className="relative h-16 w-20 overflow-hidden rounded-md border border-smoke-400 bg-pit-img">
           <Image src={image.src} alt={image.alt} fill sizes="80px" className="object-cover" />
         </div>
       </div>

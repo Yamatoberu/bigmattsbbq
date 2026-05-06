@@ -9,7 +9,7 @@ export default function AboutPage() {
   return (
     <section className="section-spacing mx-auto max-w-2xl pb-20">
       <header>
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-300">
           The Story
         </p>
         <h1 className="mt-2 text-4xl font-semibold text-smoke-900" style={fontDisplay}>
@@ -23,7 +23,7 @@ export default function AboutPage() {
 
       <div className="mt-10 space-y-8">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-300">
             How It Started
           </p>
           <h2 className="mt-1 text-xl font-semibold text-smoke-900" style={fontDisplay}>
@@ -39,7 +39,7 @@ export default function AboutPage() {
         </div>
 
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-300">
             The Craft
           </p>
           <h2 className="mt-1 text-xl font-semibold text-smoke-900" style={fontDisplay}>
@@ -54,7 +54,7 @@ export default function AboutPage() {
         </div>
 
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-300">
             Why Drops?
           </p>
           <h2 className="mt-1 text-xl font-semibold text-smoke-900" style={fontDisplay}>
@@ -70,7 +70,7 @@ export default function AboutPage() {
         </div>
 
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-300">
             Reheating
           </p>
           <h2 className="mt-1 text-xl font-semibold text-smoke-900" style={fontDisplay}>
@@ -84,8 +84,8 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <section aria-labelledby="about-matt-heading" className="mt-10 border-t border-[#3a2a20] pt-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+      <section aria-labelledby="about-matt-heading" className="mt-10 border-t border-smoke-400 pt-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-300">
           The Pitmaster
         </p>
         <h2 id="about-matt-heading" className="mt-1 text-xl font-semibold text-smoke-900" style={fontDisplay}>

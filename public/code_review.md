@@ -592,10 +592,27 @@ At minimum, document the expected format in `lib/square.ts` next to `mapCatalogT
 | TODO | 11 | Catering FAQ duplicates `SectionHeader` inline | 🟡 Medium | Low | `app/catering/page.tsx` |
 | TODO | 12 | `useActiveDrop` polls indefinitely even when drop is inactive | 🟡 Medium | Low | `components/hooks/useActiveDrop.ts` |
 | TODO | 13 | `Providers` is a one-line wrapper with no reason to exist | 🟢 Low | Low | `app/providers.tsx` + `app/layout.tsx` |
-| TODO | 14 | Magic hex colors in components not registered in Tailwind config | 🟢 Low | Medium | Multiple components |
+| DONE | 14 | Magic hex colors in components not registered in Tailwind config | 🟢 Low | Medium | Multiple components |
 | TODO | 15 | `formatPickupDate` exported but only used internally | 🟢 Low | Trivial | `lib/drops.ts` |
 | TODO | 16 | `FrozenItemCard` description parsing is brittle string heuristic | 🟢 Low | Medium | `components/FrozenItemCard.tsx` |
 
 ---
 
-*Review conducted by static analysis of source files. Issues 1 and 2 are recommended for immediate attention before the next drop opens.*
+## Recommended Implementation Order
+
+Group the fixes into three waves ordered by risk, not by layer.
+
+**Wave 1 — Pre-drop (fix before orders open):** Issues 1, 2, 5, 8
+Security hole + data-integrity risk + live bug + deprecated API. These four are the ones that could cause real harm on the next active drop. Issue 1 especially — the test-seed route is live right now and has no access control.
+
+**Wave 2 — Correctness cleanup:** Issues 3, 4, 7, 12
+No immediate fire, but each is a correctness or safety issue: the nested `<main>` regression, the stale-closure risk in CartContext, the secret coupling, and the runaway polling. These touch orthogonal files with no risk of conflicts — good as one PR.
+
+**Wave 3 — DRY and polish (any quiet sprint):** Issues 6, 9, 10, 11, 13, 14, 15, 16
+All low-risk refactors that improve the next developer's experience but won't break anything if deferred. Issue 6 (sequential broadcast) is the most time-sensitive of this group — it will bite once the mailing list grows past ~40 people — but it can wait until after Wave 2.
+
+**Note on Issue 14 (color tokens):** Technically Wave 3, but it touches nearly every component file and will generate merge conflicts with anything else in flight. Do it first or last within Wave 3, not interleaved with other component work.
+
+---
+
+*Review conducted by static analysis of source files.*

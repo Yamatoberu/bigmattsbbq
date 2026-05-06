@@ -25,7 +25,7 @@ export default function ContactPage() {
 
       <div className="glass-card p-6 mt-8 space-y-6">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-300">
             General Inquiries
           </p>
           <a
@@ -37,7 +37,7 @@ export default function ContactPage() {
         </div>
 
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-300">
             Catering
           </p>
           <p className="mt-2 text-sm text-smoke-700">
@@ -52,7 +52,7 @@ export default function ContactPage() {
         </div>
 
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-300">
             Proudly Serving
           </p>
           <p className="mt-2 text-base text-smoke-800">

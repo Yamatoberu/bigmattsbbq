@@ -46,7 +46,7 @@ export function MailingListSection() {
         </p>
 
         {state === "success" ? (
-          <p className="mt-8 text-sm font-semibold text-[#f0c16a]">
+          <p className="mt-8 text-sm font-semibold text-gold-300">
             You&apos;re on the list! We&apos;ll let you know about the next drop.
           </p>
         ) : (

@@ -27,10 +27,10 @@ export function Testimonials({ variant = "cards" }: TestimonialsProps) {
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {testimonials.map((t) => (
           <div key={t.name} className="flex items-start gap-2">
-            <span className="mt-0.5 shrink-0 text-xs text-[#d8b56a]">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            <span className="mt-0.5 shrink-0 text-xs text-gold-400">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
             <div>
               <p className="text-sm text-smoke-700">&ldquo;{t.quote}&rdquo;</p>
-              <p className="mt-1 text-xs uppercase tracking-[0.2em] text-[#f0c16a]">&#8212; {t.name}</p>
+              <p className="mt-1 text-xs uppercase tracking-[0.2em] text-gold-300">&#8212; {t.name}</p>
             </div>
           </div>
         ))}
@@ -43,9 +43,9 @@ export function Testimonials({ variant = "cards" }: TestimonialsProps) {
       {testimonials.map((testimonial) => (
         <div key={testimonial.name} className="glass-card p-5">
           <p className="text-sm text-smoke-700">&ldquo;{testimonial.quote}&rdquo;</p>
-          <p className="mt-4 flex items-center justify-between text-xs uppercase tracking-[0.3em] text-[#f0c16a]">
+          <p className="mt-4 flex items-center justify-between text-xs uppercase tracking-[0.3em] text-gold-300">
             <span>{testimonial.name}</span>
-            <span className="text-[#d8b56a]">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            <span className="text-gold-400">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
           </p>
         </div>
       ))}

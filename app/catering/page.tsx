@@ -135,10 +135,10 @@ const POTATO_BOWLS: PackageTier[] = [
 
 function MenuItemCard({ item }: { item: MenuItem }) {
   return (
-    <div className="rounded-md border border-[#3a2a20] bg-[#1c140f] p-4">
+    <div className="rounded-md border border-smoke-400 bg-pit-card p-4">
       <div className="flex items-start justify-between gap-2">
         <p className="font-semibold text-smoke-900" style={fontDisplay}>{item.name}</p>
-        <p className="shrink-0 text-sm font-semibold text-[#f0c16a]">{item.price}</p>
+        <p className="shrink-0 text-sm font-semibold text-gold-300">{item.price}</p>
       </div>
       <p className="mt-1 text-sm text-smoke-700">{item.description}</p>
     </div>
@@ -147,8 +147,8 @@ function MenuItemCard({ item }: { item: MenuItem }) {
 
 function PackageTierCard({ tier }: { tier: PackageTier }) {
   return (
-    <div className="rounded-md border border-[#3a2a20] bg-[#1c140f] p-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+    <div className="rounded-md border border-smoke-400 bg-pit-card p-4">
+      <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-300">
         {tier.name}
       </p>
       <p className="mt-2 text-xl font-semibold text-smoke-900" style={fontDisplay}>
@@ -176,7 +176,7 @@ export default function CateringPage() {
   return (
     <section className="section-spacing mx-auto max-w-5xl">
       <header className="text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-300">
           Catering by Big Matt&apos;s BBQ
         </p>
         <h1 className="mt-3 text-4xl font-semibold text-smoke-900 md:text-5xl" style={fontDisplay}>
@@ -193,7 +193,7 @@ export default function CateringPage() {
         {EVENT_TYPES.map((type) => (
           <span
             key={type}
-            className="rounded-full border border-[#3a2a20] bg-[#1c140f] px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-smoke-700"
+            className="rounded-full border border-smoke-400 bg-pit-card px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-smoke-700"
           >
             {type}
           </span>
@@ -207,7 +207,7 @@ export default function CateringPage() {
       </div>
 
       <div className="mt-6 glass-card p-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-300">
           Group Orders
         </p>
         <h2 className="mt-1 text-2xl font-semibold text-smoke-900" style={fontDisplay}>
@@ -234,7 +234,7 @@ export default function CateringPage() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-[#3a2a20] pt-8">
+        <div className="mt-8 border-t border-smoke-400 pt-8">
           <h3 className="text-xl font-semibold text-smoke-900" style={fontDisplay}>
             Sandwiches
           </h3>
@@ -249,7 +249,7 @@ export default function CateringPage() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-[#3a2a20] pt-8">
+        <div className="mt-8 border-t border-smoke-400 pt-8">
           <h3 className="text-xl font-semibold text-smoke-900" style={fontDisplay}>
             Mashed Potato Bowls
           </h3>
@@ -267,7 +267,7 @@ export default function CateringPage() {
       </div>
 
       <div className="mt-8 glass-card p-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f0c16a]">
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-300">
           À La Carte
         </p>
         <h2 className="mt-1 text-2xl font-semibold text-smoke-900" style={fontDisplay}>
@@ -285,7 +285,7 @@ export default function CateringPage() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-[#3a2a20] pt-8">
+        <div className="mt-8 border-t border-smoke-400 pt-8">
           <div className="flex flex-wrap items-baseline gap-x-3">
             <h3 className="text-sm font-semibold uppercase tracking-widest text-smoke-600">
               Sides
@@ -299,7 +299,7 @@ export default function CateringPage() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-[#3a2a20] pt-8">
+        <div className="mt-8 border-t border-smoke-400 pt-8">
           <h3 className="text-sm font-semibold uppercase tracking-widest text-smoke-600">
             Desserts
           </h3>
@@ -313,7 +313,7 @@ export default function CateringPage() {
 
       <div className="mt-10">
         <div className="mb-8 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.45em] text-[#f0c16a]">FAQs</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.45em] text-gold-300">FAQs</p>
           <div className="section-title-wrap mt-3">
             <span className="section-title-line hidden md:block" />
             <h2 className="text-2xl font-semibold text-smoke-900 md:text-3xl" style={fontDisplay}>

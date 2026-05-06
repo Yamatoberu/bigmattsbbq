@@ -62,7 +62,7 @@ export function NavBar() {
                 href={link.href}
                 className={
                   "text-[1.092rem] font-semibold uppercase tracking-[0.25em] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-500 " +
-                  (isActive(link.href) ? "text-[#f0c16a]" : "text-smoke-800 hover:text-[#f0c16a]")
+                  (isActive(link.href) ? "text-gold-300" : "text-smoke-800 hover:text-gold-300")
                 }
               >
                 {link.label}
@@ -77,7 +77,7 @@ export function NavBar() {
           <div className="flex flex-row items-center gap-3">
 {dropIsActive && <Link
               href="/checkout"
-              className="relative inline-flex items-center justify-center rounded-md border border-[#4a3222] bg-[#1c130f] px-4 py-2 text-[0.811rem] font-semibold uppercase tracking-[0.25em] text-smoke-900 shadow-none transition hover:border-[#b8893a] hover:text-[#f0c16a]"
+              className="relative inline-flex items-center justify-center rounded-md border border-smoke-400 bg-pit-btn px-4 py-2 text-[0.811rem] font-semibold uppercase tracking-[0.25em] text-smoke-900 shadow-none transition hover:border-gold-600 hover:text-gold-300"
               aria-label={`Cart with ${itemCount} items`}
             >
               Cart
@@ -94,7 +94,7 @@ export function NavBar() {
               aria-expanded={isOpen}
               aria-controls="mobile-nav-drawer"
               aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
-              className="inline-flex nav:hidden items-center justify-center min-h-[44px] min-w-[44px] rounded-md border border-[#4a3222] bg-[#1c130f] text-smoke-900 hover:text-[#f0c16a] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-500"
+              className="inline-flex nav:hidden items-center justify-center min-h-[44px] min-w-[44px] rounded-md border border-smoke-400 bg-pit-btn text-smoke-900 hover:text-gold-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-500"
             >
               {isOpen ? (
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -137,7 +137,7 @@ export function NavBar() {
               onClick={() => setIsOpen(false)}
               className={
                 "block rounded-md px-4 py-3 text-[1.092rem] font-semibold uppercase tracking-[0.25em] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-500 " +
-                (isActive(link.href) ? "text-[#f0c16a]" : "text-smoke-800 hover:text-[#f0c16a]")
+                (isActive(link.href) ? "text-gold-300" : "text-smoke-800 hover:text-gold-300")
               }
             >
               {link.label}
