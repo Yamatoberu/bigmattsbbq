@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, type FormEvent } from "react";
+import { useMemo } from "react";
 import { SectionHeader } from "./SectionHeader";
 import { PackageCard } from "./PackageCard";
 import { FrozenItemCard } from "./FrozenItemCard";
@@ -53,120 +53,49 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
     [frozenItems, bundleVariationIds]
   );
 
-  type MailingListState = "idle" | "submitting" | "success" | "error";
-  const [mlEmail, setMlEmail] = useState("");
-  const [mlState, setMlState] = useState<MailingListState>("idle");
-  const [mlError, setMlError] = useState<string | undefined>(undefined);
-
-  async function handleMailingListSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (mlState === "submitting") return;
-    setMlState("submitting");
-    setMlError(undefined);
-    try {
-      const response = await fetch("/api/mailing-list", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: mlEmail })
-      });
-      if (!response.ok) throw new Error("request failed");
-      setMlState("success");
-    } catch {
-      setMlState("error");
-      setMlError("Something went wrong. Try again in a moment.");
-    }
-  }
-
-  if (!drop || drop.status !== "active") {
-    return (
-      <div className="bg-ember-radial bg-grain">
-        <section className="hero-panel">
-          <div className="hero-content mx-auto max-w-5xl pb-32 text-center">
-            <span className="badge">Next Drop</span>
-            <h1 className="mt-3 text-3xl font-semibold leading-tight md:text-4xl" style={{ fontFamily: "var(--font-display)" }}>
-              Be first to know when the next drop opens.
-            </h1>
-            {mlState === "success" ? (
-              <p className="mt-4 text-sm font-semibold text-[#f0c16a]">
-                You&apos;re on the list! We&apos;ll let you know about the next drop.
-              </p>
-            ) : (
-              <form
-                className="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-center"
-                onSubmit={handleMailingListSubmit}
-                noValidate
-              >
-                <input
-                  type="email"
-                  required
-                  value={mlEmail}
-                  onChange={(event) => setMlEmail(event.target.value)}
-                  placeholder="your@email.com"
-                  className="input-field sm:w-72"
-                  aria-label="Email address"
-                  disabled={mlState === "submitting"}
-                />
-                <button
-                  type="submit"
-                  className="button-primary px-6 py-3 text-sm"
-                  disabled={mlState === "submitting"}
-                >
-                  {mlState === "submitting" ? "…" : "Notify Me"}
-                </button>
-              </form>
-            )}
-            {mlState === "error" && mlError && (
-              <p className="mt-3 text-sm text-ember-300" role="alert">
-                {mlError}
-              </p>
-            )}
-          </div>
-        </section>
-      </div>
-    );
-  }
-
   return (
     <div className="bg-ember-radial bg-grain">
-      <section className="hero-panel">
-        <div className="hero-content mx-auto max-w-5xl text-center">
-          <div className="inline-flex overflow-hidden rounded-lg mx-auto" style={{
-            background: "#130e0b",
-            border: "1px solid #2e1a10",
-            boxShadow: "0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(179,20,20,0.12)",
-          }}>
-            <div className="w-[3px] self-stretch bg-[#c01818]" />
-            <div className="px-6 py-4 text-left">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.35em] text-[#f0b8a8]">
-                {drop.title} — Orders Open
-              </p>
-              {drop.orderCutoffAt && (
-                <div className="mt-2 flex items-baseline gap-3">
-                  <span className="text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-[#c08878]">
-                    Window Closes In
-                  </span>
-                  <CountdownTimer
-                    deadline={drop.orderCutoffAt}
-                    fallbackLabel={formatDenverDateTime(drop.orderCutoffAt)}
-                    bare
-                  />
-                </div>
-              )}
+      {drop && drop.status === "active" && (
+        <section className="hero-panel">
+          <div className="hero-content mx-auto max-w-5xl text-center">
+            <div className="inline-flex overflow-hidden rounded-lg mx-auto" style={{
+              background: "#130e0b",
+              border: "1px solid #2e1a10",
+              boxShadow: "0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(179,20,20,0.12)",
+            }}>
+              <div className="w-[3px] self-stretch bg-[#c01818]" />
+              <div className="px-6 py-4 text-left">
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.35em] text-[#f0b8a8]">
+                  {drop.title} — Orders Open
+                </p>
+                {drop.orderCutoffAt && (
+                  <div className="mt-2 flex items-baseline gap-3">
+                    <span className="text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-[#c08878]">
+                      Window Closes In
+                    </span>
+                    <CountdownTimer
+                      deadline={drop.orderCutoffAt}
+                      fallbackLabel={formatDenverDateTime(drop.orderCutoffAt)}
+                      bare
+                    />
+                  </div>
+                )}
+              </div>
             </div>
+            <h1 className="mt-4 text-3xl font-semibold leading-tight md:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
+              Real Pit-Smoked BBQ —<br className="hidden sm:block" /> Straight to Your Freezer.
+            </h1>
+            <p className="mt-3 text-base text-smoke-700 md:text-lg">
+              Brisket and pulled pork smoked low and slow for 12–14 hours, vacuum-sealed at peak flavor, and ready to heat any night of the week.
+            </p>
+            <ul aria-label="Pickup locations" className="mt-3 flex list-none flex-wrap items-center justify-center gap-2 p-0">
+              {drop.pickupOptions.map((opt) => (
+                <li key={opt.id} className="badge">{opt.locationLabel}</li>
+              ))}
+            </ul>
           </div>
-          <h1 className="mt-4 text-3xl font-semibold leading-tight md:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
-            Real Pit-Smoked BBQ —<br className="hidden sm:block" /> Straight to Your Freezer.
-          </h1>
-          <p className="mt-3 text-base text-smoke-700 md:text-lg">
-            Brisket and pulled pork smoked low and slow for 12–14 hours, vacuum-sealed at peak flavor, and ready to heat any night of the week.
-          </p>
-          <ul aria-label="Pickup locations" className="mt-3 flex list-none flex-wrap items-center justify-center gap-2 p-0">
-            {drop.pickupOptions.map((opt) => (
-              <li key={opt.id} className="badge">{opt.locationLabel}</li>
-            ))}
-          </ul>
-        </div>
-      </section>
+        </section>
+      )}
 
       <section className="section-spacing">
         <div className="mx-auto max-w-2xl text-center">
@@ -182,84 +111,88 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
         </div>
       </section>
 
-      <section id="order" className="section-spacing bg-[#120c09]">
-        <div className="mx-auto max-w-5xl">
-          <SectionHeader
-            title="Choose Your Drop"
-            subtitle="Start with a package or build your own."
-          />
-          <div className="grid gap-6 md:grid-cols-3">
-            {PACKAGES.map((pkg) => {
-              const hasBundleVariation = Boolean(pkg.bundleVariationId && variationMap.has(pkg.bundleVariationId));
-              const bundleRemaining = pkg.bundleVariationId ? (variationMap.get(pkg.bundleVariationId)?.remaining ?? 0) : 0;
-              const resolved = hasBundleVariation ? [] : resolvePackageToCartItems(pkg, frozenItems);
-              const canAdd = hasBundleVariation || resolved.length === pkg.items.length;
-              const inStock = hasBundleVariation
-                ? bundleRemaining > 0
-                : resolved.every((item) => (variationMap.get(item.variationId)?.remaining ?? 0) > 0);
-              return (
-                <PackageCard
-                  key={pkg.id}
-                  pkg={pkg}
-                  onAdd={() => {
-                    if (pkg.bundleVariationId) {
-                      addItem({ variationId: pkg.bundleVariationId, quantity: 1 });
-                    } else {
-                      addItems(resolved);
-                    }
-                    setPackage(pkg.id);
-                  }}
-                  soldOut={canAdd && !inStock}
-                  isDisabled={!canAdd || isLoading || Boolean(error)}
-                />
-              );
-            })}
-          </div>
-          {estimatedTotalCents > 0 && (
-            <p className="mt-8 text-xs uppercase tracking-[0.3em] text-smoke-700">
-              Estimated total: {formatMoney(estimatedTotalCents)}
-            </p>
-          )}
-        </div>
-      </section>
-
-      <section className="section-spacing">
-        <div className="mx-auto max-w-5xl">
-          <SectionHeader
-            eyebrow="Build Your Own"
-            title="Individual Items"
-            subtitle="Mix and match individual items while supplies last."
-          />
-          {error && (
-            <div className="glass-card border border-ember-400 bg-[#1a120e] p-4 text-sm text-ember-200">
-              {error}
-              <button className="button-secondary ml-3 text-xs" onClick={reload}>
-                Retry
-              </button>
-            </div>
-          )}
-          {isLoading ? (
-            <p className="text-sm text-smoke-500">Loading frozen menu...</p>
-          ) : (
-            <div className="mt-6 grid gap-5 md:grid-cols-3">
-              {individualItems.map((item) => {
-                const nameLower = item.name.toLowerCase();
-                const itemSoldOut =
-                  (nameLower.includes("pulled pork") && drop.soldOut.pulledPork) ||
-                  (nameLower.includes("brisket") && drop.soldOut.brisket);
+      {drop && drop.status === "active" && (
+        <section id="order" className="section-spacing bg-[#120c09]">
+          <div className="mx-auto max-w-5xl">
+            <SectionHeader
+              title="Choose Your Drop"
+              subtitle="Start with a package or build your own."
+            />
+            <div className="grid gap-6 md:grid-cols-3">
+              {PACKAGES.map((pkg) => {
+                const hasBundleVariation = Boolean(pkg.bundleVariationId && variationMap.has(pkg.bundleVariationId));
+                const bundleRemaining = pkg.bundleVariationId ? (variationMap.get(pkg.bundleVariationId)?.remaining ?? 0) : 0;
+                const resolved = hasBundleVariation ? [] : resolvePackageToCartItems(pkg, frozenItems);
+                const canAdd = hasBundleVariation || resolved.length === pkg.items.length;
+                const inStock = hasBundleVariation
+                  ? bundleRemaining > 0
+                  : resolved.every((item) => (variationMap.get(item.variationId)?.remaining ?? 0) > 0);
                 return (
-                  <FrozenItemCard
-                    key={item.itemId}
-                    item={item}
-                    onAdd={(variationId) => addItem({ variationId, quantity: 1 })}
-                    soldOut={itemSoldOut}
+                  <PackageCard
+                    key={pkg.id}
+                    pkg={pkg}
+                    onAdd={() => {
+                      if (pkg.bundleVariationId) {
+                        addItem({ variationId: pkg.bundleVariationId, quantity: 1 });
+                      } else {
+                        addItems(resolved);
+                      }
+                      setPackage(pkg.id);
+                    }}
+                    soldOut={canAdd && !inStock}
+                    isDisabled={!canAdd || isLoading || Boolean(error)}
                   />
                 );
               })}
             </div>
-          )}
-        </div>
-      </section>
+            {estimatedTotalCents > 0 && (
+              <p className="mt-8 text-xs uppercase tracking-[0.3em] text-smoke-700">
+                Estimated total: {formatMoney(estimatedTotalCents)}
+              </p>
+            )}
+          </div>
+        </section>
+      )}
+
+      {drop && drop.status === "active" && (
+        <section className="section-spacing">
+          <div className="mx-auto max-w-5xl">
+            <SectionHeader
+              eyebrow="Build Your Own"
+              title="Individual Items"
+              subtitle="Mix and match individual items while supplies last."
+            />
+            {error && (
+              <div className="glass-card border border-ember-400 bg-[#1a120e] p-4 text-sm text-ember-200">
+                {error}
+                <button className="button-secondary ml-3 text-xs" onClick={reload}>
+                  Retry
+                </button>
+              </div>
+            )}
+            {isLoading ? (
+              <p className="text-sm text-smoke-500">Loading frozen menu...</p>
+            ) : (
+              <div className="mt-6 grid gap-5 md:grid-cols-3">
+                {individualItems.map((item) => {
+                  const nameLower = item.name.toLowerCase();
+                  const itemSoldOut =
+                    (nameLower.includes("pulled pork") && drop.soldOut.pulledPork) ||
+                    (nameLower.includes("brisket") && drop.soldOut.brisket);
+                  return (
+                    <FrozenItemCard
+                      key={item.itemId}
+                      item={item}
+                      onAdd={(variationId) => addItem({ variationId, quantity: 1 })}
+                      soldOut={itemSoldOut}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       <section className="section-spacing bg-[#120c09]">
         <div className="mx-auto max-w-2xl text-center">
