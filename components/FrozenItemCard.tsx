@@ -8,9 +8,10 @@ interface FrozenItemCardProps {
   item: FrozenItemDTO;
   onAdd: (variationId: string) => void;
   soldOut?: boolean;
+  ignoreStock?: boolean;
 }
 
-export function FrozenItemCard({ item, onAdd, soldOut = false }: FrozenItemCardProps) {
+export function FrozenItemCard({ item, onAdd, soldOut = false, ignoreStock = false }: FrozenItemCardProps) {
   const image = getFrozenItemImage(item);
 
   return (
@@ -41,7 +42,7 @@ export function FrozenItemCard({ item, onAdd, soldOut = false }: FrozenItemCardP
       </div>
       <div className="flex flex-col gap-3">
         {item.variations.map((variation) => {
-          const isSoldOut = soldOut || variation.remaining <= 0;
+          const isSoldOut = !ignoreStock && (soldOut || variation.remaining <= 0);
           return (
             <div key={variation.variationId} className="flex flex-wrap items-center justify-between gap-3">
               <div>
@@ -51,9 +52,11 @@ export function FrozenItemCard({ item, onAdd, soldOut = false }: FrozenItemCardP
                 <p className="text-sm font-semibold text-smoke-900">
                   {formatMoney(variation.priceCents, variation.currency)}
                 </p>
-                <p className="text-xs text-smoke-600" aria-live="polite">
-                  <span aria-label={`${variation.remaining} items left in stock`}>{variation.remaining} left</span>
-                </p>
+                {!ignoreStock && (
+                  <p className="text-xs text-smoke-600" aria-live="polite">
+                    <span aria-label={`${variation.remaining} items left in stock`}>{variation.remaining} left</span>
+                  </p>
+                )}
               </div>
               {isSoldOut ? (
                 <SoldOutCapture />

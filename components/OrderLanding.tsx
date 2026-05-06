@@ -126,9 +126,9 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
                 const bundleRemaining = pkg.bundleVariationId ? (variationMap.get(pkg.bundleVariationId)?.remaining ?? 0) : 0;
                 const resolved = hasBundleVariation ? [] : resolvePackageToCartItems(pkg, frozenItems);
                 const canAdd = hasBundleVariation || resolved.length === pkg.items.length;
-                const inStock = hasBundleVariation
+                const inStock = !drop.capacityEnforced || (hasBundleVariation
                   ? bundleRemaining > 0
-                  : resolved.every((item) => (variationMap.get(item.variationId)?.remaining ?? 0) > 0);
+                  : resolved.every((item) => (variationMap.get(item.variationId)?.remaining ?? 0) > 0));
                 return (
                   <PackageCard
                     key={pkg.id}
@@ -187,6 +187,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
                       item={item}
                       onAdd={(variationId) => addItem({ variationId, quantity: 1 })}
                       soldOut={itemSoldOut}
+                      ignoreStock={!drop.capacityEnforced}
                     />
                   );
                 })}
