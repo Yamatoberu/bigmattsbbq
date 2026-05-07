@@ -5,7 +5,7 @@ milestone_name: Website Refresh & Frozen Drops
 status: verifying
 stopped_at: Completed 07-04-PLAN.md
 last_updated: "2026-05-07T03:31:40.659Z"
-last_activity: "2026-05-07 - Completed quick task 260507-bcm: Fix bundle price showing zero in checkout order summary"
+last_activity: "2026-05-07 - Completed quick task 260507-bnv: Fix useActiveDrop infinite fetch loop"
 progress:
   total_phases: 2
   completed_phases: 2
@@ -83,6 +83,7 @@ Known deferred items at close: 7 (see above)
 | 260506-tr9 | Remove Square inventory from stock display — drive all in-stock checks off drop.soldOut from the database | 2026-05-07 | 1cdd49b | [260506-tr9-remove-square-inventory-from-stock-displ](./.planning/quick/260506-tr9-remove-square-inventory-from-stock-displ/) |
 | 260506-u3i | Fix cart showing Item instead of bundle name in CheckoutClient | 2026-05-07 | 8ba6268 | [260506-u3i-fix-cart-showing-item-instead-of-bundle-](./.planning/quick/260506-u3i-fix-cart-showing-item-instead-of-bundle-/) |
 | 260507-bcm | Fix bundle price showing zero in checkout order summary | 2026-05-07 | 70aa204 | [260507-bcm-fix-bundle-price-showing-zero-in-checkou](./.planning/quick/260507-bcm-fix-bundle-price-showing-zero-in-checkou/) |
+| 260507-bnv | Fix useActiveDrop infinite fetch loop | 2026-05-07 | 00c4d51 | [260507-bnv-fix-useactivedrop-infinite-fetch-loop](./.planning/quick/260507-bnv-fix-useactivedrop-infinite-fetch-loop/) |
 
 ## Session Continuity
 
