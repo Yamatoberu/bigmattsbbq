@@ -4,8 +4,8 @@ milestone: v1.0
 milestone_name: Website Refresh & Frozen Drops
 status: verifying
 stopped_at: Completed 07-04-PLAN.md
-last_updated: "2026-05-07T02:43:14.929Z"
-last_activity: 2026-05-07
+last_updated: "2026-05-07T03:31:40.659Z"
+last_activity: "2026-05-07 - Completed quick task 260506-t9u: Expand stock tracking to all 6 menu items independently"
 progress:
   total_phases: 2
   completed_phases: 2
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-04-22 after v1.0 milestone)
 Phase: 07 (code-review-wave-2) — EXECUTING
 Plan: 4 of 4
 Status: Phase complete — ready for verification
-Last activity: 2026-05-07 - Completed quick task 260506-t9u: Expand stock tracking to all 6 menu items independently
+Last activity: 2026-05-07 - Completed quick task 260506-tr9: Remove Square inventory from stock display
 
 Progress: [██████████] 100%
 
@@ -80,9 +80,10 @@ Known deferred items at close: 7 (see above)
 | 260505-fkj | Add catering cross-sell block to homepage (Funnel Issue 5 — partial) | 2026-05-05 | 4939aaa | [260505-fkj-add-catering-cross-sell-block-to-homepag](./.planning/quick/260505-fkj-add-catering-cross-sell-block-to-homepag/) |
 | 260505-rcp | Add capacity_enforced boolean flag to the drops table and wire it through all capacity gates | 2026-05-06 | 05c1fda | [260505-rcp-add-capacity-enforced-boolean-flag-to-th](./.planning/quick/260505-rcp-add-capacity-enforced-boolean-flag-to-th/) |
 | 260506-t9u | Expand stock tracking to all 6 menu items independently | 2026-05-07 | 179f157 | [260506-t9u-expand-stock-tracking-to-all-6-menu-item](./.planning/quick/260506-t9u-expand-stock-tracking-to-all-6-menu-item/) |
+| 260506-tr9 | Remove Square inventory from stock display — drive all in-stock checks off drop.soldOut from the database | 2026-05-07 | 1cdd49b | [260506-tr9-remove-square-inventory-from-stock-displ](./.planning/quick/260506-tr9-remove-square-inventory-from-stock-displ/) |
 
 ## Session Continuity
 
-Last session: 2026-05-07T02:43:14.922Z
+Last session: 2026-05-07T03:31:40.650Z
 Stopped at: Completed 07-04-PLAN.md
 Resume: Remaining funnel item from russel_review.md: Issue 9 (Value Ladder / Drop Club / post-purchase upsell)
