@@ -69,6 +69,21 @@ Plans:
 
 ---
 
+#### Phase 8: Mailing List & Email Platform
+
+**Goal:** Leverage the Resend account to improve email infrastructure — migrate subscriber management to Resend Contacts/Audiences, upgrade the broadcast from a sequential loop to Resend's native batch/broadcast API, and ship the deferred MAIL-01 branded order confirmation email.
+
+**Issues addressed:**
+- MAIL-01 — Branded order confirmation email with order summary, pickup details, pay-at-pickup reminder (deferred from v1.0 via D-10)
+- Broadcast scalability — sequential `for` loop in `/api/admin/broadcast` doesn't scale beyond a handful of subscribers
+- Subscriber management — Supabase-only list with no platform-level bounce/unsubscribe handling
+
+**Files in scope:** TBD — finalized in CONTEXT.md after discuss phase
+
+**Plans:** TBD
+
+---
+
 ---
 
 ### 🗂️ Backlog (Future Milestones)
@@ -83,14 +98,6 @@ Plans:
 - Validation: required fields, proper email/date/time formats
 
 ---
-
-#### Mailing List / Email Management (v2.0 candidate)
-
-**Goal:** Improve mailing list management with a self-service interface for subscribe/unsubscribe flows and better email infrastructure.
-
-**Feature areas:**
-- Subscribe/unsubscribe management (currently Supabase-backed)
-- Evaluate offloading email tracking from Supabase to a dedicated email platform
 
 ---
 
@@ -117,6 +124,7 @@ Plans:
 | 5. Content & Mailing List | v1.0 | 8/8 | Complete | 2026-04-22 |
 | 6. Code Review Wave 1 | v1.1 | 3/3 | Complete | 2026-05-06 |
 | 7. Code Review Wave 2 | v1.1 | 4/4 | Complete   | 2026-05-07 |
+| 8. Mailing List & Email Platform | v1.1 | 0/TBD | In Planning | — |
 
 ---
-*Last updated: 2026-05-07 — Added Catering Quote Form and Mailing List / Email Management to backlog; removed public/enhancements.md*
+*Last updated: 2026-05-07 — Promoted Mailing List / Email Management from backlog to Phase 8; removed Mailing List backlog entry*
