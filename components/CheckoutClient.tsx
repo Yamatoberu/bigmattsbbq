@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCart } from "./cart/CartContext";
 import { useFrozenItems } from "./hooks/useFrozenItems";
 import { formatMoney } from "../lib/format";
-import { isSauceBumpNeeded } from "../lib/cart";
+import { isSauceBumpNeeded, resolvePackageToCartItems } from "../lib/cart";
 import { PACKAGES } from "../lib/config";
 import { DropDTO } from "../lib/types";
 
@@ -47,15 +47,25 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
     return map;
   }, [frozenItems]);
 
-  const bundleVariationIdToName = useMemo(() => {
-    const map = new Map<string, string>();
+  const bundleVariationIdToInfo = useMemo(() => {
+    const map = new Map<string, { name: string; priceCents: number; currency: string }>();
     for (const pkg of PACKAGES) {
       if (pkg.bundleVariationId) {
-        map.set(pkg.bundleVariationId, pkg.name);
+        const resolved = resolvePackageToCartItems(pkg, frozenItems);
+        let priceCents = 0;
+        let currency = "USD";
+        for (const resolvedItem of resolved) {
+          const info = variationMap.get(resolvedItem.variationId);
+          if (info) {
+            priceCents += info.priceCents * resolvedItem.quantity;
+            currency = info.currency;
+          }
+        }
+        map.set(pkg.bundleVariationId, { name: pkg.name, priceCents, currency });
       }
     }
     return map;
-  }, []);
+  }, [frozenItems, variationMap]);
 
   const productNameMap = useMemo(() => {
     const map = new Map<string, "pulled_pork" | "brisket" | "sauce" | "family_night" | "backyard_host" | "freezer_filler">();
@@ -105,12 +115,12 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
 
   const cartDetails = items.map((item) => {
     const info = variationMap.get(item.variationId);
-    const bundleName = bundleVariationIdToName.get(item.variationId);
+    const bundleInfo = bundleVariationIdToInfo.get(item.variationId);
     return {
       ...item,
-      name: info?.name ?? bundleName ?? "Item",
-      priceCents: info?.priceCents ?? 0,
-      currency: info?.currency ?? "USD"
+      name: info?.name ?? bundleInfo?.name ?? "Item",
+      priceCents: info?.priceCents ?? bundleInfo?.priceCents ?? 0,
+      currency: info?.currency ?? bundleInfo?.currency ?? "USD"
     };
   });
 
