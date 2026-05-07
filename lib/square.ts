@@ -1,6 +1,6 @@
 import { FrozenItemDTO } from "./types";
 
-export const SQUARE_VERSION = "2024-12-18";
+export const SQUARE_VERSION = "2026-04-21";
 
 export class SquareError extends Error {
   status: number;
