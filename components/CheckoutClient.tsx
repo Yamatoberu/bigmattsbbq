@@ -214,7 +214,7 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
                 <div key={item.variationId} className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-sm font-semibold text-smoke-800">{item.name}</p>
-                    <p className="text-xs text-smoke-500">
+                    <p className="text-sm font-medium text-ember-400">
                       {formatMoney(item.priceCents, item.currency)} each
                     </p>
                   </div>
