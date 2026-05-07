@@ -22,13 +22,12 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
   const { items: cartItems, addItem, addItems, setPackage } = useCart();
   const { drop } = useActiveDrop(initialDrop);
   const variationMap = useMemo(() => {
-    const map = new Map<string, { priceCents: number; currency: string; remaining: number }>();
+    const map = new Map<string, { priceCents: number; currency: string }>();
     for (const item of frozenItems) {
       for (const variation of item.variations) {
         map.set(variation.variationId, {
           priceCents: variation.priceCents,
-          currency: variation.currency,
-          remaining: variation.remaining
+          currency: variation.currency
         });
       }
     }
@@ -132,7 +131,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
                   "backyard-host": drop.soldOut.backyardHost,
                   "freezer-filler": drop.soldOut.freezerFiller
                 };
-                const pkgSoldOut = !drop.capacityEnforced ? false : (pkgSoldOutMap[pkg.id] ?? false);
+                const pkgSoldOut = drop.capacityEnforced ? (pkgSoldOutMap[pkg.id] ?? false) : false;
                 return (
                   <PackageCard
                     key={pkg.id}
@@ -145,7 +144,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
                       }
                       setPackage(pkg.id);
                     }}
-                    soldOut={canAdd && pkgSoldOut}
+                    soldOut={pkgSoldOut}
                     isDisabled={!canAdd || isLoading || Boolean(error)}
                   />
                 );
@@ -182,17 +181,17 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
               <div className="mt-6 grid gap-5 md:grid-cols-3">
                 {individualItems.map((item) => {
                   const nameLower = item.name.toLowerCase();
-                  const itemSoldOut =
+                  const itemSoldOut = drop.capacityEnforced && (
                     (nameLower.includes("pulled pork") && drop.soldOut.pulledPork) ||
                     (nameLower.includes("brisket") && drop.soldOut.brisket) ||
-                    (nameLower.includes("sauce") && drop.soldOut.sauce);
+                    (nameLower.includes("sauce") && drop.soldOut.sauce)
+                  );
                   return (
                     <FrozenItemCard
                       key={item.itemId}
                       item={item}
                       onAdd={(variationId) => addItem({ variationId, quantity: 1 })}
                       soldOut={itemSoldOut}
-                      ignoreStock={!drop.capacityEnforced}
                     />
                   );
                 })}
