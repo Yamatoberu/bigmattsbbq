@@ -8,10 +8,9 @@ interface FrozenItemCardProps {
   item: FrozenItemDTO;
   onAdd: (variationId: string) => void;
   soldOut?: boolean;
-  ignoreStock?: boolean;
 }
 
-export function FrozenItemCard({ item, onAdd, soldOut = false, ignoreStock = false }: FrozenItemCardProps) {
+export function FrozenItemCard({ item, onAdd, soldOut = false }: FrozenItemCardProps) {
   const image = getFrozenItemImage(item);
 
   return (
@@ -41,36 +40,28 @@ export function FrozenItemCard({ item, onAdd, soldOut = false, ignoreStock = fal
         </div>
       </div>
       <div className="flex flex-col gap-3">
-        {item.variations.map((variation) => {
-          const isSoldOut = !ignoreStock && (soldOut || variation.remaining <= 0);
-          return (
-            <div key={variation.variationId} className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                {variation.name.toLowerCase() !== "regular" && (
-                  <p className="text-xs text-smoke-500">{variation.name}</p>
-                )}
-                <p className="text-sm font-semibold text-smoke-900">
-                  {formatMoney(variation.priceCents, variation.currency)}
-                </p>
-                {!ignoreStock && (
-                  <p className="text-xs text-smoke-600" aria-live="polite">
-                    <span aria-label={`${variation.remaining} items left in stock`}>{variation.remaining} left</span>
-                  </p>
-                )}
-              </div>
-              {isSoldOut ? (
-                <SoldOutCapture />
-              ) : (
-                <button
-                  className="button-primary px-4 py-2 text-xs"
-                  onClick={() => onAdd(variation.variationId)}
-                >
-                  Add to Cart
-                </button>
+        {item.variations.map((variation) => (
+          <div key={variation.variationId} className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              {variation.name.toLowerCase() !== "regular" && (
+                <p className="text-xs text-smoke-500">{variation.name}</p>
               )}
+              <p className="text-sm font-semibold text-smoke-900">
+                {formatMoney(variation.priceCents, variation.currency)}
+              </p>
             </div>
-          );
-        })}
+            {soldOut ? (
+              <SoldOutCapture />
+            ) : (
+              <button
+                className="button-primary px-4 py-2 text-xs"
+                onClick={() => onAdd(variation.variationId)}
+              >
+                Add to Cart
+              </button>
+            )}
+          </div>
+        ))}
       </div>
     </article>
   );
