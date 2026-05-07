@@ -34,11 +34,16 @@ export function useActiveDrop(initialDrop: DropDTO | null = null) {
 
   useEffect(() => {
     void load();
+    const status = state.drop?.status;
+    const shouldPoll = state.drop !== null && status !== "closed";
+    if (!shouldPoll) {
+      return;
+    }
     const id = setInterval(() => {
       void load();
     }, POLL_INTERVAL_MS);
     return () => clearInterval(id);
-  }, [load]);
+  }, [load, state.drop, state.drop?.status]);
 
   return {
     ...state,
