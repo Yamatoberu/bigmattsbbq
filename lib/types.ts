@@ -71,10 +71,18 @@ export interface DropDTO {
   capacity: {
     pulledPork: CapacitySlot;
     brisket: CapacitySlot;
+    sauce: CapacitySlot;
+    familyNight: CapacitySlot;
+    backyardHost: CapacitySlot;
+    freezerFiller: CapacitySlot;
   };
   soldOut: {
     pulledPork: boolean;
     brisket: boolean;
+    sauce: boolean;
+    familyNight: boolean;
+    backyardHost: boolean;
+    freezerFiller: boolean;
   };
   pickupOptions: PickupOptionDTO[];
   capacityEnforced: boolean;
