@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
+import { ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { CartItem, mergeCartItems } from "../../lib/cart";
 
 interface CartContextValue {
@@ -42,15 +42,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   }, [items, isReady]);
 
-  const addItem = (item: CartItem) => {
+  const addItem = useCallback((item: CartItem) => {
     setItems((prev) => mergeCartItems(prev, [item]));
-  };
+  }, []);
 
-  const addItems = (newItems: CartItem[]) => {
+  const addItems = useCallback((newItems: CartItem[]) => {
     setItems((prev) => mergeCartItems(prev, newItems));
-  };
+  }, []);
 
-  const setQuantity = (variationId: string, quantity: number) => {
+  const setQuantity = useCallback((variationId: string, quantity: number) => {
     setItems((prev) => {
       if (quantity <= 0) {
         return prev.filter((item) => item.variationId !== variationId);
@@ -59,22 +59,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
         item.variationId === variationId ? { ...item, quantity } : item
       );
     });
-  };
+  }, []);
 
-  const removeItem = (variationId: string) => {
+  const removeItem = useCallback((variationId: string) => {
     setItems((prev) => prev.filter((item) => item.variationId !== variationId));
-  };
+  }, []);
 
-  const setPackage = (id: string | undefined) => setSelectedPackageId(id);
+  const setPackage = useCallback((id: string | undefined) => {
+    setSelectedPackageId(id);
+  }, []);
 
-  const clear = () => {
+  const clear = useCallback(() => {
     setItems([]);
     setSelectedPackageId(undefined);
-  };
+  }, []);
 
   const value = useMemo(
     () => ({ items, isReady, selectedPackageId, addItem, addItems, setQuantity, removeItem, setPackage, clear }),
-    [items, isReady, selectedPackageId]
+    [items, isReady, selectedPackageId, addItem, addItems, setQuantity, removeItem, setPackage, clear]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
