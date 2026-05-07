@@ -61,10 +61,7 @@ Known deferred items at close: 7 (see above)
 
 ### Open Blockers for Next Milestone
 
-- Square API version `2024-12-18` reaches end-of-life ~June 2026 — bump during v1.1 work
-- Resend domain DNS verification for bigmattsbbq.com needed before transactional email can go live
-- NavBar UX human verification pending (visual/animation check — see 05-HUMAN-UAT.md)
-- productName mapping in CheckoutClient slugifies Square names — fragile if Square catalog names deviate (see v1.0-MILESTONE-AUDIT.md INT-02)
+None.
 
 ### Quick Tasks Completed
 
@@ -85,6 +82,7 @@ Known deferred items at close: 7 (see above)
 | 260507-bcm | Fix bundle price showing zero in checkout order summary | 2026-05-07 | 70aa204 | [260507-bcm-fix-bundle-price-showing-zero-in-checkou](./.planning/quick/260507-bcm-fix-bundle-price-showing-zero-in-checkou/) |
 | 260507-bnv | Fix useActiveDrop infinite fetch loop | 2026-05-07 | 00c4d51 | [260507-bnv-fix-useactivedrop-infinite-fetch-loop](./.planning/quick/260507-bnv-fix-useactivedrop-infinite-fetch-loop/) |
 | 260507-c71 | Fix checkout Square API failure | 2026-05-07 | 480cc99 | [260507-c71-fix-checkout-square-api-failure](./.planning/quick/260507-c71-fix-checkout-square-api-failure/) |
+| 260507-emt | Move enhancements.md backlog items to ROADMAP.md, delete public file | 2026-05-07 | — | [260507-move-enhancements-to-roadmap](./.planning/quick/260507-move-enhancements-to-roadmap/) |
 
 ## Session Continuity
 
@@ -92,3 +90,5 @@ Last session: 2026-05-07T03:31:40.650Z
 Stopped at: Completed 07-04-PLAN.md
 Resume: Remaining funnel item from russel_review.md: Issue 9 (Value Ladder / Drop Club / post-purchase upsell)
 | 2026-05-07 | fast | Increase cart item price text size and highlight with ember-400 color | ✅ |
+| 2026-05-07 | fast | Bump Square API version from 2024-12-18 to 2026-04-21 | ✅ |
+| 2026-05-07 | fast | Normalize catalogName bundle match and add console.warn on mismatch in CheckoutClient | ✅ |

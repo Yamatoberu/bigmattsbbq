@@ -69,6 +69,43 @@ Plans:
 
 ---
 
+---
+
+### 🗂️ Backlog (Future Milestones)
+
+#### Catering Quote Form (v1.x candidate)
+
+**Goal:** Add a contact form on the catering page so potential clients can submit inquiry details directly, triggering an email notification to the catering inbox.
+
+**Feature areas:**
+- Form fields: Name, Email, Date of Event, Time of Event, Event Location, Estimated Headcount, Potential Menu (text area)
+- On submit: send email to catering@bigmattsbbq.com with all provided details
+- Validation: required fields, proper email/date/time formats
+
+---
+
+#### Mailing List / Email Management (v2.0 candidate)
+
+**Goal:** Improve mailing list management with a self-service interface for subscribe/unsubscribe flows and better email infrastructure.
+
+**Feature areas:**
+- Subscribe/unsubscribe management (currently Supabase-backed)
+- Evaluate offloading email tracking from Supabase to a dedicated email platform
+
+---
+
+#### Admin Dashboard (v2.0 candidate)
+
+**Goal:** Replace the Google Sheet with an in-app admin screen for drop management, order management, and business KPIs.
+
+**Feature areas:**
+- Drop management — create/edit/close drops without touching the database directly
+- Order management — view orders per drop, track fulfillment
+- KPI report — number of orders, revenue, amount collected, AOV, return customer rate
+- CRM lite — customer history across drops
+
+---
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -82,4 +119,4 @@ Plans:
 | 7. Code Review Wave 2 | v1.1 | 4/4 | Complete   | 2026-05-07 |
 
 ---
-*Last updated: 2026-05-06 — Phase 7 (Code Review Wave 2) plans created (4 plans, all Wave 1 parallel)*
+*Last updated: 2026-05-07 — Added Catering Quote Form and Mailing List / Email Management to backlog; removed public/enhancements.md*
