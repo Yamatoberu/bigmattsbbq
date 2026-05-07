@@ -4,10 +4,10 @@ const TOKEN_EXPIRY = "30d";
 const ALG = "HS256";
 
 function getSecret(): Uint8Array {
-  const secret = process.env.UNSUBSCRIBE_SECRET || process.env.BROADCAST_SECRET;
+  const secret = process.env.UNSUBSCRIBE_SECRET;
   if (!secret || secret.length < 32) {
     throw new Error(
-      "Missing or too-short UNSUBSCRIBE_SECRET. Set UNSUBSCRIBE_SECRET (preferred) or BROADCAST_SECRET in .env.local to a 32+ character value."
+      "Missing or too-short UNSUBSCRIBE_SECRET. Set it in .env.local (min 32 chars). Do NOT reuse BROADCAST_SECRET."
     );
   }
   return new TextEncoder().encode(secret);
