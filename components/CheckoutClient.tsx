@@ -47,6 +47,16 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
     return map;
   }, [frozenItems]);
 
+  const bundleVariationIdToName = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const pkg of PACKAGES) {
+      if (pkg.bundleVariationId) {
+        map.set(pkg.bundleVariationId, pkg.name);
+      }
+    }
+    return map;
+  }, []);
+
   const productNameMap = useMemo(() => {
     const map = new Map<string, "pulled_pork" | "brisket" | "sauce" | "family_night" | "backyard_host" | "freezer_filler">();
     for (const item of frozenItems) {
@@ -95,9 +105,10 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
 
   const cartDetails = items.map((item) => {
     const info = variationMap.get(item.variationId);
+    const bundleName = bundleVariationIdToName.get(item.variationId);
     return {
       ...item,
-      name: info?.name ?? "Item",
+      name: info?.name ?? bundleName ?? "Item",
       priceCents: info?.priceCents ?? 0,
       currency: info?.currency ?? "USD"
     };
