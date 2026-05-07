@@ -59,10 +59,10 @@ Plans:
 
 **Files in scope:** `app/layout.tsx`, `app/checkout/page.tsx`, `app/confirmation/page.tsx`, `app/orders/page.tsx`, `components/cart/CartContext.tsx`, `lib/unsubscribeToken.ts`, `.env.example`, `components/hooks/useActiveDrop.ts`
 
-**Plans:** 4 plans
+**Plans:** 1/4 plans executed
 
 Plans:
-- [ ] 07-01-PLAN.md — Replace `<main>` wrapper in app/layout.tsx with `<div id="page-content">` (Issue 3)
+- [x] 07-01-PLAN.md — Replace `<main>` wrapper in app/layout.tsx with `<div id="page-content">` (Issue 3)
 - [ ] 07-02-PLAN.md — Wrap CartContext callbacks in useCallback and complete useMemo dep array (Issue 4)
 - [ ] 07-03-PLAN.md — Decouple UNSUBSCRIBE_SECRET from BROADCAST_SECRET fallback + .env.example docs (Issue 7)
 - [ ] 07-04-PLAN.md — Stop useActiveDrop polling when drop is null/closed/inactive (Issue 12)
@@ -79,7 +79,7 @@ Plans:
 | 4. Checkout & Email | v1.0 | 2/2 | Complete | 2026-04-17 |
 | 5. Content & Mailing List | v1.0 | 8/8 | Complete | 2026-04-22 |
 | 6. Code Review Wave 1 | v1.1 | 3/3 | Complete | 2026-05-06 |
-| 7. Code Review Wave 2 | v1.1 | 0/4 | Planning | — |
+| 7. Code Review Wave 2 | v1.1 | 1/4 | In Progress|  |
 
 ---
 *Last updated: 2026-05-06 — Phase 7 (Code Review Wave 2) plans created (4 plans, all Wave 1 parallel)*
