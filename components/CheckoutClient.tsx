@@ -6,6 +6,7 @@ import { useCart } from "./cart/CartContext";
 import { useFrozenItems } from "./hooks/useFrozenItems";
 import { formatMoney } from "../lib/format";
 import { isSauceBumpNeeded } from "../lib/cart";
+import { PACKAGES } from "../lib/config";
 import { DropDTO } from "../lib/types";
 
 interface CheckoutClientProps {
@@ -47,13 +48,26 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
   }, [frozenItems]);
 
   const productNameMap = useMemo(() => {
-    const map = new Map<string, "pulled_pork" | "brisket">();
+    const map = new Map<string, "pulled_pork" | "brisket" | "sauce" | "family_night" | "backyard_host" | "freezer_filler">();
     for (const item of frozenItems) {
       const slug = item.name.toLowerCase().replace(/\s+/g, "_");
       if (slug === "pulled_pork" || slug === "brisket") {
         for (const variation of item.variations) {
           map.set(variation.variationId, slug);
         }
+      } else if (normalizeMatch(item.name).includes("sauce")) {
+        for (const variation of item.variations) {
+          map.set(variation.variationId, "sauce");
+        }
+      }
+    }
+    for (const pkg of PACKAGES) {
+      if (pkg.bundleVariationId) {
+        const pkgId = pkg.id as "family-night" | "backyard-host" | "freezer-filler";
+        const productName = pkgId === "family-night" ? "family_night"
+          : pkgId === "backyard-host" ? "backyard_host"
+          : "freezer_filler";
+        map.set(pkg.bundleVariationId, productName);
       }
     }
     return map;

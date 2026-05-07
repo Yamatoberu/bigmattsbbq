@@ -21,7 +21,14 @@ export const runtime = "nodejs";
 export const cartSchema = z.object({
   variationId: z.string().min(1),
   quantity: z.number().int().positive(),
-  productName: z.union([z.literal("pulled_pork"), z.literal("brisket")]).optional()
+  productName: z.union([
+    z.literal("pulled_pork"),
+    z.literal("brisket"),
+    z.literal("sauce"),
+    z.literal("family_night"),
+    z.literal("backyard_host"),
+    z.literal("freezer_filler")
+  ]).optional()
 });
 
 const checkoutSchema = z.object({
@@ -80,7 +87,7 @@ export async function POST(request: Request) {
 
     const { data: dropRow, error: dropErr } = await supabase
       .from("drops")
-      .select("id, status, order_cutoff_at, capacity_pulled_pork, capacity_brisket, reserved_pulled_pork, reserved_brisket, capacity_enforced")
+      .select("id, status, order_cutoff_at, capacity_pulled_pork, capacity_brisket, capacity_sauce, capacity_family_night, capacity_backyard_host, capacity_freezer_filler, reserved_pulled_pork, reserved_brisket, reserved_sauce, reserved_family_night, reserved_backyard_host, reserved_freezer_filler, capacity_enforced")
       .eq("id", parsed.data.dropId)
       .maybeSingle();
 
@@ -105,7 +112,7 @@ export async function POST(request: Request) {
     const { data: pickupRow, error: pickupErr } = await supabase
       .from("drop_pickup_options")
       .select(
-        "id, location_label, pickup_at, pickup_date, capacity_pulled_pork, capacity_brisket, reserved_pulled_pork, reserved_brisket"
+        "id, location_label, pickup_at, pickup_date, capacity_pulled_pork, capacity_brisket, capacity_sauce, capacity_family_night, capacity_backyard_host, capacity_freezer_filler, reserved_pulled_pork, reserved_brisket, reserved_sauce, reserved_family_night, reserved_backyard_host, reserved_freezer_filler"
       )
       .eq("id", parsed.data.pickupOptionId)
       .eq("drop_id", parsed.data.dropId)
@@ -129,7 +136,11 @@ export async function POST(request: Request) {
     if (capacityEnforced) {
       const pickupSoldOut =
         pickupRow.reserved_pulled_pork >= pickupRow.capacity_pulled_pork &&
-        pickupRow.reserved_brisket >= pickupRow.capacity_brisket;
+        pickupRow.reserved_brisket >= pickupRow.capacity_brisket &&
+        pickupRow.reserved_sauce >= pickupRow.capacity_sauce &&
+        pickupRow.reserved_family_night >= pickupRow.capacity_family_night &&
+        pickupRow.reserved_backyard_host >= pickupRow.capacity_backyard_host &&
+        pickupRow.reserved_freezer_filler >= pickupRow.capacity_freezer_filler;
       if (pickupSoldOut) {
         return NextResponse.json(
           { error: "This pickup slot is sold out. Please choose another.", requestId },

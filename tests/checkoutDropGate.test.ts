@@ -8,8 +8,16 @@ const activeRow: DropReadinessRow = {
   status: "active",
   capacity_pulled_pork: 200,
   capacity_brisket: 200,
+  capacity_sauce: 200,
+  capacity_family_night: 200,
+  capacity_backyard_host: 200,
+  capacity_freezer_filler: 200,
   reserved_pulled_pork: 50,
   reserved_brisket: 50,
+  reserved_sauce: 0,
+  reserved_family_night: 0,
+  reserved_backyard_host: 0,
+  reserved_freezer_filler: 0,
   order_cutoff_at: "2099-12-31T23:59:59Z",
   capacity_enforced: true
 };
@@ -38,11 +46,15 @@ describe("checkDropReady", () => {
     });
   });
 
-  it("returns 409 with sold-out message when both products at capacity", () => {
+  it("returns 409 with sold-out message when all 6 products at capacity", () => {
     const result = checkDropReady({
       ...activeRow,
       reserved_pulled_pork: 200,
-      reserved_brisket: 200
+      reserved_brisket: 200,
+      reserved_sauce: 200,
+      reserved_family_night: 200,
+      reserved_backyard_host: 200,
+      reserved_freezer_filler: 200
     });
     expect(result).toEqual({
       ok: false,
@@ -60,7 +72,7 @@ describe("checkDropReady", () => {
     });
   });
 
-  it("returns ok when only one product is at capacity (global sold-out requires both)", () => {
+  it("returns ok when only some products are at capacity (global sold-out requires all 6)", () => {
     const result = checkDropReady({
       ...activeRow,
       reserved_pulled_pork: 200,
@@ -102,6 +114,10 @@ describe("checkDropReady", () => {
       ...activeRow,
       reserved_pulled_pork: 200,
       reserved_brisket: 200,
+      reserved_sauce: 200,
+      reserved_family_night: 200,
+      reserved_backyard_host: 200,
+      reserved_freezer_filler: 200,
       capacity_enforced: false
     });
     expect(result).toEqual({ ok: true });

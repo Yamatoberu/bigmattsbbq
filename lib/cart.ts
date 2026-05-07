@@ -52,7 +52,7 @@ export function resolvePackageToCartItems(
 }
 
 export function aggregateByProduct(
-  items: Array<{ variationId: string; quantity: number; productName?: "pulled_pork" | "brisket" }>
+  items: Array<{ variationId: string; quantity: number; productName?: "pulled_pork" | "brisket" | "sauce" | "family_night" | "backyard_host" | "freezer_filler" }>
 ): Map<string, number> {
   const totals = new Map<string, number>();
   for (const item of items) {

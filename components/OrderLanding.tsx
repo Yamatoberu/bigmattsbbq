@@ -125,12 +125,14 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
             <div className="grid gap-6 md:grid-cols-3">
               {PACKAGES.map((pkg) => {
                 const hasBundleVariation = Boolean(pkg.bundleVariationId && variationMap.has(pkg.bundleVariationId));
-                const bundleRemaining = pkg.bundleVariationId ? (variationMap.get(pkg.bundleVariationId)?.remaining ?? 0) : 0;
                 const resolved = hasBundleVariation ? [] : resolvePackageToCartItems(pkg, frozenItems);
                 const canAdd = hasBundleVariation || resolved.length === pkg.items.length;
-                const inStock = !drop.capacityEnforced || (hasBundleVariation
-                  ? bundleRemaining > 0
-                  : resolved.every((item) => (variationMap.get(item.variationId)?.remaining ?? 0) > 0));
+                const pkgSoldOutMap: Record<string, boolean> = {
+                  "family-night": drop.soldOut.familyNight,
+                  "backyard-host": drop.soldOut.backyardHost,
+                  "freezer-filler": drop.soldOut.freezerFiller
+                };
+                const pkgSoldOut = !drop.capacityEnforced ? false : (pkgSoldOutMap[pkg.id] ?? false);
                 return (
                   <PackageCard
                     key={pkg.id}
@@ -143,7 +145,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
                       }
                       setPackage(pkg.id);
                     }}
-                    soldOut={canAdd && !inStock}
+                    soldOut={canAdd && pkgSoldOut}
                     isDisabled={!canAdd || isLoading || Boolean(error)}
                   />
                 );
@@ -182,7 +184,8 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
                   const nameLower = item.name.toLowerCase();
                   const itemSoldOut =
                     (nameLower.includes("pulled pork") && drop.soldOut.pulledPork) ||
-                    (nameLower.includes("brisket") && drop.soldOut.brisket);
+                    (nameLower.includes("brisket") && drop.soldOut.brisket) ||
+                    (nameLower.includes("sauce") && drop.soldOut.sauce);
                   return (
                     <FrozenItemCard
                       key={item.itemId}

@@ -130,8 +130,17 @@ const activeDropRow = {
   order_cutoff_at: "2099-12-31T23:59:59Z",
   capacity_pulled_pork: 200,
   capacity_brisket: 200,
+  capacity_sauce: 200,
+  capacity_family_night: 200,
+  capacity_backyard_host: 200,
+  capacity_freezer_filler: 200,
   reserved_pulled_pork: 50,
-  reserved_brisket: 50
+  reserved_brisket: 50,
+  reserved_sauce: 0,
+  reserved_family_night: 0,
+  reserved_backyard_host: 0,
+  reserved_freezer_filler: 0,
+  capacity_enforced: true
 };
 
 const activePickupRow = {
@@ -141,8 +150,16 @@ const activePickupRow = {
   pickup_date: "2099-06-01",
   capacity_pulled_pork: 50,
   capacity_brisket: 50,
+  capacity_sauce: 50,
+  capacity_family_night: 50,
+  capacity_backyard_host: 50,
+  capacity_freezer_filler: 50,
   reserved_pulled_pork: 10,
-  reserved_brisket: 10
+  reserved_brisket: 10,
+  reserved_sauce: 0,
+  reserved_family_night: 0,
+  reserved_backyard_host: 0,
+  reserved_freezer_filler: 0
 };
 
 // Valid checkout request body that passes Zod validation and includes a
