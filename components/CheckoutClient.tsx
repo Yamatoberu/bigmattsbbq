@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCart } from "./cart/CartContext";
 import { useFrozenItems } from "./hooks/useFrozenItems";
 import { formatMoney } from "../lib/format";
-import { isSauceBumpNeeded, resolvePackageToCartItems } from "../lib/cart";
+import { isSauceBumpNeeded } from "../lib/cart";
 import { PACKAGES } from "../lib/config";
 import { DropDTO } from "../lib/types";
 
@@ -50,22 +50,18 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
   const bundleVariationIdToInfo = useMemo(() => {
     const map = new Map<string, { name: string; priceCents: number; currency: string }>();
     for (const pkg of PACKAGES) {
-      if (pkg.bundleVariationId) {
-        const resolved = resolvePackageToCartItems(pkg, frozenItems);
-        let priceCents = 0;
-        let currency = "USD";
-        for (const resolvedItem of resolved) {
-          const info = variationMap.get(resolvedItem.variationId);
-          if (info) {
-            priceCents += info.priceCents * resolvedItem.quantity;
-            currency = info.currency;
-          }
-        }
-        map.set(pkg.bundleVariationId, { name: pkg.name, priceCents, currency });
+      const catalogItem = frozenItems.find((item) => item.name === pkg.catalogName);
+      const variation = catalogItem?.variations[0];
+      if (variation) {
+        map.set(variation.variationId, {
+          name: pkg.name,
+          priceCents: variation.priceCents,
+          currency: variation.currency
+        });
       }
     }
     return map;
-  }, [frozenItems, variationMap]);
+  }, [frozenItems]);
 
   const productNameMap = useMemo(() => {
     const map = new Map<string, "pulled_pork" | "brisket" | "sauce" | "family_night" | "backyard_host" | "freezer_filler">();
@@ -82,12 +78,14 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
       }
     }
     for (const pkg of PACKAGES) {
-      if (pkg.bundleVariationId) {
+      const catalogItem = frozenItems.find((item) => item.name === pkg.catalogName);
+      const variation = catalogItem?.variations[0];
+      if (variation) {
         const pkgId = pkg.id as "family-night" | "backyard-host" | "freezer-filler";
         const productName = pkgId === "family-night" ? "family_night"
           : pkgId === "backyard-host" ? "backyard_host"
           : "freezer_filler";
-        map.set(pkg.bundleVariationId, productName);
+        map.set(variation.variationId, productName);
       }
     }
     return map;

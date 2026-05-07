@@ -29,9 +29,9 @@ export interface PackageItemConfig {
 export interface PackageConfig {
   id: string;
   name: string;
+  catalogName: string;
   description: string;
   highlight?: boolean;
-  bundleVariationId?: string;
   items: PackageItemConfig[];
 }
 
