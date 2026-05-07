@@ -5,7 +5,7 @@ milestone_name: Website Refresh & Frozen Drops
 status: verifying
 stopped_at: Completed 07-04-PLAN.md
 last_updated: "2026-05-07T03:31:40.659Z"
-last_activity: "2026-05-07 - Completed quick task 260506-t9u: Expand stock tracking to all 6 menu items independently"
+last_activity: "2026-05-07 - Completed quick task 260506-u3i: Fix cart showing Item instead of bundle name in CheckoutClient"
 progress:
   total_phases: 2
   completed_phases: 2
@@ -81,6 +81,7 @@ Known deferred items at close: 7 (see above)
 | 260505-rcp | Add capacity_enforced boolean flag to the drops table and wire it through all capacity gates | 2026-05-06 | 05c1fda | [260505-rcp-add-capacity-enforced-boolean-flag-to-th](./.planning/quick/260505-rcp-add-capacity-enforced-boolean-flag-to-th/) |
 | 260506-t9u | Expand stock tracking to all 6 menu items independently | 2026-05-07 | 179f157 | [260506-t9u-expand-stock-tracking-to-all-6-menu-item](./.planning/quick/260506-t9u-expand-stock-tracking-to-all-6-menu-item/) |
 | 260506-tr9 | Remove Square inventory from stock display — drive all in-stock checks off drop.soldOut from the database | 2026-05-07 | 1cdd49b | [260506-tr9-remove-square-inventory-from-stock-displ](./.planning/quick/260506-tr9-remove-square-inventory-from-stock-displ/) |
+| 260506-u3i | Fix cart showing Item instead of bundle name in CheckoutClient | 2026-05-07 | 8ba6268 | [260506-u3i-fix-cart-showing-item-instead-of-bundle-](./.planning/quick/260506-u3i-fix-cart-showing-item-instead-of-bundle-/) |
 
 ## Session Continuity
 
