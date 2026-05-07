@@ -123,8 +123,9 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
             />
             <div className="grid gap-6 md:grid-cols-3">
               {PACKAGES.map((pkg) => {
-                const resolved = resolvePackageToCartItems(pkg, frozenItems);
-                const canAdd = resolved.length === pkg.items.length;
+                const hasBundleVariation = Boolean(pkg.bundleVariationId && variationMap.has(pkg.bundleVariationId));
+                const resolved = hasBundleVariation ? [] : resolvePackageToCartItems(pkg, frozenItems);
+                const canAdd = hasBundleVariation || resolved.length === pkg.items.length;
                 const pkgSoldOutMap: Record<string, boolean> = {
                   "family-night": drop.soldOut.familyNight,
                   "backyard-host": drop.soldOut.backyardHost,
@@ -136,7 +137,11 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
                     key={pkg.id}
                     pkg={pkg}
                     onAdd={() => {
-                      addItems(resolved);
+                      if (pkg.bundleVariationId) {
+                        addItem({ variationId: pkg.bundleVariationId, quantity: 1 });
+                      } else {
+                        addItems(resolved);
+                      }
                       setPackage(pkg.id);
                     }}
                     soldOut={pkgSoldOut}

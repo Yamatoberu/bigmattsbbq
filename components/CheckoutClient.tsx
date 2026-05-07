@@ -148,6 +148,17 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
     setIsSubmitting(true);
 
     try {
+      const orderItems = items.flatMap((item) => {
+        const pkg = PACKAGES.find((p) => p.bundleVariationId === item.variationId);
+        if (pkg) {
+          const resolved = resolvePackageToCartItems(pkg, frozenItems);
+          if (resolved.length > 0) {
+            return resolved.map((r) => ({ variationId: r.variationId, quantity: r.quantity * item.quantity }));
+          }
+        }
+        return [{ variationId: item.variationId, quantity: item.quantity }];
+      });
+
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: {
@@ -167,7 +178,8 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
             variationId: item.variationId,
             quantity: item.quantity,
             ...(productNameMap.get(item.variationId) ? { productName: productNameMap.get(item.variationId) } : {})
-          }))
+          })),
+          orderItems
         })
       });
 

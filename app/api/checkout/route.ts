@@ -30,10 +30,16 @@ export const cartSchema = z.object({
   ]).optional()
 });
 
+const orderItemSchema = z.object({
+  variationId: z.string().min(1),
+  quantity: z.number().int().positive()
+});
+
 const checkoutSchema = z.object({
   dropId: z.string().uuid(),
   pickupOptionId: z.string().uuid(),
   packageId: z.string().optional(),
+  orderItems: z.array(orderItemSchema).min(1).optional(),
   customer: z.object({
     firstName: z.string().min(1),
     lastName: z.string().min(1),
@@ -248,7 +254,7 @@ export async function POST(request: Request) {
           order: {
             location_id: env.locationId,
             customer_id: customerId,
-            line_items: cart.map((item) => ({
+            line_items: (parsed.data.orderItems ?? cart).map((item) => ({
               quantity: item.quantity.toString(),
               catalog_object_id: item.variationId
             })),
