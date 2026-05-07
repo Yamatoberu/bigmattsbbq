@@ -1,19 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { logError } from "../lib/logger";
-
-// We need the real SquareError class shape (same constructor signature as in lib/square.ts)
-// to test the instanceof branch without importing the full square module.
-class SquareError extends Error {
-  status: number;
-  body: unknown;
-
-  constructor(message: string, status: number, body: unknown) {
-    super(message);
-    this.name = "SquareError";
-    this.status = status;
-    this.body = body;
-  }
-}
+import { SquareError } from "../lib/square";
 
 describe("logError", () => {
   let consoleSpy: ReturnType<typeof vi.spyOn>;
@@ -26,7 +13,7 @@ describe("logError", () => {
     consoleSpy.mockRestore();
   });
 
-  it("Test 1: emits name, message, stack for a plain Error", () => {
+  it("Test 1: emits name, message (outer param), stack for a plain Error; no status or body", () => {
     const err = new Error("something broke");
     logError("plain error occurred", err, "req-001");
 
@@ -35,7 +22,6 @@ describe("logError", () => {
     expect(logged.requestId).toBe("req-001");
     expect(logged.message).toBe("plain error occurred");
     expect(logged.name).toBe("Error");
-    expect(typeof logged.message).toBe("string");
     expect(logged.stack).toBeDefined();
     // plain Error must NOT include status or body
     expect("status" in logged).toBe(false);
@@ -67,16 +53,17 @@ describe("logError", () => {
     expect("stack" in logged).toBe(false);
   });
 
-  it("Test 4: SquareError log includes name, message, and stack alongside status and body", () => {
+  it("Test 4: SquareError log includes name and stack alongside status and body", () => {
     const squareBody = { errors: [{ code: "BAD_REQUEST" }] };
     const err = new SquareError("invalid catalog_object_id", 400, squareBody);
     logError("order creation failed", err, "req-004");
 
     expect(consoleSpy).toHaveBeenCalledOnce();
     const logged = consoleSpy.mock.calls[0][0] as Record<string, unknown>;
+    // Outer message (log label) is preserved
+    expect(logged.message).toBe("order creation failed");
     // Base Error fields preserved
     expect(logged.name).toBe("SquareError");
-    expect(logged.message).toBe("order creation failed");
     expect(logged.stack).toBeDefined();
     // SquareError extra fields
     expect(logged.status).toBe(400);

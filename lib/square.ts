@@ -8,6 +8,7 @@ export class SquareError extends Error {
 
   constructor(message: string, status: number, body: unknown) {
     super(message);
+    this.name = "SquareError";
     this.status = status;
     this.body = body;
   }
