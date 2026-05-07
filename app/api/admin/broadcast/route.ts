@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { Resend } from "resend";
+import sanitizeHtml from "sanitize-html";
 import { getSupabaseClient } from "../../../../lib/supabase";
 import { logError } from "../../../../lib/logger";
 import { signUnsubscribeToken } from "../../../../lib/unsubscribeToken";
@@ -12,6 +13,12 @@ const schema = z.object({
   html: z.string().min(1),
   dropId: z.string().optional()
 });
+
+const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
+  allowedTags: ["p", "br", "b", "i", "em", "strong", "ul", "ol", "li", "a", "h1", "h2", "h3"],
+  allowedAttributes: { a: ["href"] },
+  allowedSchemes: ["https", "mailto"]
+};
 
 function getBaseUrl(requestHeaders: Headers): string {
   const envUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -51,6 +58,7 @@ export async function POST(request: Request) {
     }
 
     const { subject, html, dropId } = parsed.data;
+    const safeHtml = sanitizeHtml(html, SANITIZE_OPTIONS);
 
     const supabase = getSupabaseClient();
     const { data: subscribers, error: listErr } = await supabase
@@ -96,7 +104,7 @@ export async function POST(request: Request) {
       try {
         const token = await signUnsubscribeToken(subscriber.email);
         const unsubscribeUrl = `${baseUrl}/unsubscribe?token=${encodeURIComponent(token)}`;
-        const finalHtml = `${html}
+        const finalHtml = `${safeHtml}
 <hr style="margin-top: 24px; border: 0; border-top: 1px solid #ccc;" />
 <p style="font-size: 12px; color: #666;">
   Don't want these? <a href="${unsubscribeUrl}">Unsubscribe</a>.

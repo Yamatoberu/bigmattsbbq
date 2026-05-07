@@ -88,6 +88,48 @@ describe("POST /api/admin/broadcast", () => {
     expect(resendSendMock).not.toHaveBeenCalled(); // no subscribers → no sends
   });
 
+  it("strips <script> tags from html before sending", async () => {
+    mockDeps([{ email: "sub@example.com" }]);
+    const { POST } = await import("../app/api/admin/broadcast/route");
+    const req = new Request("http://localhost/api/admin/broadcast", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${process.env.BROADCAST_SECRET}`
+      },
+      body: JSON.stringify({
+        subject: "Drop live",
+        html: '<p>Order now</p><script>alert("xss")</script>'
+      })
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const sentHtml: string = resendSendMock.mock.calls[0][0].html;
+    expect(sentHtml).not.toContain("<script>");
+    expect(sentHtml).toContain("<p>Order now</p>");
+  });
+
+  it("strips javascript: href from links before sending", async () => {
+    mockDeps([{ email: "sub@example.com" }]);
+    const { POST } = await import("../app/api/admin/broadcast/route");
+    const req = new Request("http://localhost/api/admin/broadcast", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${process.env.BROADCAST_SECRET}`
+      },
+      body: JSON.stringify({
+        subject: "Drop live",
+        html: '<a href="javascript:alert(1)">click me</a>'
+      })
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const sentHtml: string = resendSendMock.mock.calls[0][0].html;
+    expect(sentHtml).not.toContain("javascript:");
+    expect(sentHtml).toContain("click me");
+  });
+
   it("returns 401 when BROADCAST_SECRET env var is unset (fail closed)", async () => {
     delete process.env.BROADCAST_SECRET;
     mockDeps([{ email: "a@b.com" }]);
