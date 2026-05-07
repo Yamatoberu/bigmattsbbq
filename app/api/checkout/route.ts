@@ -14,7 +14,6 @@ import {
 import { logError } from "../../../lib/logger";
 import { getSupabaseClient } from "../../../lib/supabase";
 import { checkDropReady } from "../../../lib/drops";
-import { PACKAGES } from "../../../lib/config";
 
 export const runtime = "nodejs";
 
@@ -249,20 +248,10 @@ export async function POST(request: Request) {
           order: {
             location_id: env.locationId,
             customer_id: customerId,
-            line_items: [
-              ...cart.map((item) => ({
-                quantity: item.quantity.toString(),
-                catalog_object_id: item.variationId
-              })),
-              ...((() => {
-                const pkg = parsed.data.packageId
-                  ? PACKAGES.find((p) => p.id === parsed.data.packageId)
-                  : undefined;
-                return pkg?.bundleVariationId
-                  ? [{ quantity: "1", catalog_object_id: pkg.bundleVariationId, base_price_money: { amount: 0, currency: "USD" } }]
-                  : [];
-              })())
-            ],
+            line_items: cart.map((item) => ({
+              quantity: item.quantity.toString(),
+              catalog_object_id: item.variationId
+            })),
             fulfillments: [
               {
                 type: "PICKUP",
