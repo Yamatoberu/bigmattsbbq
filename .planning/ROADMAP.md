@@ -71,16 +71,22 @@ Plans:
 
 #### Phase 8: Mailing List & Email Platform
 
-**Goal:** Leverage the Resend account to improve email infrastructure — migrate subscriber management to Resend Contacts/Audiences, upgrade the broadcast from a sequential loop to Resend's native batch/broadcast API, and ship the deferred MAIL-01 branded order confirmation email.
+**Goal:** Migrate the mailing list from Supabase to Resend Contacts as the source of truth, upgrade the broadcast from a sequential per-subscriber loop to Resend's native single-call Broadcasts API, convert the drop-notification email to a React Email component, and remove the custom JWT unsubscribe flow in favor of Resend's native List-Unsubscribe handling. (MAIL-01 remains deferred — explicitly out of scope for this phase per CONTEXT.md.)
 
 **Issues addressed:**
-- MAIL-01 — Branded order confirmation email with order summary, pickup details, pay-at-pickup reminder (deferred from v1.0 via D-10)
-- Broadcast scalability — sequential `for` loop in `/api/admin/broadcast` doesn't scale beyond a handful of subscribers
-- Subscriber management — Supabase-only list with no platform-level bounce/unsubscribe handling
+- Broadcast scalability — sequential `for` loop in `/api/admin/broadcast` doesn't scale beyond a handful of subscribers (D-05)
+- Subscriber management — Supabase-only list with no platform-level bounce/unsubscribe handling (D-01, D-03)
+- Custom JWT unsubscribe surface — replaced by Resend native List-Unsubscribe (D-09, D-10, D-11)
+- Email template fragility — raw HTML + sanitize-html replaced by structured React Email components (D-07, D-08, D-13)
 
-**Files in scope:** TBD — finalized in CONTEXT.md after discuss phase
+**Files in scope:** `package.json`, `package-lock.json`, `.env.example`, `lib/env.ts`, `app/api/mailing-list/route.ts`, `app/api/admin/broadcast/route.ts` (renamed to `route.tsx`), `emails/DropNotificationEmail.tsx` (NEW), `tests/mailingList.test.ts`, `tests/broadcast.test.ts`. **Deletions:** `lib/unsubscribeToken.ts`, `tests/unsubscribeToken.test.ts`, `app/api/unsubscribe/route.ts`, `app/unsubscribe/page.tsx`.
 
-**Plans:** TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — Wave 1: install React Email, uninstall jose/sanitize-html, delete unsubscribe surface, add `getResendEnv()` helper, update `.env.example` (D-04, D-09, D-10, D-11, D-12, D-13)
+- [ ] 08-02-PLAN.md — Wave 1: create `emails/DropNotificationEmail.tsx` React Email component (D-07, D-08)
+- [ ] 08-03-PLAN.md — Wave 2: rewrite `app/api/mailing-list/route.ts` for Resend Contacts, rename + rewrite broadcast route as `route.tsx` calling `resend.broadcasts.create`, rewrite both test files (D-03, D-05, D-06)
 
 ---
 
@@ -124,7 +130,7 @@ Plans:
 | 5. Content & Mailing List | v1.0 | 8/8 | Complete | 2026-04-22 |
 | 6. Code Review Wave 1 | v1.1 | 3/3 | Complete | 2026-05-06 |
 | 7. Code Review Wave 2 | v1.1 | 4/4 | Complete   | 2026-05-07 |
-| 8. Mailing List & Email Platform | v1.1 | 0/TBD | In Planning | — |
+| 8. Mailing List & Email Platform | v1.1 | 0/3 | Planned | — |
 
 ---
-*Last updated: 2026-05-07 — Promoted Mailing List / Email Management from backlog to Phase 8; removed Mailing List backlog entry*
+*Last updated: 2026-05-07 — Phase 8 plans created (3 plans across 2 waves); MAIL-01 remains explicitly deferred*
