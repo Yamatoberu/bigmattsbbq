@@ -45,7 +45,7 @@ async function squareFetch<T>({
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new SquareError("Square API request failed", response.status, data);
+    throw new SquareError(`Square API request failed: ${method} ${path}`, response.status, data);
   }
 
   return data as T;
