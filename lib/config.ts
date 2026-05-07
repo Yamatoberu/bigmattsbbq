@@ -6,7 +6,7 @@ export const CATERING_EMAIL = 'catering@bigmattsbbq.com';
 export const PACKAGES: PackageConfig[] = [
   {
     id: "family-night",
-    bundleVariationId: "5L524HBPRLRTXIOHFEV2DHDP",
+    bundleVariationId: "MTETMYPIXMPTKTFJFSB5RNPN",
     name: "Family Night",
     description: "Brisket + pulled pork with house sauce. Feeds 4-6.",
     items: [
@@ -22,7 +22,7 @@ export const PACKAGES: PackageConfig[] = [
   },
   {
     id: "backyard-host",
-    bundleVariationId: "QQU57H5MIGIRGVE3EHYSZ4RI",
+    bundleVariationId: "TXDOELPK4D7CUBWJBNLVD3TB",
     name: "Backyard Host",
     description: "Double portions for the table. Feeds 8-10.",
     highlight: true,
@@ -49,7 +49,7 @@ export const PACKAGES: PackageConfig[] = [
   },
   {
     id: "freezer-filler",
-    bundleVariationId: "5FOWGVGSQCXTRAXOSTB6GXVI",
+    bundleVariationId: "NKLG3CMIWO5GLE4IQHUP4ZDV",
     name: "Freezer Filler",
     description: "A deep-freeze reset with plenty of sauce. Feeds 14+.",
     items: [
