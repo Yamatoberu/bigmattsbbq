@@ -63,7 +63,7 @@ Plans:
 
 Plans:
 - [x] 07-01-PLAN.md — Replace `<main>` wrapper in app/layout.tsx with `<div id="page-content">` (Issue 3)
-- [ ] 07-02-PLAN.md — Wrap CartContext callbacks in useCallback and complete useMemo dep array (Issue 4)
+- [x] 07-02-PLAN.md — Wrap CartContext callbacks in useCallback and complete useMemo dep array (Issue 4)
 - [ ] 07-03-PLAN.md — Decouple UNSUBSCRIBE_SECRET from BROADCAST_SECRET fallback + .env.example docs (Issue 7)
 - [ ] 07-04-PLAN.md — Stop useActiveDrop polling when drop is null/closed/inactive (Issue 12)
 
