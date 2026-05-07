@@ -50,7 +50,10 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
   const bundleVariationIdToInfo = useMemo(() => {
     const map = new Map<string, { name: string; priceCents: number; currency: string }>();
     for (const pkg of PACKAGES) {
-      const catalogItem = frozenItems.find((item) => item.name === pkg.catalogName);
+      const catalogItem = frozenItems.find((item) => normalizeMatch(item.name) === normalizeMatch(pkg.catalogName));
+      if (!catalogItem) {
+        console.warn(`[CheckoutClient] bundleVariationIdToInfo: no catalog item found for catalogName "${pkg.catalogName}"`);
+      }
       const variation = catalogItem?.variations[0];
       if (variation) {
         map.set(variation.variationId, {
@@ -78,7 +81,10 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
       }
     }
     for (const pkg of PACKAGES) {
-      const catalogItem = frozenItems.find((item) => item.name === pkg.catalogName);
+      const catalogItem = frozenItems.find((item) => normalizeMatch(item.name) === normalizeMatch(pkg.catalogName));
+      if (!catalogItem) {
+        console.warn(`[CheckoutClient] productNameMap: no catalog item found for catalogName "${pkg.catalogName}"`);
+      }
       const variation = catalogItem?.variations[0];
       if (variation) {
         const pkgId = pkg.id as "family-night" | "backyard-host" | "freezer-filler";
