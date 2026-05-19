@@ -3,7 +3,7 @@
 ## Milestones
 
 - ✅ **v1.0 — Website Refresh & Frozen Drops** — Phases 1–5 (shipped 2026-04-22)
-- 📋 **v1.1** — Phases 6+ (planned)
+- ✅ **v1.1** — Phases 6–8 (complete)
 
 ---
 
@@ -24,7 +24,7 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
 
 ---
 
-### 📋 v1.1 (Planned)
+### ✅ v1.1 (Complete)
 
 #### Phase 6: Code Review Wave 1
 
@@ -130,7 +130,7 @@ Plans:
 | 5. Content & Mailing List | v1.0 | 8/8 | Complete | 2026-04-22 |
 | 6. Code Review Wave 1 | v1.1 | 3/3 | Complete | 2026-05-06 |
 | 7. Code Review Wave 2 | v1.1 | 4/4 | Complete   | 2026-05-07 |
-| 8. Mailing List & Email Platform | v1.1 | 0/3 | Planned | — |
+| 8. Mailing List & Email Platform | v1.1 | 3/3 | Complete | 2026-05-19 |
 
 ---
-*Last updated: 2026-05-07 — Phase 8 plans created (3 plans across 2 waves); MAIL-01 remains explicitly deferred*
+*Last updated: 2026-05-19 — Phase 8 complete (3/3 plans); v1.1 milestone complete*
