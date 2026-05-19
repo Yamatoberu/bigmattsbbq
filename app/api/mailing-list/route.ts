@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getSupabaseClient } from "../../../lib/supabase";
+import { Resend } from "resend";
 import { logError } from "../../../lib/logger";
 
 export const runtime = "nodejs";
@@ -23,14 +23,26 @@ export async function POST(request: Request) {
       );
     }
 
-    const supabase = getSupabaseClient();
-    const { error } = await supabase
-      .from("mailing_list")
-      .insert({ email: parsed.data.email });
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      logError(
+        "mailing-list missing RESEND_API_KEY",
+        new Error("RESEND_API_KEY not set"),
+        requestId
+      );
+      return NextResponse.json(
+        { error: "Signup failed. Please try again.", requestId },
+        { status: 500 }
+      );
+    }
 
-    // PostgreSQL unique_violation — already subscribed. Return silent success per D-08.
-    if (error && (error as { code?: string }).code !== "23505") {
-      logError("mailing-list insert failed", error, requestId);
+    const resend = new Resend(apiKey);
+    const { error } = await resend.contacts.create({
+      email: parsed.data.email
+    });
+
+    if (error) {
+      logError("mailing-list contact create failed", error, requestId);
       return NextResponse.json(
         { error: "Signup failed. Please try again.", requestId },
         { status: 500 }
