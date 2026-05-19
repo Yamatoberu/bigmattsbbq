@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { Resend } from "resend";
-import sanitizeHtml from "sanitize-html";
 import { getSupabaseClient } from "../../../../lib/supabase";
 import { logError } from "../../../../lib/logger";
-import { signUnsubscribeToken } from "../../../../lib/unsubscribeToken";
 
 export const runtime = "nodejs";
 
@@ -14,18 +12,10 @@ const schema = z.object({
   dropId: z.string().optional()
 });
 
-const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
-  allowedTags: ["p", "br", "b", "i", "em", "strong", "ul", "ol", "li", "a", "h1", "h2", "h3"],
-  allowedAttributes: { a: ["href"] },
-  allowedSchemes: ["https", "mailto"]
-};
-
-function getBaseUrl(requestHeaders: Headers): string {
-  const envUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  if (envUrl) return envUrl.replace(/\/$/, "");
-  const forwardedProto = requestHeaders.get("x-forwarded-proto") ?? "https";
-  const host = requestHeaders.get("host") ?? "bigmattsbbq.com";
-  return `${forwardedProto}://${host}`;
+function sanitize(html: string): string {
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+    .replace(/\shref\s*=\s*["']javascript:[^"']*/gi, ' href="#"');
 }
 
 function authorize(requestHeaders: Headers): boolean {
@@ -58,7 +48,7 @@ export async function POST(request: Request) {
     }
 
     const { subject, html, dropId } = parsed.data;
-    const safeHtml = sanitizeHtml(html, SANITIZE_OPTIONS);
+    const safeHtml = sanitize(html);
 
     const supabase = getSupabaseClient();
     const { data: subscribers, error: listErr } = await supabase
@@ -92,7 +82,6 @@ export async function POST(request: Request) {
     }
     const resend = new Resend(resendKey);
     const from = process.env.EMAIL_FROM ?? "Big Matt's BBQ <orders@bigmattsbbq.com>";
-    const baseUrl = getBaseUrl(request.headers);
     const template = dropId ? `drop_notification:${dropId}` : "drop_notification";
 
     let sent = 0;
@@ -102,19 +91,11 @@ export async function POST(request: Request) {
       let resendId: string | null = null;
       let status: "sent" | "failed" = "sent";
       try {
-        const token = await signUnsubscribeToken(subscriber.email);
-        const unsubscribeUrl = `${baseUrl}/unsubscribe?token=${encodeURIComponent(token)}`;
-        const finalHtml = `${safeHtml}
-<hr style="margin-top: 24px; border: 0; border-top: 1px solid #ccc;" />
-<p style="font-size: 12px; color: #666;">
-  Don't want these? <a href="${unsubscribeUrl}">Unsubscribe</a>.
-</p>`;
-
         const { data, error: sendErr } = await resend.emails.send({
           from,
           to: subscriber.email,
           subject,
-          html: finalHtml
+          html: safeHtml
         });
 
         if (sendErr) {
