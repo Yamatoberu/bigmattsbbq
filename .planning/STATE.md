@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Website Refresh & Frozen Drops
-status: verifying
+status: executing
 stopped_at: Phase 8 context gathered
-last_updated: "2026-05-07T20:25:21.589Z"
-last_activity: "2026-05-07 - Completed quick task 260506-tr9: Remove Square inventory from stock display"
+last_updated: "2026-05-19T22:10:17.032Z"
+last_activity: 2026-05-19 -- Phase 08 execution started
 progress:
   total_phases: 8
   completed_phases: 7
-  total_plans: 26
+  total_plans: 29
   completed_plans: 26
-  percent: 100
+  percent: 90
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-22 after v1.0 milestone)
 
 **Core value:** Customers can preorder frozen BBQ from a live drop without overselling — capacity is enforced, pickup is clear, and confirmation is immediate.
-**Current focus:** Phase 07 — code-review-wave-2
+**Current focus:** Phase 08 — mailing-list-email-platform
 
 ## Current Position
 
-Phase: 07 (code-review-wave-2) — EXECUTING
-Plan: 4 of 4
-Status: Phase complete — ready for verification
-Last activity: 2026-05-07 - Completed quick task 260506-tr9: Remove Square inventory from stock display
+Phase: 08 (mailing-list-email-platform) — EXECUTING
+Plan: 1 of 3
+Status: Executing Phase 08
+Last activity: 2026-05-19 -- Phase 08 execution started
 
 Progress: [██████████] 100%
 

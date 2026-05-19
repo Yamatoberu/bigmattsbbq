@@ -31,3 +31,21 @@ export function getSquareEnv(): SquareEnv {
   };
 }
 
+export interface ResendEnv {
+  apiKey: string;
+  segmentId: string;
+}
+
+export function getResendEnv(): ResendEnv {
+  const apiKey = process.env.RESEND_API_KEY;
+  const segmentId = process.env.RESEND_SEGMENT_ID;
+
+  if (!apiKey || !segmentId) {
+    throw new Error(
+      "Missing Resend environment variables. Check RESEND_API_KEY and RESEND_SEGMENT_ID."
+    );
+  }
+
+  return { apiKey, segmentId };
+}
+
