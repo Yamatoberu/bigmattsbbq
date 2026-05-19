@@ -42,7 +42,7 @@ main {
 }
 
 .button-primary {
-  @apply inline-flex items-center justify-center rounded-md px-5 py-3 text-sm font-semibold text-white transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-500 disabled:cursor-not-allowed disabled:bg-smoke-300 disabled:text-smoke-600;
+  @apply inline-flex items-center justify-center rounded-md px-5 py-3 text-sm font-semibold text-white transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-500 disabled:cursor-not-allowed disabled:bg-smoke-300 disabled:text-smoke-600;
   background: linear-gradient(180deg, #b31414 0%, #7b0c0c 100%);
   border: 1px solid #5a0b0b;
   box-shadow: 0 8px 14px rgba(46, 26, 14, 0.35), 0 0 24px rgba(255, 96, 32, 0.2),
