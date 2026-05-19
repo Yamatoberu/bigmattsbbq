@@ -1,29 +1,36 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-type InsertResult = { error: { code?: string; message: string } | null };
+const contactsCreateMock = vi.fn();
 
-function buildMockClient(insertResult: InsertResult) {
-  return {
-    from: () => ({
-      insert: () => Promise.resolve(insertResult)
-    })
-  };
-}
+type ContactsResult = {
+  data: { object: "contact"; id: string } | null;
+  error: { message: string; name?: string } | null;
+};
 
-function mockSupabase(client: ReturnType<typeof buildMockClient>) {
-  vi.doMock("../lib/supabase", () => ({ getSupabaseClient: () => client }));
+function mockResend(result: ContactsResult) {
+  contactsCreateMock.mockResolvedValue(result);
+  vi.doMock("resend", () => ({
+    Resend: class {
+      contacts = { create: contactsCreateMock };
+    }
+  }));
   vi.doMock("server-only", () => ({}));
 }
 
 describe("POST /api/mailing-list", () => {
-  beforeEach(() => vi.resetModules());
+  beforeEach(() => {
+    vi.resetModules();
+    contactsCreateMock.mockReset();
+    process.env.RESEND_API_KEY = "re_test";
+  });
+
   afterEach(() => {
-    vi.doUnmock("../lib/supabase");
+    vi.doUnmock("resend");
     vi.doUnmock("server-only");
   });
 
-  it("returns 200 on successful insert", async () => {
-    mockSupabase(buildMockClient({ error: null }));
+  it("returns 200 when Resend contacts.create succeeds", async () => {
+    mockResend({ data: { object: "contact", id: "c_123" }, error: null });
     const { POST } = await import("../app/api/mailing-list/route");
     const req = new Request("http://localhost/api/mailing-list", {
       method: "POST",
@@ -34,10 +41,13 @@ describe("POST /api/mailing-list", () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.ok).toBe(true);
+    expect(contactsCreateMock).toHaveBeenCalledOnce();
+    const call = contactsCreateMock.mock.calls[0][0];
+    expect(call.email).toBe("test@example.com");
   });
 
-  it("returns 200 silently on duplicate email (23505)", async () => {
-    mockSupabase(buildMockClient({ error: { code: "23505", message: "duplicate key" } }));
+  it("returns 200 silently on duplicate (Resend upsert returns no error)", async () => {
+    mockResend({ data: { object: "contact", id: "c_dup" }, error: null });
     const { POST } = await import("../app/api/mailing-list/route");
     const req = new Request("http://localhost/api/mailing-list", {
       method: "POST",
@@ -52,7 +62,7 @@ describe("POST /api/mailing-list", () => {
   });
 
   it("returns 400 on invalid email", async () => {
-    mockSupabase(buildMockClient({ error: null }));
+    mockResend({ data: { object: "contact", id: "x" }, error: null });
     const { POST } = await import("../app/api/mailing-list/route");
     const req = new Request("http://localhost/api/mailing-list", {
       method: "POST",
@@ -61,10 +71,14 @@ describe("POST /api/mailing-list", () => {
     });
     const res = await POST(req);
     expect(res.status).toBe(400);
+    expect(contactsCreateMock).not.toHaveBeenCalled();
   });
 
-  it("returns 500 on unexpected Supabase error", async () => {
-    mockSupabase(buildMockClient({ error: { code: "42P01", message: "relation does not exist" } }));
+  it("returns 500 when Resend contacts.create returns an error", async () => {
+    mockResend({
+      data: null,
+      error: { message: "rate limited", name: "rate_limit_exceeded" }
+    });
     const { POST } = await import("../app/api/mailing-list/route");
     const req = new Request("http://localhost/api/mailing-list", {
       method: "POST",
@@ -75,6 +89,6 @@ describe("POST /api/mailing-list", () => {
     expect(res.status).toBe(500);
     const body = await res.json();
     expect(body.error).toBeDefined();
-    expect(body.error).not.toContain("relation does not exist"); // don't leak DB internals
+    expect(body.error).not.toContain("rate limited");
   });
 });
