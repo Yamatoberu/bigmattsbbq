@@ -84,7 +84,7 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — Wave 1: install React Email, uninstall jose/sanitize-html, delete unsubscribe surface, add `getResendEnv()` helper, update `.env.example` (D-04, D-09, D-10, D-11, D-12, D-13)
+- [x] 08-01-PLAN.md — Wave 1: install React Email, uninstall jose/sanitize-html, delete unsubscribe surface, add `getResendEnv()` helper, update `.env.example` (D-04, D-09, D-10, D-11, D-12, D-13)
 - [ ] 08-02-PLAN.md — Wave 1: create `emails/DropNotificationEmail.tsx` React Email component (D-07, D-08)
 - [ ] 08-03-PLAN.md — Wave 2: rewrite `app/api/mailing-list/route.ts` for Resend Contacts, rename + rewrite broadcast route as `route.tsx` calling `resend.broadcasts.create`, rewrite both test files (D-03, D-05, D-06)
 
