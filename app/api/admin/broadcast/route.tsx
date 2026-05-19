@@ -3,14 +3,14 @@ import { z } from "zod";
 import { Resend } from "resend";
 import { render } from "@react-email/render";
 import { DropNotificationEmail } from "../../../../emails/DropNotificationEmail";
-import { logError } from "../../../../lib/logger";
+import { logError, logInfo } from "../../../../lib/logger";
 import { getResendEnv } from "../../../../lib/env";
 
 export const runtime = "nodejs";
 
 const schema = z.object({
-  subject: z.string().min(1).max(200),
-  dropId: z.string().optional()
+  subject: z.string().trim().min(1).max(200),
+  dropId: z.string().trim().optional()
 });
 
 function authorize(requestHeaders: Headers): boolean {
@@ -79,6 +79,7 @@ export async function POST(request: Request) {
       );
     }
 
+    logInfo("broadcast sent", { broadcastId: data?.id, segmentId: env.segmentId, requestId });
     return NextResponse.json(
       { id: data?.id, requestId },
       { status: 200 }

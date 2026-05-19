@@ -22,6 +22,8 @@ describe("POST /api/mailing-list", () => {
     vi.resetModules();
     contactsCreateMock.mockReset();
     process.env.RESEND_API_KEY = "re_test";
+    process.env.RESEND_AUDIENCE_ID = "aud_test_123";
+    process.env.RESEND_SEGMENT_ID = "seg_test_123";
   });
 
   afterEach(() => {
@@ -44,6 +46,8 @@ describe("POST /api/mailing-list", () => {
     expect(contactsCreateMock).toHaveBeenCalledOnce();
     const call = contactsCreateMock.mock.calls[0][0];
     expect(call.email).toBe("test@example.com");
+    expect(call.audienceId).toBe("aud_test_123");
+    expect(call.unsubscribed).toBe(false);
   });
 
   it("returns 200 silently on duplicate (Resend upsert returns no error)", async () => {
@@ -90,5 +94,19 @@ describe("POST /api/mailing-list", () => {
     const body = await res.json();
     expect(body.error).toBeDefined();
     expect(body.error).not.toContain("rate limited");
+  });
+
+  it("returns 500 when RESEND_AUDIENCE_ID is unset", async () => {
+    delete process.env.RESEND_AUDIENCE_ID;
+    mockResend({ data: { object: "contact", id: "x" }, error: null });
+    const { POST } = await import("../app/api/mailing-list/route");
+    const req = new Request("http://localhost/api/mailing-list", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email: "ok@example.com" })
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(500);
+    expect(contactsCreateMock).not.toHaveBeenCalled();
   });
 });

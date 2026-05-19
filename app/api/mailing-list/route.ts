@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { Resend } from "resend";
 import { logError } from "../../../lib/logger";
+import { getResendEnv } from "../../../lib/env";
 
 export const runtime = "nodejs";
 
@@ -23,22 +24,22 @@ export async function POST(request: Request) {
       );
     }
 
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
-      logError(
-        "mailing-list missing RESEND_API_KEY",
-        new Error("RESEND_API_KEY not set"),
-        requestId
-      );
+    let env: { apiKey: string; audienceId: string };
+    try {
+      env = getResendEnv();
+    } catch (envErr) {
+      logError("mailing-list missing env vars", envErr, requestId);
       return NextResponse.json(
         { error: "Signup failed. Please try again.", requestId },
         { status: 500 }
       );
     }
 
-    const resend = new Resend(apiKey);
+    const resend = new Resend(env.apiKey);
     const { error } = await resend.contacts.create({
-      email: parsed.data.email
+      audienceId: env.audienceId,
+      email: parsed.data.email,
+      unsubscribed: false
     });
 
     if (error) {

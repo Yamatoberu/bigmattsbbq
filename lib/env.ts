@@ -33,19 +33,21 @@ export function getSquareEnv(): SquareEnv {
 
 export interface ResendEnv {
   apiKey: string;
+  audienceId: string;
   segmentId: string;
 }
 
 export function getResendEnv(): ResendEnv {
   const apiKey = process.env.RESEND_API_KEY;
+  const audienceId = process.env.RESEND_AUDIENCE_ID;
   const segmentId = process.env.RESEND_SEGMENT_ID;
 
-  if (!apiKey || !segmentId) {
+  if (!apiKey || !audienceId || !segmentId) {
     throw new Error(
-      "Missing Resend environment variables. Check RESEND_API_KEY and RESEND_SEGMENT_ID."
+      "Missing Resend environment variables. Check RESEND_API_KEY, RESEND_AUDIENCE_ID, and RESEND_SEGMENT_ID."
     );
   }
 
-  return { apiKey, segmentId };
+  return { apiKey, audienceId, segmentId };
 }
 

@@ -30,6 +30,7 @@ describe("POST /api/admin/broadcast", () => {
     process.env.BROADCAST_SECRET =
       "correct-secret-xxxxxxxxxxxxxxxxxxxxxxxxx";
     process.env.RESEND_API_KEY = "re_test";
+    process.env.RESEND_AUDIENCE_ID = "aud_test_123";
     process.env.RESEND_SEGMENT_ID = "seg_test_123";
     process.env.EMAIL_FROM = "Big Matt's BBQ <orders@bigmattsbbq.com>";
   });
