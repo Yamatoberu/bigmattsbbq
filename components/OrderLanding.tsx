@@ -127,6 +127,9 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
                 const bundleVariationId = catalogItem?.variations[0]?.variationId;
                 const resolved = bundleVariationId ? [] : resolvePackageToCartItems(pkg, frozenItems);
                 const canAdd = Boolean(bundleVariationId) || resolved.length === pkg.items.length;
+                const priceCents = bundleVariationId
+                  ? (variationMap.get(bundleVariationId)?.priceCents ?? 0)
+                  : resolved.reduce((sum, item) => sum + (variationMap.get(item.variationId)?.priceCents ?? 0) * item.quantity, 0);
                 const pkgSoldOutMap: Record<string, boolean> = {
                   "family-night": drop.soldOut.familyNight,
                   "backyard-host": drop.soldOut.backyardHost,
@@ -145,6 +148,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
                       }
                       setPackage(pkg.id);
                     }}
+                    priceCents={priceCents}
                     soldOut={pkgSoldOut}
                     isDisabled={!canAdd || isLoading || Boolean(error)}
                   />
