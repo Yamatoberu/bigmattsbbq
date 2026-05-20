@@ -17,7 +17,7 @@ export const PACKAGES: PackageConfig[] = [
         quantity: 2
       },
       { itemName: "Pulled Pork", variationName: "Regular", displayVariationName: "1/2 lb bags", quantity: 1 },
-      { itemName: "Sauce Bottle", variationName: "Regular", displayVariationName: "Bottle", quantity: 1 }
+      { itemName: "Sauce Bottle", variationName: "Regular", displayName: "Sauce Bottle", quantity: 1 }
     ]
   },
   {
@@ -42,7 +42,7 @@ export const PACKAGES: PackageConfig[] = [
       {
         itemName: "Sauce Bottle",
         variationName: "Regular",
-        displayVariationName: "Bottles",
+        displayName: "Sauce Bottles",
         quantity: 2
       }
     ]
@@ -68,7 +68,7 @@ export const PACKAGES: PackageConfig[] = [
       {
         itemName: "Sauce Bottle",
         variationName: "Regular",
-        displayVariationName: "Bottles",
+        displayName: "Sauce Bottles",
         quantity: 2
       }
     ]

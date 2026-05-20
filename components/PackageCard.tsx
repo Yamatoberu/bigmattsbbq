@@ -33,10 +33,9 @@ export function PackageCard({ pkg, priceCents, onAdd, isDisabled, soldOut = fals
           <li key={`${pkg.id}-${item.itemName}-${item.variationName}`} className="flex items-start gap-2">
             <span className="mt-1 text-xs text-gold-600">•</span>
             <span>
-              {item.quantity} {item.itemName}{" "}
-              {item.variationName
-                ? `(${item.displayVariationName ?? item.variationName})`
-                : ""}
+              {item.displayName
+                ? `${item.quantity} ${item.displayName}`
+                : `${item.quantity} ${item.itemName}${item.variationName ? ` (${item.displayVariationName ?? item.variationName})` : ""}`}
             </span>
           </li>
         ))}
