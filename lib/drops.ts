@@ -43,12 +43,15 @@ export async function fetchActiveDrop(): Promise<DropDTO | null> {
     throw pickupErr;
   }
 
+  const capacityEnforced = drop.capacity_enforced !== false;
+
   const pickupOptions: PickupOptionDTO[] = (pickupRows ?? []).map((row) => ({
     id: row.id,
     locationLabel: row.location_label,
     pickupDateLabel: formatPickupDate(row.pickup_at),
     pickupAtISO: row.pickup_at,
     isSoldOut:
+      capacityEnforced &&
       row.reserved_pulled_pork >= row.capacity_pulled_pork &&
       row.reserved_brisket >= row.capacity_brisket &&
       row.reserved_sauce >= row.capacity_sauce &&
@@ -56,8 +59,6 @@ export async function fetchActiveDrop(): Promise<DropDTO | null> {
       row.reserved_backyard_host >= row.capacity_backyard_host &&
       row.reserved_freezer_filler >= row.capacity_freezer_filler
   }));
-
-  const capacityEnforced = drop.capacity_enforced !== false;
   return {
     id: drop.id,
     title: drop.title,
