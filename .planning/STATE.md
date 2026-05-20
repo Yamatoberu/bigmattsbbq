@@ -83,6 +83,7 @@ None.
 | 260507-bnv | Fix useActiveDrop infinite fetch loop | 2026-05-07 | 00c4d51 | [260507-bnv-fix-useactivedrop-infinite-fetch-loop](./.planning/quick/260507-bnv-fix-useactivedrop-infinite-fetch-loop/) |
 | 260507-c71 | Fix checkout Square API failure | 2026-05-07 | 480cc99 | [260507-c71-fix-checkout-square-api-failure](./.planning/quick/260507-c71-fix-checkout-square-api-failure/) |
 | 260507-emt | Move enhancements.md backlog items to ROADMAP.md, delete public file | 2026-05-07 | — | [260507-move-enhancements-to-roadmap](./.planning/quick/260507-move-enhancements-to-roadmap/) |
+| 20260520-fix-pickup-issoldout | Fix pickup isSoldOut incorrectly true when capacity_enforced is false | 2026-05-20 | 1a4e57c | [20260520-fix-pickup-issoldout](./.planning/quick/20260520-fix-pickup-issoldout/) |
 
 ## Session Continuity
 
