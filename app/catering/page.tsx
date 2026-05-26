@@ -13,22 +13,22 @@ type PackageTier = { name: string; price: string; included: string[] };
 const MEATS: MenuItem[] = [
   {
     name: "Brisket",
-    price: "$20 / lb",
+    price: "$30 / lb",
     description: "Peppery beef brisket cooked and pulled. It's a fan favorite."
   },
   {
     name: "Pulled Pork",
-    price: "$15 / lb",
+    price: "$20 / lb",
     description: "Shredded pork paired well with our sweet rubs and cooked until it completely falls apart."
   },
   {
     name: "Chicken Thighs",
-    price: "$15 / lb",
+    price: "$20 / lb",
     description: "Seasoned and roasted boneless chicken thighs chopped fresh and ready to feed a crowd."
   },
   {
     name: "Ribs",
-    price: "$35 / rack",
+    price: "$40 / rack",
     description: "St. Louis style ribs with our pork rub, lightly sauced. Each rack feeds 3–4 people."
   }
 ];
@@ -36,32 +36,32 @@ const MEATS: MenuItem[] = [
 const SIDES: MenuItem[] = [
   {
     name: "Doctored Mashed Potatoes",
-    price: "$20 / pan",
+    price: "$25 / pan",
     description: "Creamy and cheesy with a hint of smoked gouda. These aren't your everyday mashed potatoes."
   },
   {
     name: "Cheesy Potatoes",
-    price: "$20 / pan",
+    price: "$25 / pan",
     description: "Sliced potatoes with bacon, smothered in melted cheese."
   },
   {
     name: "Baked Beans",
-    price: "$20 / pan",
+    price: "$25 / pan",
     description: "Sweet baked beans with plenty of extra bacon. A great combo all around."
   },
   {
     name: "Side Salad",
-    price: "$20 / pan",
+    price: "$25 / pan",
     description: "Mixed greens with cherry tomatoes. Comes with ranch dressing."
   },
   {
     name: "Dinner Rolls",
-    price: "$12 / dozen",
+    price: "$15 / dozen",
     description: "Soft rolls that will have you coming back for more. Comes with whipped honey butter."
   },
   {
     name: "Cornbread Muffins",
-    price: "$12 / dozen",
+    price: "$15 / dozen",
     description: "Golden muffins with a crisp outside and fluffy interior. Comes with whipped honey butter."
   }
 ];
@@ -69,12 +69,12 @@ const SIDES: MenuItem[] = [
 const DESSERTS: MenuItem[] = [
   {
     name: "Cheesecake",
-    price: "$40 / cake",
+    price: "$50 / cake",
     description: "Smooth cheesecake with a graham cracker crust. One topping choice per cake, up to 3 cakes."
   },
   {
     name: "Texas Sheet Cake",
-    price: "$30 / cake",
+    price: "$40 / cake",
     description: "A moist and rich chocolate cake that blurs the line between fudgy brownie and moist cake."
   }
 ];
@@ -82,17 +82,17 @@ const DESSERTS: MenuItem[] = [
 const MEAL_PACKAGES: PackageTier[] = [
   {
     name: "Basic",
-    price: "$15 / person",
+    price: "$17 / person",
     included: ["Choice of 2 meats", "2 sides", "Dinner rolls"]
   },
   {
     name: "Plus",
-    price: "$18 / person",
+    price: "$20 / person",
     included: ["Choice of 3 meats", "2 sides", "Dinner rolls"]
   },
   {
     name: "Ultra",
-    price: "$21 / person",
+    price: "$23 / person",
     included: ["Choice of 3 meats", "2 sides", "Dinner rolls", "Dessert"]
   }
 ];
@@ -100,17 +100,17 @@ const MEAL_PACKAGES: PackageTier[] = [
 const SANDWICHES: PackageTier[] = [
   {
     name: "Basic",
-    price: "$12 / person",
+    price: "$14 / person",
     included: ["Choice of 1 meat", "Chips"]
   },
   {
     name: "Plus",
-    price: "$15 / person",
+    price: "$17 / person",
     included: ["Choice of 2 meats", "1 side", "Chips"]
   },
   {
     name: "Ultra",
-    price: "$18 / person",
+    price: "$20 / person",
     included: ["Choice of 2 meats", "1 side", "Chips", "Dessert"]
   }
 ];
@@ -118,17 +118,17 @@ const SANDWICHES: PackageTier[] = [
 const POTATO_BOWLS: PackageTier[] = [
   {
     name: "Basic",
-    price: "$14 / person",
+    price: "$16 / person",
     included: ["Choice of 1 meat"]
   },
   {
     name: "Plus",
-    price: "$16 / person",
+    price: "$18 / person",
     included: ["Choice of 2 meats", "Dinner rolls"]
   },
   {
     name: "Ultra",
-    price: "$19 / person",
+    price: "$21 / person",
     included: ["Choice of 3 meats", "Dinner rolls"]
   }
 ];

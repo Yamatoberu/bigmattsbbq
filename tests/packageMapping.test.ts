@@ -5,6 +5,7 @@ import { PackageConfig } from "../lib/types";
 const pkg: PackageConfig = {
   id: "family",
   name: "Family",
+  catalogName: "Family Bundle",
   description: "",
   items: [
     { itemName: "Brisket", variationName: "1 lb", quantity: 2 },
@@ -44,6 +45,7 @@ describe("resolvePackageToCartItems", () => {
     const ambiguousPkg: PackageConfig = {
       id: "ambiguous",
       name: "Ambiguous",
+      catalogName: "Ambiguous Bundle",
       description: "",
       items: [{ itemName: "Sauce", variationName: "Bottle", quantity: 2 }]
     };
