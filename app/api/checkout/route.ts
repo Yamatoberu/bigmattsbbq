@@ -17,6 +17,54 @@ import { checkDropReady } from "../../../lib/drops";
 
 export const runtime = "nodejs";
 
+const PRODUCT_NAME_LABELS: Record<string, string> = {
+  pulled_pork: "Pulled Pork",
+  brisket: "Brisket",
+  sauce: "Sauce",
+  family_night: "Family Night Bundle",
+  backyard_host: "Backyard Host Bundle",
+  freezer_filler: "Freezer Filler Bundle",
+};
+
+function notifySlackNewOrder({
+  customer,
+  cart,
+  locationLabel,
+  pickupDateLabel,
+  orderId,
+}: {
+  customer: { firstName: string; lastName: string; email: string };
+  cart: Array<{ productName?: string; quantity: number }>;
+  locationLabel: string;
+  pickupDateLabel: string;
+  orderId: string;
+}): void {
+  const webhookUrl = process.env.SLACK_ORDERS_WEBHOOK_URL;
+  if (!webhookUrl) return;
+
+  const lines = cart
+    .filter((item) => item.productName && PRODUCT_NAME_LABELS[item.productName])
+    .map((item) => `  • ${PRODUCT_NAME_LABELS[item.productName!]} × ${item.quantity}`);
+
+  const message = [
+    "New Order — Big Matt's BBQ",
+    "",
+    `Customer: ${customer.firstName} ${customer.lastName} · ${customer.email}`,
+    "Order:",
+    ...lines,
+    `Pickup: ${locationLabel} — ${pickupDateLabel}`,
+    `Order ID: ${orderId}`,
+  ].join("\n");
+
+  fetch(webhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text: message }),
+  }).catch((err) => {
+    console.warn("Slack order notification failed", err);
+  });
+}
+
 export const cartSchema = z.object({
   variationId: z.string().min(1),
   quantity: z.number().int().positive(),
@@ -344,6 +392,14 @@ export async function POST(request: Request) {
           String(invoiceVersion ?? 0),
           "publish"
         ])
+      });
+
+      notifySlackNewOrder({
+        customer,
+        cart: parsed.data.cart,
+        locationLabel: pickupRow.location_label,
+        pickupDateLabel,
+        orderId: orderId ?? ""
       });
     } catch (squareError) {
       // Square call failed — release reserved capacity so the slot is not stranded.
