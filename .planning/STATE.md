@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
+milestone: v1.1
 milestone_name: Website Refresh & Frozen Drops
-status: executing
-stopped_at: Phase 8 context gathered
-last_updated: "2026-05-19T22:35:51.530Z"
-last_activity: 2026-05-19 -- Phase 08 execution started
+status: complete
+stopped_at: v1.1 complete — all 8 phases, 29 plans done
+last_updated: "2026-08-19T00:00:00.000Z"
+last_activity: 2026-08-19 -- v1.1 marked complete; funnel review closed out
 progress:
   total_phases: 8
-  completed_phases: 7
+  completed_phases: 8
   total_plans: 29
-  completed_plans: 27
-  percent: 93
+  completed_plans: 29
+  percent: 100
 ---
 
 # Project State
@@ -21,14 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-22 after v1.0 milestone)
 
 **Core value:** Customers can preorder frozen BBQ from a live drop without overselling — capacity is enforced, pickup is clear, and confirmation is immediate.
-**Current focus:** Phase 08 — mailing-list-email-platform
+**Current focus:** v1.1 complete — ready for next milestone
 
 ## Current Position
 
-Phase: 08 (mailing-list-email-platform) — EXECUTING
-Plan: 1 of 3
-Status: Executing Phase 08
-Last activity: 2026-05-19 -- Phase 08 execution started
+Phase: 08 (mailing-list-email-platform) — COMPLETE
+Status: All phases and plans complete; v1.1 milestone done
+Last activity: 2026-08-19 -- v1.1 marked complete; funnel review closed out
 
 Progress: [██████████] 100%
 
@@ -85,12 +84,13 @@ None.
 | 260507-emt | Move enhancements.md backlog items to ROADMAP.md, delete public file | 2026-05-07 | — | [260507-move-enhancements-to-roadmap](./.planning/quick/260507-move-enhancements-to-roadmap/) |
 | 20260520-fix-pickup-issoldout | Fix pickup isSoldOut incorrectly true when capacity_enforced is false | 2026-05-20 | 1a4e57c | [20260520-fix-pickup-issoldout](./.planning/quick/20260520-fix-pickup-issoldout/) |
 | 20260520-package-item-display-name | Add displayName to PackageItemConfig for clean sauce label override | 2026-05-20 | eca119b | [20260520-package-item-display-name](./.planning/quick/20260520-package-item-display-name/) |
+| 20260819-slack-order-notification | Add fire-and-forget Slack notification to checkout route on new order | 2026-08-19 | 7c3918a | [20260819-slack-order-notification](./.planning/quick/20260819-slack-order-notification/) |
 
 ## Session Continuity
 
-Last session: 2026-05-07T20:25:21.573Z
-Stopped at: Phase 8 context gathered
-Resume: Remaining funnel item from russel_review.md: Issue 9 (Value Ladder / Drop Club / post-purchase upsell)
+Last session: 2026-08-19
+Stopped at: v1.1 complete
+Resume: Start next milestone — options: Catering Quote Form (v1.x) or Admin Dashboard (v2.0)
 | 2026-05-07 | fast | Increase cart item price text size and highlight with ember-400 color | ✅ |
 | 2026-05-07 | fast | Bump Square API version from 2024-12-18 to 2026-04-21 | ✅ |
 | 2026-05-07 | fast | Normalize catalogName bundle match and add console.warn on mismatch in CheckoutClient | ✅ |
