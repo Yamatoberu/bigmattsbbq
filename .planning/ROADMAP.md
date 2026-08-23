@@ -97,7 +97,7 @@ Plans:
 
 **Milestone Goal:** Ship a read-only, production-quality SCA (Steak Cookoff Association) competition tracker at `sca.bigmattsbbq.com`, sharing this repo, Vercel project, and Big Matt's BBQ visual design system with the storefront, reading live data from the existing Supabase `sca` schema via server-side service-role access. No new auth, no write/create/edit/delete flows this milestone.
 
-- [ ] **Phase 9: Foundation & Subdomain Routing** - Service-role Supabase access to the `sca` schema, generated types, host-based subdomain routing, shared derived-score utility, and on-brand shell for `app/sca`
+- [x] **Phase 9: Foundation & Subdomain Routing** - Service-role Supabase access to the `sca` schema, generated types, host-based subdomain routing, shared derived-score utility, and on-brand shell for `app/sca` (completed 2026-08-23)
 - [ ] **Phase 10: Core Browsing — Dashboard, Competitions & Cook Detail** - Dashboard summary/comparison/insights, competition list/detail, and cook detail pages sharing one comparison table module
 - [ ] **Phase 11: Analytics & AI Reviews** - Score/gap/category trend views plus AI appearance review list and detail pages
 
@@ -121,7 +121,7 @@ Plans:
 - [x] 09-04-PLAN.md — Vercel + Hostinger subdomain activation checklist (documentation only, cutover NOT performed)
 - [x] 09-05-PLAN.md — `deriveScoreMetrics()` shared derived-score utility with real-row type compatibility
 - [x] 09-06-PLAN.md — SCA shell (`ScaNavBar`, `ScaFooter`, `app/sca/layout.tsx`) plus `/sca` index page with a live sca-schema read
-- [ ] 09-07-PLAN.md — Human verification of the SCA shell and storefront non-regression
+- [x] 09-07-PLAN.md — Human verification of the SCA shell and storefront non-regression
 
 **UI hint**: yes
 
@@ -194,7 +194,7 @@ Plans:
 | 6. Code Review Wave 1 | v1.1 | 3/3 | Complete | 2026-05-06 |
 | 7. Code Review Wave 2 | v1.1 | 4/4 | Complete   | 2026-05-07 |
 | 8. Mailing List & Email Platform | v1.1 | 3/3 | Complete | 2026-05-19 |
-| 9. Foundation & Subdomain Routing | v2.0 | 6/7 | In Progress|  |
+| 9. Foundation & Subdomain Routing | v2.0 | 7/7 | Complete   | 2026-08-23 |
 | 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 0/TBD | Not started | - |
 | 11. Analytics & AI Reviews | v2.0 | 0/TBD | Not started | - |
 
