@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: SCA Tracker
 status: executing
-stopped_at: Completed 09-04-PLAN.md
-last_updated: "2026-08-23T20:32:31.893Z"
+stopped_at: Completed 09-01-PLAN.md
+last_updated: "2026-08-23T20:37:47.940Z"
 last_activity: 2026-08-23
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 7
-  completed_plans: 2
+  completed_plans: 3
   percent: 0
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-23 — v2.0 SCA Tracker milestone sta
 ## Current Position
 
 Phase: 09 (foundation-subdomain-routing) — EXECUTING
-Plan: 3 of 7
+Plan: 4 of 7
 Status: Ready to execute
 Last activity: 2026-08-23
 
-Progress: [███░░░░░░░] 29%
+Progress: [████░░░░░░] 43%
 
 ## Milestone Summary
 
@@ -65,6 +65,7 @@ Progress: [███░░░░░░░] 29%
 *Updated after each plan completion*
 | Phase 09 P02 | 3min | 3 tasks | 5 files |
 | Phase 09 P04 | 1min 19s | 2 tasks | 2 files |
+| Phase 09 P01 | 5min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,7 @@ Recent decisions affecting current work:
 - v2.0 kickoff: full DNS cutover to sca.bigmattsbbq.com is manual (Hostinger) and out of scope for the repo work
 - [Phase 09]: INFRA-03 subdomain routing implemented via Next.js 16 proxy.ts (not middleware.ts, obsolete on this version) with pure resolveScaRouting decision logic and x-sca-area header driving root layout chrome suppression
 - [Phase 09]: SCA subdomain activation checklist written to docs/sca-subdomain-deployment.md with unambiguous NOT-yet-performed status — DNS cutover remains a manual Hostinger step outside repo scope; checklist and README pointer satisfy D-11 and INFRA-03 documentation requirement
+- [Phase 09]: Phase 09 Plan 01: PGRST106 blocker resolved via Supabase dashboard Exposed schemas change (sca added); check:sca preflight confirms PASS. INFRA-01 left Pending in REQUIREMENTS.md until 09-03/09-06 land the actual service-role client and live read.
 
 ### Pending Todos
 
@@ -131,6 +133,6 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 
 ## Session Continuity
 
-Last session: 2026-08-23T20:32:31.885Z
-Stopped at: Completed 09-04-PLAN.md
+Last session: 2026-08-23T20:37:47.932Z
+Stopped at: Completed 09-01-PLAN.md
 Resume file: None
