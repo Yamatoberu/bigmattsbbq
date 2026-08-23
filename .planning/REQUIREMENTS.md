@@ -78,30 +78,30 @@ Populated by the roadmapper during phase creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | TBD | Pending |
-| INFRA-02 | TBD | Pending |
-| INFRA-03 | TBD | Pending |
-| INFRA-04 | TBD | Pending |
-| INFRA-05 | TBD | Pending |
-| DASH-01 | TBD | Pending |
-| DASH-02 | TBD | Pending |
-| DASH-03 | TBD | Pending |
-| COMP-01 | TBD | Pending |
-| COMP-02 | TBD | Pending |
-| COMP-03 | TBD | Pending |
-| COOK-01 | TBD | Pending |
-| COOK-02 | TBD | Pending |
-| ANLY-01 | TBD | Pending |
-| ANLY-02 | TBD | Pending |
-| ANLY-03 | TBD | Pending |
-| AIRV-01 | TBD | Pending |
-| AIRV-02 | TBD | Pending |
+| INFRA-01 | Phase 9 | Pending |
+| INFRA-02 | Phase 9 | Pending |
+| INFRA-03 | Phase 9 | Pending |
+| INFRA-04 | Phase 9 | Pending |
+| INFRA-05 | Phase 9 | Pending |
+| DASH-01 | Phase 10 | Pending |
+| DASH-02 | Phase 10 | Pending |
+| DASH-03 | Phase 10 | Pending |
+| COMP-01 | Phase 10 | Pending |
+| COMP-02 | Phase 10 | Pending |
+| COMP-03 | Phase 10 | Pending |
+| COOK-01 | Phase 10 | Pending |
+| COOK-02 | Phase 10 | Pending |
+| ANLY-01 | Phase 11 | Pending |
+| ANLY-02 | Phase 11 | Pending |
+| ANLY-03 | Phase 11 | Pending |
+| AIRV-01 | Phase 11 | Pending |
+| AIRV-02 | Phase 11 | Pending |
 
 **Coverage:**
 - v1 requirements: 18 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 18 ⚠️ (expected — roadmapper fills this in)
+- Mapped to phases: 18/18 ✓
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-08-23*
-*Last updated: 2026-08-23 after initial definition*
+*Last updated: 2026-08-23 — traceability mapped to Phases 9-11 (roadmap created)*

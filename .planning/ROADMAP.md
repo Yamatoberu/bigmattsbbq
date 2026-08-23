@@ -4,6 +4,7 @@
 
 - ✅ **v1.0 — Website Refresh & Frozen Drops** — Phases 1–5 (shipped 2026-04-22)
 - ✅ **v1.1** — Phases 6–8 (complete)
+- 📋 **v2.0 — SCA Tracker** — Phases 9–11 (planned)
 
 ---
 
@@ -92,6 +93,58 @@ Plans:
 
 ---
 
+### 📋 v2.0 — SCA Tracker (Planned)
+
+**Milestone Goal:** Ship a read-only, production-quality SCA (Steak Cookoff Association) competition tracker at `sca.bigmattsbbq.com`, sharing this repo, Vercel project, and Big Matt's BBQ visual design system with the storefront, reading live data from the existing Supabase `sca` schema via server-side service-role access. No new auth, no write/create/edit/delete flows this milestone.
+
+- [ ] **Phase 9: Foundation & Subdomain Routing** - Service-role Supabase access to the `sca` schema, generated types, host-based subdomain routing, shared derived-score utility, and on-brand shell for `app/sca`
+- [ ] **Phase 10: Core Browsing — Dashboard, Competitions & Cook Detail** - Dashboard summary/comparison/insights, competition list/detail, and cook detail pages sharing one comparison table module
+- [ ] **Phase 11: Analytics & AI Reviews** - Score/gap/category trend views plus AI appearance review list and detail pages
+
+#### Phase 9: Foundation & Subdomain Routing
+
+**Goal**: The app is technically ready to serve a live, secure, on-brand SCA subdomain reading real data from Supabase.
+**Depends on**: Nothing (first phase of v2.0)
+**Requirements**: INFRA-01, INFRA-02, INFRA-03, INFRA-04, INFRA-05
+**Success Criteria** (what must be TRUE):
+  1. Requests to `sca.bigmattsbbq.com` are routed via host-based middleware into a dedicated `app/sca` route group, without changing any existing bigmattsbbq.com route or behavior
+  2. Server-side code can query the `sca` schema using generated TypeScript types (`lib/database.types.ts`) and a service-role Supabase client that is never bundled into browser JS
+  3. A single shared lib function computes `distance_from_winning` and `distance_from_perfect` for reuse by every SCA page, with no duplicated derivation logic
+  4. Any page rendered under `app/sca` visually matches the site's existing ember/smoke theme, fonts, and card/shadow conventions rather than introducing a new visual system
+  5. Project documentation lists the exact remaining manual DNS steps at Hostinger needed to complete the subdomain cutover
+**Plans**: TBD
+**UI hint**: yes
+
+#### Phase 10: Core Browsing — Dashboard, Competitions & Cook Detail
+
+**Goal**: A chef/spectator can browse Big Matt's full SCA competition history — dashboard overview, competition list/detail, and individual cook detail — with side-by-side comparisons throughout.
+**Depends on**: Phase 9
+**Requirements**: DASH-01, DASH-02, DASH-03, COMP-01, COMP-02, COMP-03, COOK-01, COOK-02
+**Success Criteria** (what must be TRUE):
+  1. User can view Dashboard summary cards for latest cooks, best cook, worst cook, average total score, and average gap to first
+  2. User can view a Dashboard comparison table with named-cook columns plus Worst Cook, Best Cook, and Cook Averages aggregate columns, with rows for Competition, Cook, Cook Placement, each judging category, Total Score, Distance From Winning, and Distance From Perfect Score
+  3. User can view a data-driven "what stands out" summary on the Dashboard reflecting real score data (e.g. biggest score swing, closest gap to first, most recent placement change), not static copy
+  4. User can view a list of competitions ordered by event date with city/state/organizer, open a competition detail page showing event metadata and every cook entered, and compare all cooks in that competition side-by-side using the same comparison table module as the Dashboard
+  5. User can open a single cook's detail page showing its competition, steak label, process variables, full score breakdown, and any AI review history for that cook
+**Plans**: TBD
+**UI hint**: yes
+
+#### Phase 11: Analytics & AI Reviews
+
+**Goal**: A chef/spectator can see how Big Matt's scores trend over time and browse the AI-generated appearance reviews tied to each cook.
+**Depends on**: Phase 9, Phase 10
+**Requirements**: ANLY-01, ANLY-02, ANLY-03, AIRV-01, AIRV-02
+**Success Criteria** (what must be TRUE):
+  1. User can view a trend of total score over time across cooks
+  2. User can view a trend of gap-to-first (`distance_from_winning`) over time
+  3. User can view trends for key judging categories (appearance, doneness, texture, taste, overall impression) over time
+  4. User can view a list of all stored AI appearance reviews across cooks
+  5. User can open a single AI review's detail (model, review type, prompt if present, full comments) linked back to its cook and competition
+**Plans**: TBD
+**UI hint**: yes
+
+---
+
 ### 🗂️ Backlog (Future Milestones)
 
 #### Catering Quote Form (v1.x candidate)
@@ -107,7 +160,7 @@ Plans:
 
 ---
 
-#### Admin Dashboard (v2.0 candidate)
+#### Admin Dashboard (future candidate)
 
 **Goal:** Replace the Google Sheet with an in-app admin screen for drop management, order management, and business KPIs.
 
@@ -131,6 +184,9 @@ Plans:
 | 6. Code Review Wave 1 | v1.1 | 3/3 | Complete | 2026-05-06 |
 | 7. Code Review Wave 2 | v1.1 | 4/4 | Complete   | 2026-05-07 |
 | 8. Mailing List & Email Platform | v1.1 | 3/3 | Complete | 2026-05-19 |
+| 9. Foundation & Subdomain Routing | v2.0 | 0/TBD | Not started | - |
+| 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 0/TBD | Not started | - |
+| 11. Analytics & AI Reviews | v2.0 | 0/TBD | Not started | - |
 
 ---
-*Last updated: 2026-05-19 — Phase 8 complete (3/3 plans); v1.1 milestone complete*
+*Last updated: 2026-08-23 — v2.0 SCA Tracker roadmap created (Phases 9-11), awaiting approval*
