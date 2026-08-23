@@ -120,7 +120,7 @@ Plans:
 - [x] 09-03-PLAN.md — Generate `lib/database-sca.types.ts` and build the server-only sca-scoped service-role client
 - [x] 09-04-PLAN.md — Vercel + Hostinger subdomain activation checklist (documentation only, cutover NOT performed)
 - [x] 09-05-PLAN.md — `deriveScoreMetrics()` shared derived-score utility with real-row type compatibility
-- [ ] 09-06-PLAN.md — SCA shell (`ScaNavBar`, `ScaFooter`, `app/sca/layout.tsx`) plus `/sca` index page with a live sca-schema read
+- [x] 09-06-PLAN.md — SCA shell (`ScaNavBar`, `ScaFooter`, `app/sca/layout.tsx`) plus `/sca` index page with a live sca-schema read
 - [ ] 09-07-PLAN.md — Human verification of the SCA shell and storefront non-regression
 
 **UI hint**: yes
@@ -194,7 +194,7 @@ Plans:
 | 6. Code Review Wave 1 | v1.1 | 3/3 | Complete | 2026-05-06 |
 | 7. Code Review Wave 2 | v1.1 | 4/4 | Complete   | 2026-05-07 |
 | 8. Mailing List & Email Platform | v1.1 | 3/3 | Complete | 2026-05-19 |
-| 9. Foundation & Subdomain Routing | v2.0 | 5/7 | In Progress|  |
+| 9. Foundation & Subdomain Routing | v2.0 | 6/7 | In Progress|  |
 | 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 0/TBD | Not started | - |
 | 11. Analytics & AI Reviews | v2.0 | 0/TBD | Not started | - |
 

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: SCA Tracker
 status: executing
-stopped_at: Completed 09-05-PLAN.md
-last_updated: "2026-08-23T20:48:41.017Z"
+stopped_at: Completed 09-06-PLAN.md
+last_updated: "2026-08-23T20:53:20.564Z"
 last_activity: 2026-08-23
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 7
-  completed_plans: 5
+  completed_plans: 6
   percent: 0
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-23 — v2.0 SCA Tracker milestone sta
 ## Current Position
 
 Phase: 09 (foundation-subdomain-routing) — EXECUTING
-Plan: 6 of 7
+Plan: 7 of 7
 Status: Ready to execute
 Last activity: 2026-08-23
 
-Progress: [███████░░░] 71%
+Progress: [█████████░] 86%
 
 ## Milestone Summary
 
@@ -68,6 +68,7 @@ Progress: [███████░░░] 71%
 | Phase 09 P01 | 5min | 2 tasks | 2 files |
 | Phase 09 P03 | 12min | 2 tasks | 3 files |
 | Phase 09 P05 | 1min | 2 tasks | 2 files |
+| Phase 09 P06 | 8min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -85,6 +86,8 @@ Recent decisions affecting current work:
 - [Phase 09]: Phase 09 Plan 05: PERFECT_SCORE (254.5) defined exactly once in lib/sca/scoring.ts; a repo-wide grep confirms no other file duplicates the literal
 - [Phase 09]: Phase 09 Plan 05: deriveScoreMetrics accepts the real sca.score.Row directly (total_score/first_place_score as number | null) with zero adapter code needed by Phase 10/11
 - [Phase 09]: Phase 09 Plan 05: deriveScoreMetrics never clamps or rounds — negative distances above the score cap are returned as-is; formatting for display is a caller concern
+- [Phase 09]: Plan 06 shipped ScaNavBar/ScaFooter/app/sca layout/page reusing 100% existing ember/smoke/gold/pit tokens and glass-card/logo-glow classes per D-09; ScaNavBar ships a single Dashboard-only scaNavLinks entry per D-10 for Phase 10/11 to extend
+- [Phase 09]: Plan 06 app/sca/page.tsx performs a real head:true exact-count query against sca.competition via getScaSupabaseClient(), rendering the raw Supabase error message inline on failure rather than throwing, so schema-exposure regressions stay visible
 
 ### Pending Todos
 
@@ -139,6 +142,6 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 
 ## Session Continuity
 
-Last session: 2026-08-23T20:48:41.010Z
-Stopped at: Completed 09-05-PLAN.md
+Last session: 2026-08-23T20:53:20.557Z
+Stopped at: Completed 09-06-PLAN.md
 Resume file: None
