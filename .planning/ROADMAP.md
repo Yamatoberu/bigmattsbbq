@@ -107,12 +107,22 @@ Plans:
 **Depends on**: Nothing (first phase of v2.0)
 **Requirements**: INFRA-01, INFRA-02, INFRA-03, INFRA-04, INFRA-05
 **Success Criteria** (what must be TRUE):
-  1. Requests to `sca.bigmattsbbq.com` are routed via host-based middleware into a dedicated `app/sca` route group, without changing any existing bigmattsbbq.com route or behavior
-  2. Server-side code can query the `sca` schema using generated TypeScript types (`lib/database.types.ts`) and a service-role Supabase client that is never bundled into browser JS
+  1. Requests to `sca.bigmattsbbq.com` are routed via host-based routing (`proxy.ts` — Next.js 16 renamed `middleware.ts`) into the `app/sca` path segment, without changing any existing bigmattsbbq.com route or behavior
+  2. Server-side code can query the `sca` schema using generated TypeScript types (`lib/database-sca.types.ts`, kept separate from the storefront's `public` types per D-06) and a service-role Supabase client that is never bundled into browser JS
   3. A single shared lib function computes `distance_from_winning` and `distance_from_perfect` for reuse by every SCA page, with no duplicated derivation logic
   4. Any page rendered under `app/sca` visually matches the site's existing ember/smoke theme, fonts, and card/shadow conventions rather than introducing a new visual system
   5. Project documentation lists the exact remaining manual DNS steps at Hostinger needed to complete the subdomain cutover
-**Plans**: TBD
+**Plans**: 7 plans in 4 waves
+
+Plans:
+- [ ] 09-01-PLAN.md — Expose the `sca` schema to PostgREST (confirmed PGRST106 blocker) and add a `npm run check:sca` preflight
+- [ ] 09-02-PLAN.md — Host-based routing: `proxy.ts` rewrite, pure routing resolver, root-layout chrome suppression, `SCA_HOSTNAME`
+- [ ] 09-03-PLAN.md — Generate `lib/database-sca.types.ts` and build the server-only sca-scoped service-role client
+- [ ] 09-04-PLAN.md — Vercel + Hostinger subdomain activation checklist (documentation only, cutover NOT performed)
+- [ ] 09-05-PLAN.md — `deriveScoreMetrics()` shared derived-score utility with real-row type compatibility
+- [ ] 09-06-PLAN.md — SCA shell (`ScaNavBar`, `ScaFooter`, `app/sca/layout.tsx`) plus `/sca` index page with a live sca-schema read
+- [ ] 09-07-PLAN.md — Human verification of the SCA shell and storefront non-regression
+
 **UI hint**: yes
 
 #### Phase 10: Core Browsing — Dashboard, Competitions & Cook Detail
