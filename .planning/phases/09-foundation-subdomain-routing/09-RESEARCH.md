@@ -344,14 +344,14 @@ Naming, `export function` (not default export), and colocated interfaces all mat
 | A3 | Whether appropriate `GRANT USAGE`/`GRANT SELECT` statements already exist for `service_role` on the `sca` schema (separate from the PostgREST exposure setting) | Common Pitfalls #1 | Medium — service-role typically bypasses RLS but still needs schema-level GRANTs in Postgres; if the `sca` schema was created outside this repo's migrations (confirmed: no `sca`-related files under `supabase/migrations/`), these grants may or may not already exist |
 | A4 | Whether a single non-wildcard domain add (`sca.bigmattsbbq.com`) in Vercel project settings + one CNAME record at Hostinger is sufficient (vs. requiring nameserver delegation to Vercel for a wildcard cert) | Deployment Checklist | Low-Medium — D-03's code already avoids needing a true wildcard cert since only one concrete hostname (plus its own explicit env override) is matched; a single CNAME to `cname.vercel-dns.com` is the standard non-wildcard path and should suffice, but this wasn't executed live against the real Vercel project in this session |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Is the `sca` schema already exposed to PostgREST for project `wpziabhigztyjrmjpmbw`?**
+1. **RESOLVED (by Plan 09-01):** Is the `sca` schema already exposed to PostgREST for project `wpziabhigztyjrmjpmbw`?
    - What we know: The schema and its tables exist in Postgres (per the phase brief referencing `sca.bigmattsbbq.com` data and INFRA-02's assumption that `generate_typescript_types` can already introspect it).
    - What's unclear: Whether the dashboard's "Exposed schemas" list and the necessary `GRANT` statements for `service_role` have been applied. This researcher had no Supabase MCP/dashboard tool access in this session to check directly.
    - Recommendation: The plan should include an early, cheap verification task (e.g., the executor runs `generate_typescript_types` or a raw `select` via MCP against `sca`, or a `checkpoint:human-verify` asking the user to confirm the dashboard setting) **before** building the client and pages that depend on it — this is a hard blocker for INFRA-01 if not already done, and cheap to check first.
 
-2. **Exact current Vercel project name/ID this repo deploys to, and whether Hostinger DNS is currently delegated to Vercel nameservers or manages its own zone.**
+2. **RESOLVED (deferred to Plan 09-04's manual checklist):** Exact current Vercel project name/ID this repo deploys to, and whether Hostinger DNS is currently delegated to Vercel nameservers or manages its own zone.
    - What we know: DNS lives at Hostinger (per user memory `reference_dns_hosting.md` and CONTEXT.md D-11); only a single concrete subdomain is needed (no wildcard), which is the simpler CNAME path.
    - What's unclear: Whether Hostinger's zone is authoritative (i.e., a plain CNAME add is sufficient) or whether the apex domain is already using Vercel's nameservers for some other reason.
    - Recommendation: Surface the exact manual checklist (below) in the phase summary per D-11, but don't attempt to execute or verify it from within this coding phase — it's explicitly out of scope per REQUIREMENTS.md's Out of Scope table ("Full DNS cutover / final subdomain activation").
