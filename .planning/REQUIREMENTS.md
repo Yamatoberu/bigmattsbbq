@@ -13,7 +13,7 @@ Requirements for this milestone. Each maps to a roadmap phase. Read-only only â€
 - [x] **INFRA-02**: `lib/database.types.ts` includes generated types for the `sca` schema (via Supabase MCP `generate_typescript_types`), alongside the existing `public` schema types
 - [x] **INFRA-03**: Requests to `sca.bigmattsbbq.com` are served by this same Next.js app/Vercel project via host-based middleware routing into a dedicated `app/sca` route group, without changing existing bigmattsbbq.com routes or behavior
 - [ ] **INFRA-04**: SCA Tracker pages reuse the site's existing Tailwind theme (ember/smoke palettes, Playfair Display + Source Sans 3 fonts, existing card/shadow/spacing conventions) rather than introducing a new visual system
-- [ ] **INFRA-05**: Derived score values (`distance_from_winning = first_place_score - total_score`, `distance_from_perfect = 254.5 - total_score`) are computed by one shared lib function, not duplicated per page
+- [x] **INFRA-05**: Derived score values (`distance_from_winning = first_place_score - total_score`, `distance_from_perfect = 254.5 - total_score`) are computed by one shared lib function, not duplicated per page
 
 ### Dashboard (DASH)
 
@@ -82,7 +82,7 @@ Populated by the roadmapper during phase creation.
 | INFRA-02 | Phase 9 | Complete |
 | INFRA-03 | Phase 9 | Complete |
 | INFRA-04 | Phase 9 | Pending |
-| INFRA-05 | Phase 9 | Pending |
+| INFRA-05 | Phase 9 | Complete |
 | DASH-01 | Phase 10 | Pending |
 | DASH-02 | Phase 10 | Pending |
 | DASH-03 | Phase 10 | Pending |

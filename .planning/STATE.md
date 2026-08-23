@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: SCA Tracker
 status: executing
-stopped_at: Completed 09-03-PLAN.md
-last_updated: "2026-08-23T20:44:31.059Z"
+stopped_at: Completed 09-05-PLAN.md
+last_updated: "2026-08-23T20:48:41.017Z"
 last_activity: 2026-08-23
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 7
-  completed_plans: 4
+  completed_plans: 5
   percent: 0
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-23 — v2.0 SCA Tracker milestone sta
 ## Current Position
 
 Phase: 09 (foundation-subdomain-routing) — EXECUTING
-Plan: 5 of 7
+Plan: 6 of 7
 Status: Ready to execute
 Last activity: 2026-08-23
 
-Progress: [██████░░░░] 57%
+Progress: [███████░░░] 71%
 
 ## Milestone Summary
 
@@ -67,6 +67,7 @@ Progress: [██████░░░░] 57%
 | Phase 09 P04 | 1min 19s | 2 tasks | 2 files |
 | Phase 09 P01 | 5min | 2 tasks | 2 files |
 | Phase 09 P03 | 12min | 2 tasks | 3 files |
+| Phase 09 P05 | 1min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -81,6 +82,9 @@ Recent decisions affecting current work:
 - [Phase 09]: SCA subdomain activation checklist written to docs/sca-subdomain-deployment.md with unambiguous NOT-yet-performed status — DNS cutover remains a manual Hostinger step outside repo scope; checklist and README pointer satisfy D-11 and INFRA-03 documentation requirement
 - [Phase 09]: Phase 09 Plan 01: PGRST106 blocker resolved via Supabase dashboard Exposed schemas change (sca added); check:sca preflight confirms PASS. INFRA-01 left Pending in REQUIREMENTS.md until 09-03/09-06 land the actual service-role client and live read.
 - [Phase 09]: Plan 03: getScaSupabaseClient() and lib/database-sca.types.ts shipped via Supabase CLI (no MCP tool access this session); sca table names: chef, competition, cook, cook_ai_review, cook_detail, cook_weather, score. server-only package requires vi.mock in Vitest tests (throws outside react-server condition).
+- [Phase 09]: Phase 09 Plan 05: PERFECT_SCORE (254.5) defined exactly once in lib/sca/scoring.ts; a repo-wide grep confirms no other file duplicates the literal
+- [Phase 09]: Phase 09 Plan 05: deriveScoreMetrics accepts the real sca.score.Row directly (total_score/first_place_score as number | null) with zero adapter code needed by Phase 10/11
+- [Phase 09]: Phase 09 Plan 05: deriveScoreMetrics never clamps or rounds — negative distances above the score cap are returned as-is; formatting for display is a caller concern
 
 ### Pending Todos
 
@@ -135,6 +139,6 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 
 ## Session Continuity
 
-Last session: 2026-08-23T20:44:31.051Z
-Stopped at: Completed 09-03-PLAN.md
+Last session: 2026-08-23T20:48:41.010Z
+Stopped at: Completed 09-05-PLAN.md
 Resume file: None
