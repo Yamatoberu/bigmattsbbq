@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: SCA Tracker
-status: planning
-stopped_at: Phase 9 context gathered
-last_updated: "2026-08-23T19:46:24.651Z"
-last_activity: 2026-08-23 — ROADMAP.md created for v2.0 SCA Tracker (Phases 9-11), awaiting user approval
+status: executing
+stopped_at: Completed 09-02-PLAN.md
+last_updated: "2026-08-23T20:27:58.087Z"
+last_activity: 2026-08-23
 progress:
   total_phases: 3
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 7
+  completed_plans: 1
   percent: 0
 ---
 
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-23 — v2.0 SCA Tracker milestone started)
 
 **Core value:** A chef/spectator can browse, compare, and understand Big Matt's SCA steak cookoff history — cooks, scores, process detail, and AI appearance reviews — in one place that looks and feels like it belongs on bigmattsbbq.com.
-**Current focus:** Phase 9 — Foundation & Subdomain Routing
+**Current focus:** Phase 09 — foundation-subdomain-routing
 
 ## Current Position
 
-Phase: 9 of 11 (Foundation & Subdomain Routing)
-Plan: TBD (roadmap just created, not yet planned)
-Status: Ready to plan
-Last activity: 2026-08-23 — ROADMAP.md created for v2.0 SCA Tracker (Phases 9-11), awaiting user approval
+Phase: 09 (foundation-subdomain-routing) — EXECUTING
+Plan: 2 of 7
+Status: Ready to execute
+Last activity: 2026-08-23
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 14%
 
 ## Milestone Summary
 
@@ -63,6 +63,7 @@ Progress: [░░░░░░░░░░] 0%
 | 11. Analytics & AI Reviews | TBD | - | - |
 
 *Updated after each plan completion*
+| Phase 09 P02 | 3min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -73,6 +74,7 @@ Recent decisions affecting current work:
 
 - v2.0 kickoff: read-only tracker, no new auth, service-role Supabase reads only, shared repo/Vercel project/design system (not a separate app)
 - v2.0 kickoff: full DNS cutover to sca.bigmattsbbq.com is manual (Hostinger) and out of scope for the repo work
+- [Phase 09]: INFRA-03 subdomain routing implemented via Next.js 16 proxy.ts (not middleware.ts, obsolete on this version) with pure resolveScaRouting decision logic and x-sca-area header driving root layout chrome suppression
 
 ### Pending Todos
 
@@ -127,6 +129,6 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 
 ## Session Continuity
 
-Last session: 2026-08-23T19:46:24.637Z
-Stopped at: Phase 9 context gathered
-Resume file: .planning/phases/09-foundation-subdomain-routing/09-CONTEXT.md
+Last session: 2026-08-23T20:27:58.079Z
+Stopped at: Completed 09-02-PLAN.md
+Resume file: None
