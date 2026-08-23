@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Website Refresh & Frozen Drops
-status: complete
-stopped_at: v1.1 complete — all 8 phases, 29 plans done
-last_updated: "2026-08-19T00:00:00.000Z"
-last_activity: 2026-08-19 -- v1.1 marked complete; funnel review closed out
+milestone: v2.0
+milestone_name: SCA Tracker
+status: planning
+last_updated: "2026-08-23T19:29:09.183Z"
+last_activity: 2026-08-23
 progress:
-  total_phases: 8
-  completed_phases: 8
-  total_plans: 29
-  completed_plans: 29
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -25,11 +24,10 @@ See: .planning/PROJECT.md (updated 2026-04-22 after v1.0 milestone)
 
 ## Current Position
 
-Phase: 08 (mailing-list-email-platform) — COMPLETE
-Status: All phases and plans complete; v1.1 milestone done
-Last activity: 2026-08-19 -- v1.1 marked complete; funnel review closed out
-
-Progress: [██████████] 100%
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-08-23 — Milestone v2.0 started
 
 ## Milestone Summary
 

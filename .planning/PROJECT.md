@@ -1,5 +1,18 @@
 # Big Matt's BBQ — Website Refresh & Frozen Drops
 
+## Current Milestone: v2.0 SCA Tracker
+
+**Goal:** Ship a read-only, production-quality SCA (Steak Cookoff Association) competition tracker at `sca.bigmattsbbq.com`, sharing this repo, Vercel project, and Big Matt's BBQ visual design system with the storefront, reading live data from the existing Supabase `sca` schema via server-side service-role access.
+
+**Target features:**
+- Dashboard: summary cards (latest/best/worst cook, average total score, average gap to first), a side-by-side comparison table, data-driven "what stands out" summaries
+- Competitions: list by date, detail view with event metadata + all cooks, side-by-side comparison within an event
+- Cook detail: competition, steak label, process variables, score breakdown, AI review history
+- Analytics: read-only trend views (score over time, gap to first over time, key judging categories)
+- AI Reviews: list + detail views for stored AI appearance reviews tied to cooks
+- Host-based subdomain routing (`sca.bigmattsbbq.com`) within this same Next.js app/Vercel project
+- Server-side-only Supabase reads against the `sca` schema (service-role client, never exposed to the browser) — no new auth system, no write/create/edit/delete flows this milestone
+
 ## What This Is
 
 A mobile-first website for Big Matt's BBQ that serves as a sales funnel for limited-run frozen BBQ drops and a catering presence. Customers preorder frozen BBQ products (sold in 0.5 lb bags), select a pickup location, and receive a Square invoice via email. The site captures mailing list subscribers for drop notifications and provides static catering/about/contact pages.
@@ -44,6 +57,7 @@ Customers can preorder frozen BBQ from a live drop without overselling — capac
 - [ ] Square API version bump from `2024-12-18` (reaches EOL ~June 2026)
 - [ ] Admin dashboard to manage drops, view orders, and manage mailing list (v2)
 - [ ] Admin can create/edit/close drops without editing Supabase directly (v2)
+- [ ] v2.0 SCA Tracker requirements — see `.planning/REQUIREMENTS.md`
 
 ### Out of Scope
 
@@ -102,4 +116,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-06 after Phase 6 code-review-wave-1*
+*Last updated: 2026-08-23 — v2.0 SCA Tracker milestone started*
