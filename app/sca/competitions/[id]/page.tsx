@@ -1,12 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getCompetitionWithCooks, parseScaId } from "../../../../lib/sca/queries";
+import {
+  getAllCooksWithScores,
+  getCompetitionWithCooks,
+  parseScaId
+} from "../../../../lib/sca/queries";
 import { buildComparisonTable } from "../../../../lib/sca/comparison";
 import { formatEventDate } from "../../../../lib/sca/format";
 import { logError } from "../../../../lib/logger";
 import { ComparisonTable } from "../../../../components/sca/ComparisonTable";
-import type { CompetitionWithCooks } from "../../../../lib/sca/types";
+import type { CompetitionWithCooks, CookWithScore } from "../../../../lib/sca/types";
 
 export const dynamic = "force-dynamic";
 
@@ -52,10 +56,14 @@ export default async function CompetitionDetailPage({
   }
 
   let competition: CompetitionWithCooks | null = null;
+  let allCooks: CookWithScore[] = [];
   let errorMessage: string | undefined;
 
   try {
-    competition = await getCompetitionWithCooks(competitionId);
+    [competition, allCooks] = await Promise.all([
+      getCompetitionWithCooks(competitionId),
+      getAllCooksWithScores()
+    ]);
   } catch (error) {
     logError("CompetitionDetailPage query failed", error, "sca-competition-detail-ssr");
     errorMessage = "We couldn't load this page right now. Please try again in a moment.";
@@ -76,7 +84,11 @@ export default async function CompetitionDetailPage({
   }
 
   const metaFields = buildMetaFields(competition);
-  const model = buildComparisonTable(competition.cook, { aggregates: true });
+  const model = buildComparisonTable(competition.cook, {
+    aggregates: true,
+    aggregateSource: allCooks,
+    aggregateScopeLabel: "All Time"
+  });
 
   return (
     <div className="section-spacing">
@@ -108,10 +120,16 @@ export default async function CompetitionDetailPage({
               <p className="text-sm text-smoke-800">No cooks recorded for this competition.</p>
             </div>
           ) : (
-            <ComparisonTable
-              model={model}
-              caption={`Cooks entered at ${competition.name} compared side by side`}
-            />
+            <>
+              <p className="mb-3 text-sm text-smoke-800">
+                Worst Cook, Best Cook, and Cook Averages compare this event against every cook
+                Big Matt&apos;s has recorded — not just the cooks below.
+              </p>
+              <ComparisonTable
+                model={model}
+                caption={`Cooks entered at ${competition.name} compared against every cook recorded to date`}
+              />
+            </>
           )}
         </div>
       </div>
