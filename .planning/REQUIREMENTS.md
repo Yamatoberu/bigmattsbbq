@@ -25,11 +25,11 @@ Requirements for this milestone. Each maps to a roadmap phase. Read-only only â€
 
 - [x] **COMP-01**: User can view a list of competitions ordered by event date, with city/state/organizer at a glance
 - [ ] **COMP-02**: User can open a competition detail page showing event metadata (date, city, state, elevation, organizer, notes) and every cook entered at that event
-- [ ] **COMP-03**: User can compare all cooks within a single competition side-by-side (reusing the comparison table module)
+- [x] **COMP-03**: User can compare all cooks within a single competition side-by-side (reusing the comparison table module)
 
 ### Cook Detail (COOK)
 
-- [ ] **COOK-01**: User can view a single cook's detail page showing its competition, steak label, process variables (trimmed weight, thickness, temps, turn interval, meatrix percentages, rest duration, seasoning/prep/cook notes), and full score breakdown
+- [x] **COOK-01**: User can view a single cook's detail page showing its competition, steak label, process variables (trimmed weight, thickness, temps, turn interval, meatrix percentages, rest duration, seasoning/prep/cook notes), and full score breakdown
 - [ ] **COOK-02**: User can view the AI review history attached to that cook, if any exists, from the cook detail page
 
 ### Analytics (ANLY)
@@ -88,8 +88,8 @@ Populated by the roadmapper during phase creation.
 | DASH-03 | Phase 10 | Complete |
 | COMP-01 | Phase 10 | Complete |
 | COMP-02 | Phase 10 | Pending |
-| COMP-03 | Phase 10 | Pending |
-| COOK-01 | Phase 10 | Pending |
+| COMP-03 | Phase 10 | Complete |
+| COOK-01 | Phase 10 | Complete |
 | COOK-02 | Phase 10 | Pending |
 | ANLY-01 | Phase 11 | Pending |
 | ANLY-02 | Phase 11 | Pending |
