@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 
 const scaNavLinks = [
   { label: "Dashboard", href: "/sca" },
-  { label: "Competitions", href: "/sca/competitions" }
+  { label: "Competitions", href: "/sca/competitions" },
+  { label: "Cooks", href: "/sca/cooks" }
 ] as const;
 
 export function ScaNavBar() {
