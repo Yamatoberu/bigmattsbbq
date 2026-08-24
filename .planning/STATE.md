@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: SCA Tracker
 status: executing
-stopped_at: Completed 10-04-PLAN.md
-last_updated: "2026-08-24T02:48:20.860Z"
+stopped_at: Completed 10-05-PLAN.md
+last_updated: "2026-08-24T02:52:29.931Z"
 last_activity: 2026-08-24
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 16
-  completed_plans: 11
+  completed_plans: 12
   percent: 33
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-23 — v2.0 SCA Tracker milestone sta
 ## Current Position
 
 Phase: 10 (core-browsing-dashboard-competitions-cook-detail) — EXECUTING
-Plan: 5 of 9
+Plan: 6 of 9
 Status: Ready to execute
 Last activity: 2026-08-24
 
-Progress: [███████░░░] 69%
+Progress: [████████░░] 75%
 
 ## Milestone Summary
 
@@ -74,6 +74,7 @@ Progress: [███████░░░] 69%
 | Phase 10 P02 | 12min | 2 tasks | 4 files |
 | Phase 10 P03 | 15min | 2 tasks | 4 files |
 | Phase 10 P04 | 20min | 2 tasks | 2 files |
+| Phase 10 P05 | 3min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -99,6 +100,7 @@ Recent decisions affecting current work:
 - [Phase 10]: Plan 03: buildComparisonTable is the single shared comparison-table model builder (D-01) — cook columns sorted ascending by cooked_at, tie-broken by id; worst/best/average columns are optional via the aggregates flag, reused from lib/sca/aggregates.ts
 - [Phase 10]: Plan 03: ProcessFieldKey declared as an explicit 15-member string-literal union rather than Omit<ScaCookDetailRow, metadata keys>, so the metadata column names never appear as quoted strings in lib/sca/cookDetailFields.ts
 - [Phase 10]: Plan 04: parseScaId regex-gates route ids (/^\d+$/ + Number.isSafeInteger + >0) before any Supabase .eq() call; PGRST116-to-null mapping centralized in lib/sca/queries.ts so both [id] pages share identical notFound() semantics with zero duplicated error-code strings
+- [Phase 10]: Plan 05: components/sca/*.tsx presentational components (ComparisonTable, SummaryCards, WhatStandsOut) never import lib/sca/comparison.ts, aggregates.ts, or insights.ts -- only lib/sca/format.ts for display, keeping all aggregation/formatting logic in lib/sca/* per D-01
 
 ### Pending Todos
 
@@ -153,6 +155,6 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 
 ## Session Continuity
 
-Last session: 2026-08-24T02:48:20.852Z
-Stopped at: Completed 10-04-PLAN.md
+Last session: 2026-08-24T02:52:29.923Z
+Stopped at: Completed 10-05-PLAN.md
 Resume file: None

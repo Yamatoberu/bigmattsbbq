@@ -163,7 +163,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 10-05-PLAN.md — `ComparisonTable`, `SummaryCards`, and `WhatStandsOut` Server Components
+- [x] 10-05-PLAN.md — `ComparisonTable`, `SummaryCards`, and `WhatStandsOut` Server Components
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -235,7 +235,7 @@ Plans:
 | 7. Code Review Wave 2 | v1.1 | 4/4 | Complete   | 2026-05-07 |
 | 8. Mailing List & Email Platform | v1.1 | 3/3 | Complete | 2026-05-19 |
 | 9. Foundation & Subdomain Routing | v2.0 | 7/7 | Complete   | 2026-08-23 |
-| 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 4/9 | In Progress|  |
+| 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 5/9 | In Progress|  |
 | 11. Analytics & AI Reviews | v2.0 | 0/TBD | Not started | - |
 
 ---
