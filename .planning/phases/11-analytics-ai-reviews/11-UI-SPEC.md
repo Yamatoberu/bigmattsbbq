@@ -100,7 +100,7 @@ Accent reserved for (explicit list, nothing else may use gold/ember accent color
 | AI Reviews list page subtitle | "Every AI review Big Matt's cooks have received, newest first." |
 | Score & Gap section heading (Analytics page) | "Score & Gap to First" |
 | Category section heading (Analytics page) | "Judging Categories" |
-| Back-navigation links (AI Review detail) | "Back to AI Reviews" (always) and "View Cook" (only when `review.cook` is non-null) |
+| Back-navigation links (AI Review detail) | "Back to AI Reviews" (always), "View Cook" (only when `review.cook` is non-null), "View Competition" (only when `review.cook.competition` is non-null) — satisfies AIRV-02's "linked back to its cook and competition" |
 
 ---
 
@@ -252,7 +252,14 @@ Mirrors `app/sca/cooks/[id]/page.tsx` structurally (h1/subtitle-with-links, `gla
         <Link href={`/sca/cooks/${review.cook.id}`} className="hover:text-gold-300 ...">
           {cookColumnLabel(review.cook.competition?.name ?? null, review.cook.steak_label)}
         </Link>
-        {review.cook.competition && <> · {formatEventDate(review.cook.competition.event_date)}</>}
+        {review.cook.competition && (
+          <>
+            {" · "}
+            <Link href={`/sca/competitions/${review.cook.competition.id}`} className="hover:text-gold-300 ...">
+              {formatEventDate(review.cook.competition.event_date)}
+            </Link>
+          </>
+        )}
       </>
     )}
   </p>
@@ -278,15 +285,19 @@ Mirrors `app/sca/cooks/[id]/page.tsx` structurally (h1/subtitle-with-links, `gla
     {review.cook && (
       <Link href={`/sca/cooks/${review.cook.id}`} className="min-h-[44px] inline-flex items-center text-smoke-800 hover:text-gold-300 ...">View Cook</Link>
     )}
+    {review.cook?.competition && (
+      <Link href={`/sca/competitions/${review.cook.competition.id}`} className="min-h-[44px] inline-flex items-center text-smoke-800 hover:text-gold-300 ...">View Competition</Link>
+    )}
   </div>
 </div>
 ```
 
 - **h1 identity:** `review.model` (falls back to `EM_DASH` — a review with no model is unusual but not impossible per the nullable schema; the badge/date/cook subtitle still carries meaning even if the model name is missing).
-- **Subtitle composition:** `review_type` badge + created-at date + (if `review.cook` present) a link to the cook using `cookColumnLabel()` + event date — this exactly mirrors Cook Detail's own subtitle pattern (`formatCookDate` + competition link + `formatEventDate`), so the two detail pages read as siblings.
+- **Subtitle composition:** `review_type` badge + created-at date + (if `review.cook` present) a link to the cook using `cookColumnLabel()` + (if `review.cook.competition` present) a link to the competition using `formatEventDate()` as the link text — this exactly mirrors Cook Detail's own subtitle pattern (`formatCookDate` + competition link + `formatEventDate`), so the two detail pages read as siblings.
 - **Prompt section: rendered only when `review.prompt` is non-null** — no "Prompt: —" placeholder, no empty section, per D-04. When null, the section (heading and card) does not exist in the DOM at all.
 - **Comments section:** always rendered (comments is `NOT NULL` in the schema), full untruncated text with `whitespace-pre-line` to preserve the AI model's paragraph breaks — same treatment already proven on Cook Detail's inline AI review rendering.
-- **Defensive null-cook handling (Pitfall 3):** `review.cook` is typed nullable despite the FK guarantee (matches the existing codebase convention of never trusting embed nullability away). When `null`, the cook/competition portion of the subtitle and the "View Cook" back-link are both omitted — no broken link, no `cook!` non-null assertion.
+- **Back-navigation links (AIRV-02 "linked back to its cook and competition"):** "Back to AI Reviews" (always), "View Cook" (only when `review.cook` is non-null, links to `/sca/cooks/${review.cook.id}`), and "View Competition" (only when `review.cook.competition` is non-null, links to `/sca/competitions/${review.cook.competition.id}`) — mirrors Cook Detail's `backHref`/`backLabel` pattern of linking to the competition, applied here as an additional footer link rather than replacing "Back to AI Reviews" since the AI Reviews list (not the competition) is this page's primary parent context.
+- **Defensive null-cook handling (Pitfall 3):** `review.cook` is typed nullable despite the FK guarantee (matches the existing codebase convention of never trusting embed nullability away). When `null`, the cook/competition portion of the subtitle and the "View Cook"/"View Competition" back-links are all omitted — no broken link, no `cook!` non-null assertion. `review.cook.competition` is independently nullable from `review.cook` — the competition link/subtitle segment is gated on its own null check even when `review.cook` is present.
 - **Error/not-found states:** identical to Cook Detail — `parseScaId()` + `notFound()` for an invalid `[id]`, `PGRST116` → `null` → `notFound()` for a missing row, `try/catch` + `logError()` + the generic error string for any other failure.
 
 ---
