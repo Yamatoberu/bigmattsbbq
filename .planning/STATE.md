@@ -4,13 +4,13 @@ milestone: v2.0
 milestone_name: SCA Tracker
 status: executing
 stopped_at: Phase 11 UI-SPEC approved
-last_updated: "2026-08-24T20:25:58.688Z"
-last_activity: 2026-08-24 -- Phase 11 planning complete
+last_updated: "2026-08-24T21:11:28.495Z"
+last_activity: 2026-08-24
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 24
-  completed_plans: 19
+  completed_plans: 20
   percent: 67
 ---
 
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-23 — v2.0 SCA Tracker milestone started)
 
 **Core value:** A chef/spectator can browse, compare, and understand Big Matt's SCA steak cookoff history — cooks, scores, process detail, and AI appearance reviews — in one place that looks and feels like it belongs on bigmattsbbq.com.
-**Current focus:** Phase 11 — analytics & ai reviews
+**Current focus:** Phase 11 — analytics-ai-reviews
 
 ## Current Position
 
-Phase: 11
-Plan: Not started
+Phase: 11 (analytics-ai-reviews) — EXECUTING
+Plan: 2 of 5
 Status: Ready to execute
-Last activity: 2026-08-24 -- Phase 11 planning complete
+Last activity: 2026-08-24
 
-Progress: [██████████] 100%
+Progress: [████████░░] 83%
 
 ## Milestone Summary
 
@@ -81,6 +81,7 @@ Progress: [██████████] 100%
 | Phase 10 P10 | 6min | 3 tasks | 4 files |
 | Phase 10 P11 | 8min | 2 tasks | 4 files |
 | Phase 10 P12 | 12min | 2 tasks | 0 files |
+| Phase 11 P01 | 1min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -112,6 +113,7 @@ Recent decisions affecting current work:
 - [Phase 10]: Plan 10 (gap closure G-10-1/COOK-01): added /sca/cooks index route + sortCooksByRecencyDesc + Cooks nav entry — Human UAT found Cook Detail reachable only via a comparison table column header; this supersedes the nav half of D-11 (Cook Detail stays drill-down-only)
 - [Phase 10]: Plan 11 (gap closure G-10-2/COMP-03): buildComparisonTable gained an optional aggregateSource (defaults to cooks, preserving Dashboard behavior byte-for-byte) and aggregateScopeLabel; Competition detail now compares event cooks against all-time Worst/Best/Cook Averages via Promise.all(getCompetitionWithCooks, getAllCooksWithScores), closing the single-cook-competition degenerate-comparison gap
 - [Phase 10]: Plan 12 (gap-closure re-verification): both Phase 10 UAT gaps closed and developer-approved against live Supabase data (21 cooks, 14 competitions; single-cook id 4, multi-cook id 1) -- G-10-1 (Cooks index/nav) and G-10-2 (all-time aggregate scope on Competition Detail) confirmed with zero regressions to Dashboard, Competitions list, Cook Detail, 404 handling, or storefront. Phase 10 (12/12 plans) is complete. — 10-09's human verification pass rejected the phase on these exact two points; both gaps were closed by code (10-10, 10-11) and could only be proven closed by re-running the same human click-through against real records.
+- [Phase 11]: Phase 11 Plan 01: buildTrendSeries always delegates distance_from_winning to deriveScoreMetrics (never re-derived inline); input array order is preserved since getAllCooksWithScores() already returns ascending cooked_at
 
 ### Pending Todos
 
@@ -166,6 +168,6 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 
 ## Session Continuity
 
-Last session: 2026-08-24T19:54:42.526Z
+Last session: 2026-08-24T21:09:53.552Z
 Stopped at: Phase 11 UI-SPEC approved
-Resume file: .planning/phases/11-analytics-ai-reviews/11-UI-SPEC.md
+Resume file: None

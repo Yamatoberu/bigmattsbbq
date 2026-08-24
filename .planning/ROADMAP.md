@@ -203,7 +203,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 11-01-PLAN.md — `buildTrendSeries()` trend-series helper (`lib/sca/trends.ts`) + unit suite (ANLY-01/02/03 data layer)
+- [x] 11-01-PLAN.md — `buildTrendSeries()` trend-series helper (`lib/sca/trends.ts`) + unit suite (ANLY-01/02/03 data layer)
 - [ ] 11-02-PLAN.md — `AiReviewWithCook` types, `getAllAiReviews()` / `getAiReviewById()` queries + unit suites (AIRV-01/02 data layer)
 
 **Wave 2** *(blocked on Wave 1 completion)*
@@ -260,7 +260,7 @@ Plans:
 | 8. Mailing List & Email Platform | v1.1 | 3/3 | Complete | 2026-05-19 |
 | 9. Foundation & Subdomain Routing | v2.0 | 7/7 | Complete   | 2026-08-23 |
 | 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 12/12 | Complete    | 2026-08-24 |
-| 11. Analytics & AI Reviews | v2.0 | 0/5 | Planned | - |
+| 11. Analytics & AI Reviews | v2.0 | 1/5 | In Progress|  |
 
 ---
 *Last updated: 2026-08-24 — Phase 11 planned (5 plans across 3 waves)*

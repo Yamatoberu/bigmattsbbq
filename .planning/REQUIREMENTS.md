@@ -34,9 +34,9 @@ Requirements for this milestone. Each maps to a roadmap phase. Read-only only â€
 
 ### Analytics (ANLY)
 
-- [ ] **ANLY-01**: User can view a trend view of total score over time across cooks
-- [ ] **ANLY-02**: User can view a trend view of gap-to-first (`distance_from_winning`) over time
-- [ ] **ANLY-03**: User can view trends for key judging categories (appearance, doneness, texture, taste, overall impression) over time
+- [x] **ANLY-01**: User can view a trend view of total score over time across cooks
+- [x] **ANLY-02**: User can view a trend view of gap-to-first (`distance_from_winning`) over time
+- [x] **ANLY-03**: User can view trends for key judging categories (appearance, doneness, texture, taste, overall impression) over time
 
 ### AI Reviews (AIRV)
 
@@ -91,9 +91,9 @@ Populated by the roadmapper during phase creation.
 | COMP-03 | Phase 10 | Complete |
 | COOK-01 | Phase 10 | Complete |
 | COOK-02 | Phase 10 | Complete |
-| ANLY-01 | Phase 11 | Pending |
-| ANLY-02 | Phase 11 | Pending |
-| ANLY-03 | Phase 11 | Pending |
+| ANLY-01 | Phase 11 | Complete |
+| ANLY-02 | Phase 11 | Complete |
+| ANLY-03 | Phase 11 | Complete |
 | AIRV-01 | Phase 11 | Pending |
 | AIRV-02 | Phase 11 | Pending |
 
