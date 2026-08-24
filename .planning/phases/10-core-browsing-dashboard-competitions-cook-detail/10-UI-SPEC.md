@@ -33,6 +33,19 @@ Introducing shadcn now would directly contradict a locked, human-verified decisi
 
 ---
 
+## Visual Hierarchy (Focal Points)
+
+One primary focal point per screen — the element that should draw the eye first, before any other content on the page:
+
+| Screen | Primary Focal Point |
+|--------|---------------------|
+| Dashboard | The "closest gap to first" insight card (DASH-03/D-05) — its `ember`/`gold` accent numeric callout is the single visual anchor above the fold; the comparison table sits below it as supporting detail, not competing for first-glance attention |
+| Competitions (list) | The most recent competition's row card, positioned first in the list — reverse-chronological order plus consistent `.glass-card` styling makes recency the implicit hierarchy signal, with no additional color/size emphasis needed |
+| Competition Detail | The comparison table's "Best Cook" highlighted column — the one `accent`-colored column draws the eye first, framing every other column as a point of comparison against it |
+| Cook Detail | The cook's steak label as the page `<h1>` (Display, 36px) — immediately followed by the Score Breakdown section directly beneath it; process variables and AI reviews are secondary, lower-emphasis sections further down the page |
+
+---
+
 ## Spacing Scale
 
 Declared values (must be multiples of 4), matching the scale already in use sitewide (`section-spacing`, `.glass-card` padding, `NavBar` touch targets):
@@ -55,18 +68,20 @@ Exceptions:
 
 ## Typography
 
+Exactly one declared size per role (4 sizes total, matching existing sitewide usage in `SectionHeader.tsx` and `app/sca/page.tsx`):
+
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
-| Body | 14px (`text-sm`) | 400 (regular, Nunito Sans) | 1.5 |
 | Label | 12px (`text-xs`) | 600 (semibold) | 1.4 |
-| Heading | 20–24px (`text-xl` / `text-2xl`) | 600 (semibold, Playfair Display) | 1.2 |
-| Display | 30–36px (`text-3xl` / `text-4xl`) | 600 (semibold, Playfair Display) | 1.2 |
+| Body | 14px (`text-sm`) | 400 (regular, Nunito Sans) | 1.5 |
+| Heading | 24px (`text-2xl`) | 600 (semibold, Playfair Display) | 1.2 |
+| Display | 36px (`text-4xl`) | 600 (semibold, Playfair Display) | 1.2 |
 
 Usage notes (pre-populated from existing sitewide conventions, e.g. `SectionHeader.tsx`, `app/sca/page.tsx`):
-- **Body (14px/400):** comparison table data cells, process-variable values, AI review comments, general paragraph copy.
 - **Label (12px/600):** comparison table row labels (Competition, Cook, Placement, category names, Total Score, Distance From Winning, Distance From Perfect Score), summary card eyebrow text, badges — typically paired with `uppercase tracking-[0.25em]` per existing `.badge`/`ScaNavBar` link styling.
-- **Heading (20–24px/600):** section titles within a page — "Comparison Table," "Process Variables," "Score Breakdown," "AI Reviews."
-- **Display (30–36px/600):** page-level `<h1>` — "Dashboard," "Competitions," a competition's name on its detail page, a cook's steak label on Cook Detail.
+- **Body (14px/400):** comparison table data cells, process-variable values, AI review comments, general paragraph copy.
+- **Heading (24px/600, `text-2xl`):** section titles within a page — "Comparison Table," "Process Variables," "Score Breakdown," "AI Reviews." This is the single size for `SectionHeader`'s `<h2>` this phase; do not apply the existing `md:text-3xl` responsive bump within Phase 10 markup — one declared size keeps the contract unambiguous.
+- **Display (36px/600, `text-4xl`):** page-level `<h1>` — "Dashboard," "Competitions," a competition's name on its detail page, a cook's steak label on Cook Detail. Matches the existing `competitionCount` display number in `app/sca/page.tsx`.
 
 Exactly 2 weights declared (400, 600) — matches the project's existing typographic discipline; `font-bold` (700, used only by `CountdownTimer`'s live-drop timer) is out of scope for this read-only, non-time-sensitive phase.
 
@@ -83,8 +98,8 @@ Exactly 2 weights declared (400, 600) — matches the project's existing typogra
 
 Accent reserved for:
 - Active nav link state in `ScaNavBar` (existing pattern — `text-gold-300` on the active `Competitions`/`Dashboard` link)
-- "Best Cook" aggregate column/card highlight on the Dashboard and Competition detail comparison table (single visual callout, not a general highlight color)
-- The numeric callout inside the "closest gap to first" insight card (DASH-03/D-05) — the one data point the insight is built around
+- "Best Cook" aggregate column/card highlight on the Dashboard and Competition detail comparison table (single visual callout, not a general highlight color) — this is the Competition Detail focal point (see Visual Hierarchy above)
+- The numeric callout inside the "closest gap to first" insight card (DASH-03/D-05) — the one data point the insight is built around, and the Dashboard's focal point (see Visual Hierarchy above)
 - Hover/focus state on drill-down links (competition row → detail, cook column/row → Cook Detail) — matches existing `hover:text-gold-300` / `focus-visible:outline-ember-500` conventions already used in `ScaNavBar`
 - `.badge` component background (existing `#7a1a0e`/ember-tinted) if a badge is used anywhere in this phase (e.g. an "AI Reviewed" indicator on Cook Detail)
 
