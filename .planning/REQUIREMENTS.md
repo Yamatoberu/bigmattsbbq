@@ -40,8 +40,8 @@ Requirements for this milestone. Each maps to a roadmap phase. Read-only only â€
 
 ### AI Reviews (AIRV)
 
-- [ ] **AIRV-01**: User can view a list of all stored AI appearance reviews across cooks
-- [ ] **AIRV-02**: User can open a single AI review's detail (model, review type, prompt if present, full comments) linked back to its cook and competition
+- [x] **AIRV-01**: User can view a list of all stored AI appearance reviews across cooks
+- [x] **AIRV-02**: User can open a single AI review's detail (model, review type, prompt if present, full comments) linked back to its cook and competition
 
 ## v2 Requirements
 
@@ -94,8 +94,8 @@ Populated by the roadmapper during phase creation.
 | ANLY-01 | Phase 11 | Complete |
 | ANLY-02 | Phase 11 | Complete |
 | ANLY-03 | Phase 11 | Complete |
-| AIRV-01 | Phase 11 | Pending |
-| AIRV-02 | Phase 11 | Pending |
+| AIRV-01 | Phase 11 | Complete |
+| AIRV-02 | Phase 11 | Complete |
 
 **Coverage:**
 - v1 requirements: 18 total
