@@ -90,3 +90,11 @@ export type CookWithDetails = ScaCookRow & {
   cook_detail: ScaCookDetailRow | null;
   cook_ai_review: ScaCookAiReviewRow[];
 };
+
+export type AiReviewCookSummary = Pick<ScaCookRow, "id" | "steak_label"> & {
+  competition: CookCompetitionSummary | null;
+};
+
+export type AiReviewWithCook = ScaCookAiReviewRow & {
+  cook: AiReviewCookSummary | null;
+};
