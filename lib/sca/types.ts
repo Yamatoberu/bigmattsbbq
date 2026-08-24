@@ -53,6 +53,12 @@ export interface ComparisonTableModel {
   rows: ComparisonRow[];
 }
 
+export interface ComparisonTableOptions {
+  aggregates: boolean;
+  aggregateSource?: CookWithScore[];
+  aggregateScopeLabel?: string;
+}
+
 export interface SummaryStats {
   latestCooks: CookWithScore[];
   bestCook: CookWithScore | null;

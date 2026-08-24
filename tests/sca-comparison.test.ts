@@ -269,3 +269,171 @@ describe("buildComparisonTable", () => {
     }
   });
 });
+
+describe("buildComparisonTable aggregate source", () => {
+  it("computes aggregates from cooks when no aggregateSource is provided (Dashboard behavior unchanged)", () => {
+    const cooks = [
+      makeCook({ id: 1, score: makeScore({ total_score: 100 }) }),
+      makeCook({ id: 2, score: makeScore({ total_score: 200 }) })
+    ];
+
+    const withoutSource = buildComparisonTable(cooks, { aggregates: true });
+    const withExplicitSelfSource = buildComparisonTable(cooks, {
+      aggregates: true,
+      aggregateSource: cooks
+    });
+
+    expect(withoutSource).toEqual(withExplicitSelfSource);
+
+    const lastThree = withoutSource.columns.slice(-3);
+    expect(lastThree.map((c) => c.label)).toEqual(["Worst Cook", "Best Cook", "Cook Averages"]);
+  });
+
+  it("computes the average total_score cell from a wider aggregateSource, differing from the single cook's own score (regression for G-10-2)", () => {
+    const cookA = makeCook({ id: 1, score: makeScore({ total_score: 100 }) });
+    const cookB = makeCook({ id: 2, score: makeScore({ total_score: 200 }) });
+    const cookC = makeCook({ id: 3, score: makeScore({ total_score: 240 }) });
+
+    const result = buildComparisonTable([cookA], {
+      aggregates: true,
+      aggregateSource: [cookA, cookB, cookC]
+    });
+
+    const averageIndex = result.columns.findIndex((c) => c.kind === "average");
+    const cookAIndex = result.columns.findIndex((c) => c.key === "cook-1");
+    const totalScoreRow = result.rows.find((r) => r.key === "total_score");
+
+    expect(totalScoreRow?.cells[cookAIndex]).toBe("100");
+    expect(totalScoreRow?.cells[averageIndex]).not.toBe(totalScoreRow?.cells[cookAIndex]);
+    expect(totalScoreRow?.cells[averageIndex]).toBe(
+      String((100 + 200 + 240) / 3)
+    );
+  });
+
+  it("points worst/best hrefs at the aggregateSource's winner/loser, not a cook in the columns", () => {
+    const cookA = makeCook({ id: 1, score: makeScore({ total_score: 100 }) });
+    const cookB = makeCook({ id: 2, score: makeScore({ total_score: 150 }) });
+    const cookC = makeCook({ id: 3, score: makeScore({ total_score: 240 }) });
+
+    const result = buildComparisonTable([cookA], {
+      aggregates: true,
+      aggregateSource: [cookA, cookB, cookC]
+    });
+
+    const worstColumn = result.columns.find((c) => c.kind === "worst");
+    const bestColumn = result.columns.find((c) => c.kind === "best");
+
+    expect(worstColumn?.href).toBe("/sca/cooks/1");
+    expect(bestColumn?.href).toBe("/sca/cooks/3");
+  });
+
+  it("shows the aggregateSource's own competition name and cook date for worst/best columns", () => {
+    const cookA = makeCook({ id: 1, score: makeScore({ total_score: 100 }) });
+    const cookB = makeCook({
+      id: 2,
+      cooked_at: "2025-12-01T00:00:00Z",
+      competition: {
+        id: 99,
+        name: "Different Competition",
+        event_date: "2025-12-01",
+        city: "Logan",
+        state: "UT"
+      },
+      competition_id: 99,
+      score: makeScore({ total_score: 240 })
+    });
+
+    const result = buildComparisonTable([cookA], {
+      aggregates: true,
+      aggregateSource: [cookA, cookB]
+    });
+
+    const bestIndex = result.columns.findIndex((c) => c.kind === "best");
+    const competitionRow = result.rows.find((r) => r.key === "competition");
+    const cookRow = result.rows.find((r) => r.key === "cook");
+
+    expect(competitionRow?.cells[bestIndex]).toBe("Different Competition");
+    expect(cookRow?.cells[bestIndex]).not.toBe(EM_DASH);
+  });
+
+  it("appends the aggregateScopeLabel to the three aggregate column labels only", () => {
+    const cooks = [makeCook({ id: 1 }), makeCook({ id: 2 })];
+
+    const result = buildComparisonTable(cooks, {
+      aggregates: true,
+      aggregateSource: cooks,
+      aggregateScopeLabel: "All Time"
+    });
+
+    const lastThree = result.columns.slice(-3);
+    expect(lastThree.map((c) => c.label)).toEqual([
+      "Worst Cook (All Time)",
+      "Best Cook (All Time)",
+      "Cook Averages (All Time)"
+    ]);
+
+    const cookColumns = result.columns.filter((c) => c.kind === "cook");
+    for (const column of cookColumns) {
+      expect(column.label).not.toContain("(All Time)");
+    }
+
+    expect(result.rows.map((r) => r.key)).toEqual(EXPECTED_ROW_KEYS);
+    expect(result.rows.map((r) => r.label)).toEqual(EXPECTED_ROW_LABELS);
+    expect(result.columns.map((c) => c.kind)).toEqual(["cook", "cook", "worst", "best", "average"]);
+  });
+
+  it("omits the scope suffix when aggregateScopeLabel is not provided", () => {
+    const cooks = [makeCook({ id: 1 }), makeCook({ id: 2 })];
+
+    const result = buildComparisonTable(cooks, { aggregates: true, aggregateSource: cooks });
+
+    const lastThree = result.columns.slice(-3);
+    expect(lastThree.map((c) => c.label)).toEqual(["Worst Cook", "Best Cook", "Cook Averages"]);
+  });
+
+  it("renders em-dash cells and null hrefs for all three aggregate columns when aggregateSource is empty", () => {
+    const cookA = makeCook({ id: 1, score: makeScore({ total_score: 100 }) });
+
+    const result = buildComparisonTable([cookA], {
+      aggregates: true,
+      aggregateSource: []
+    });
+
+    const aggregateColumns = result.columns.filter((c) =>
+      ["worst", "best", "average"].includes(c.kind)
+    );
+    expect(aggregateColumns).toHaveLength(3);
+
+    for (const column of aggregateColumns) {
+      expect(column.href).toBeNull();
+    }
+
+    const aggregateIndexes = aggregateColumns.map((c) =>
+      result.columns.findIndex((col) => col.key === c.key)
+    );
+
+    for (const row of result.rows) {
+      for (const index of aggregateIndexes) {
+        expect(row.cells[index]).toBe(EM_DASH);
+        expect(row.cells[index]).not.toBe("NaN");
+      }
+    }
+  });
+
+  it("does not mutate aggregateSource and keeps column count at cooks.length + 3", () => {
+    const cookA = makeCook({ id: 1 });
+    const cookB = makeCook({ id: 2 });
+    const cookC = makeCook({ id: 3 });
+    const aggregateSource = [cookA, cookB, cookC];
+    const aggregateSourceCopy = [...aggregateSource];
+
+    const result = buildComparisonTable([cookA], {
+      aggregates: true,
+      aggregateSource
+    });
+
+    expect(aggregateSource).toEqual(aggregateSourceCopy);
+    expect(result.columns).toHaveLength(1 + 3);
+    expect(result.columns.some((c) => c.key === "cook-2" || c.key === "cook-3")).toBe(false);
+  });
+});

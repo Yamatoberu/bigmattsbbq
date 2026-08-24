@@ -6,6 +6,7 @@ import type {
   ComparisonRow,
   ComparisonRowKey,
   ComparisonTableModel,
+  ComparisonTableOptions,
   CookWithScore
 } from "./types";
 
@@ -90,7 +91,7 @@ function sortCooksAscending(cooks: CookWithScore[]): CookWithScore[] {
 
 export function buildComparisonTable(
   cooks: CookWithScore[],
-  options: { aggregates: boolean }
+  options: ComparisonTableOptions
 ): ComparisonTableModel {
   if (cooks.length === 0 && !options.aggregates) {
     return { columns: [], rows: [] };
@@ -112,11 +113,13 @@ export function buildComparisonTable(
   });
 
   if (options.aggregates) {
-    const { best, worst } = computeBestWorstAverage(cooks);
+    const aggregateSource = options.aggregateSource ?? cooks;
+    const scopeSuffix = options.aggregateScopeLabel ? ` (${options.aggregateScopeLabel})` : "";
+    const { best, worst } = computeBestWorstAverage(aggregateSource);
 
     columns.push({
       key: "worst",
-      label: "Worst Cook",
+      label: "Worst Cook" + scopeSuffix,
       kind: "worst",
       href: worst ? `/sca/cooks/${worst.id}` : null
     });
@@ -124,7 +127,7 @@ export function buildComparisonTable(
 
     columns.push({
       key: "best",
-      label: "Best Cook",
+      label: "Best Cook" + scopeSuffix,
       kind: "best",
       href: best ? `/sca/cooks/${best.id}` : null
     });
@@ -132,11 +135,11 @@ export function buildComparisonTable(
 
     columns.push({
       key: "average",
-      label: "Cook Averages",
+      label: "Cook Averages" + scopeSuffix,
       kind: "average",
       href: null
     });
-    cellsByColumnKey.set("average", buildAverageCells(cooks));
+    cellsByColumnKey.set("average", buildAverageCells(aggregateSource));
   }
 
   const rows: ComparisonRow[] = ROW_KEYS.map((key) => ({
