@@ -1,56 +1,78 @@
-import { getScaSupabaseClient } from "../../lib/supabase-sca";
+import { getAllCooksWithScores } from "../../lib/sca/queries";
+import { computeSummaryStats } from "../../lib/sca/aggregates";
+import { computeWhatStandsOut } from "../../lib/sca/insights";
+import { buildComparisonTable } from "../../lib/sca/comparison";
 import { logError } from "../../lib/logger";
+import { ComparisonTable } from "../../components/sca/ComparisonTable";
+import { SummaryCards } from "../../components/sca/SummaryCards";
+import { WhatStandsOut } from "../../components/sca/WhatStandsOut";
+import type { CookWithScore } from "../../lib/sca/types";
 
 export const dynamic = "force-dynamic";
 
-export default async function ScaIndexPage() {
-  let competitionCount: number | null = null;
+export default async function ScaDashboardPage() {
+  let cooks: CookWithScore[] = [];
   let errorMessage: string | undefined;
 
   try {
-    const supabase = getScaSupabaseClient();
-    const { count, error } = await supabase
-      .from("competition")
-      .select("*", { count: "exact", head: true });
-
-    if (error) {
-      throw error;
-    }
-
-    competitionCount = count ?? 0;
+    cooks = await getAllCooksWithScores();
   } catch (error) {
-    logError("ScaIndexPage competition count query failed", error, "sca-index-ssr");
-    errorMessage = error instanceof Error ? error.message : "Unknown error loading SCA data.";
+    logError("ScaDashboardPage cooks query failed", error, "sca-dashboard-ssr");
+    errorMessage = "We couldn't load this page right now. Please try again in a moment.";
   }
+
+  const stats = computeSummaryStats(cooks);
+  const insights = computeWhatStandsOut(cooks);
+  const model = buildComparisonTable(cooks, { aggregates: true });
 
   return (
     <div className="section-spacing">
-      <h1 className="font-[var(--font-display)] text-3xl text-[#f7f1e6]">SCA Tracker</h1>
+      <h1 className="font-[var(--font-display)] text-4xl font-semibold text-[#f7f1e6]">
+        Dashboard
+      </h1>
       <p className="mt-2 max-w-2xl text-sm text-smoke-800">
-        Big Matt&apos;s SCA steak cookoff history — cooks, scores, and AI appearance reviews.
+        Big Matt&apos;s SCA steak cookoff history — cooks, scores, and standout results at a
+        glance.
       </p>
 
-      <div className="glass-card mt-8 max-w-sm p-6">
-        {errorMessage ? (
-          <>
-            <p className="badge">Data error</p>
-            <p className="mt-3 text-sm text-smoke-800">{errorMessage}</p>
-          </>
-        ) : competitionCount === 0 ? (
-          <p className="text-sm text-smoke-800">No competitions have been recorded yet.</p>
-        ) : (
-          <>
-            <p className="text-4xl font-semibold text-[#f7f1e6]">{competitionCount}</p>
-            <p className="mt-1 text-xs uppercase tracking-[0.25em] text-smoke-800">
-              Competitions recorded
-            </p>
-          </>
-        )}
-      </div>
+      {errorMessage ? (
+        <div className="glass-card mt-8 p-6">
+          <p className="text-sm text-smoke-800">{errorMessage}</p>
+        </div>
+      ) : cooks.length === 0 ? (
+        <div className="glass-card mt-8 p-6">
+          <h2 className="font-[var(--font-display)] text-2xl font-semibold text-[#f7f1e6]">
+            No competitions recorded yet.
+          </h2>
+          <p className="mt-3 text-sm text-smoke-800">
+            {"Check back after Big Matt's next SCA cookoff."}
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className="mt-8">
+            <WhatStandsOut insights={insights} />
+          </div>
 
-      <p className="mt-8 text-xs text-smoke-800">
-        Dashboard, Competitions, Analytics, and AI Reviews arrive in the next phases.
-      </p>
+          <div className="mt-8">
+            <h2 className="font-[var(--font-display)] text-2xl font-semibold text-[#f7f1e6]">
+              Summary
+            </h2>
+            <div className="mt-4">
+              <SummaryCards stats={stats} />
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <h2 className="font-[var(--font-display)] text-2xl font-semibold text-[#f7f1e6]">
+              Comparison Table
+            </h2>
+            <div className="mt-4">
+              <ComparisonTable model={model} caption="All recorded cooks compared side by side" />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
