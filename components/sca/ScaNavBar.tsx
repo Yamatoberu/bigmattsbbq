@@ -4,7 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const scaNavLinks = [{ label: "Dashboard", href: "/sca" }] as const;
+const scaNavLinks = [
+  { label: "Dashboard", href: "/sca" },
+  { label: "Competitions", href: "/sca/competitions" }
+] as const;
 
 export function ScaNavBar() {
   const pathname = usePathname();
