@@ -104,7 +104,7 @@ Plans:
 **Milestone Goal:** Ship a read-only, production-quality SCA (Steak Cookoff Association) competition tracker at `sca.bigmattsbbq.com`, sharing this repo, Vercel project, and Big Matt's BBQ visual design system with the storefront, reading live data from the existing Supabase `sca` schema via server-side service-role access. No new auth, no write/create/edit/delete flows this milestone.
 
 - [x] **Phase 9: Foundation & Subdomain Routing** - Service-role Supabase access to the `sca` schema, generated types, host-based subdomain routing, shared derived-score utility, and on-brand shell for `app/sca` (completed 2026-08-23)
-- [ ] **Phase 10: Core Browsing — Dashboard, Competitions & Cook Detail** - Dashboard summary/comparison/insights, competition list/detail, and cook detail pages sharing one comparison table module (all 9 plans executed; human verification found 2 gaps — see 10-HUMAN-UAT.md — pending gap closure)
+- [ ] **Phase 10: Core Browsing — Dashboard, Competitions & Cook Detail** - Dashboard summary/comparison/insights, competition list/detail, and cook detail pages sharing one comparison table module (9 plans executed; human verification found 2 gaps — see 10-HUMAN-UAT.md — gap-closure plans 10-10..10-12 planned, not yet executed)
 - [ ] **Phase 11: Analytics & AI Reviews** - Score/gap/category trend views plus AI appearance review list and detail pages
 
 #### Phase 9: Foundation & Subdomain Routing
@@ -147,7 +147,7 @@ Plans:
   4. User can view a list of competitions ordered by event date with city/state/organizer, open a competition detail page showing event metadata and every cook entered, and compare all cooks in that competition side-by-side using the same comparison table module as the Dashboard
   5. User can open a single cook's detail page showing its competition, steak label, process variables, full score breakdown, and any AI review history for that cook
 
-**Plans**: 9 plans in 5 waves
+**Plans**: 12 plans in 7 waves (9 original + 3 gap-closure)
 **UI hint**: yes
 
 Plans:
@@ -174,6 +174,15 @@ Plans:
 **Wave 5** *(blocked on Wave 4 completion)*
 
 - [x] 10-09-PLAN.md — Phase gate plus human verification against live data
+
+**Wave 6 — gap closure** *(from 10-HUMAN-UAT.md: G-10-1, G-10-2)*
+
+- [ ] 10-10-PLAN.md — Cooks index page (`/sca/cooks`) and `Cooks` nav entry, closing G-10-1 (COOK-01 discoverability)
+- [ ] 10-11-PLAN.md — Competition detail compares this event's cooks against all-time aggregates, closing G-10-2 (COMP-03)
+
+**Wave 7** *(blocked on Wave 6 completion)*
+
+- [ ] 10-12-PLAN.md — Developer re-verification of both closed gaps against live data
 
 #### Phase 11: Analytics & AI Reviews
 
