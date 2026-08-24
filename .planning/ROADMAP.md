@@ -197,8 +197,23 @@ Plans:
   4. User can view a list of all stored AI appearance reviews across cooks
   5. User can open a single AI review's detail (model, review type, prompt if present, full comments) linked back to its cook and competition
 
-**Plans**: TBD
+**Plans**: 5 plans in 3 waves
 **UI hint**: yes
+
+Plans:
+**Wave 1**
+
+- [ ] 11-01-PLAN.md — `buildTrendSeries()` trend-series helper (`lib/sca/trends.ts`) + unit suite (ANLY-01/02/03 data layer)
+- [ ] 11-02-PLAN.md — `AiReviewWithCook` types, `getAllAiReviews()` / `getAiReviewById()` queries + unit suites (AIRV-01/02 data layer)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 11-03-PLAN.md — Shared static-SVG `TrendChart` Server Component and the `/sca/analytics` route rendering all 7 trends (ANLY-01/02/03)
+- [ ] 11-04-PLAN.md — `/sca/ai-reviews` list and `/sca/ai-reviews/[id]` detail routes (AIRV-01/02)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 11-05-PLAN.md — `ScaNavBar` Analytics + AI Reviews entries (D-07) and human verification against live data
 
 ---
 
@@ -245,7 +260,7 @@ Plans:
 | 8. Mailing List & Email Platform | v1.1 | 3/3 | Complete | 2026-05-19 |
 | 9. Foundation & Subdomain Routing | v2.0 | 7/7 | Complete   | 2026-08-23 |
 | 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 12/12 | Complete    | 2026-08-24 |
-| 11. Analytics & AI Reviews | v2.0 | 0/TBD | Not started | - |
+| 11. Analytics & AI Reviews | v2.0 | 0/5 | Planned | - |
 
 ---
-*Last updated: 2026-08-24 — Phase 10 planned (9 plans across 5 waves)*
+*Last updated: 2026-08-24 — Phase 11 planned (5 plans across 3 waves)*
