@@ -18,12 +18,12 @@ Requirements for this milestone. Each maps to a roadmap phase. Read-only only â€
 ### Dashboard (DASH)
 
 - [ ] **DASH-01**: User can view summary cards for latest cooks, best cook, worst cook, average total score, and average gap to first
-- [ ] **DASH-02**: User can view a comparison table with named-cook columns (e.g. `Wurst - A`, `Wurst - Jackpot`) plus `Worst Cook`, `Best Cook`, and `Cook Averages` aggregate columns, with rows for Competition, Cook, Cook Placement, each judging category, Total Score, Distance From Winning, and Distance From Perfect Score
+- [x] **DASH-02**: User can view a comparison table with named-cook columns (e.g. `Wurst - A`, `Wurst - Jackpot`) plus `Worst Cook`, `Best Cook`, and `Cook Averages` aggregate columns, with rows for Competition, Cook, Cook Placement, each judging category, Total Score, Distance From Winning, and Distance From Perfect Score
 - [ ] **DASH-03**: User can view a data-driven "what stands out" summary derived from real score data (e.g. biggest score swing, closest gap to first, most recent placement change) â€” not static copy
 
 ### Competitions (COMP)
 
-- [ ] **COMP-01**: User can view a list of competitions ordered by event date, with city/state/organizer at a glance
+- [x] **COMP-01**: User can view a list of competitions ordered by event date, with city/state/organizer at a glance
 - [ ] **COMP-02**: User can open a competition detail page showing event metadata (date, city, state, elevation, organizer, notes) and every cook entered at that event
 - [ ] **COMP-03**: User can compare all cooks within a single competition side-by-side (reusing the comparison table module)
 
@@ -84,9 +84,9 @@ Populated by the roadmapper during phase creation.
 | INFRA-04 | Phase 9 | Complete |
 | INFRA-05 | Phase 9 | Complete |
 | DASH-01 | Phase 10 | Pending |
-| DASH-02 | Phase 10 | Pending |
+| DASH-02 | Phase 10 | Complete |
 | DASH-03 | Phase 10 | Pending |
-| COMP-01 | Phase 10 | Pending |
+| COMP-01 | Phase 10 | Complete |
 | COMP-02 | Phase 10 | Pending |
 | COMP-03 | Phase 10 | Pending |
 | COOK-01 | Phase 10 | Pending |
