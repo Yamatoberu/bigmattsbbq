@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: SCA Tracker
 status: executing
-stopped_at: Phase 11 UI-SPEC approved
-last_updated: "2026-08-24T21:20:44.651Z"
+stopped_at: Phase 11 Plan 04 (AI Reviews UI) complete, ready for 11-05
+last_updated: "2026-08-24T21:25:51.588Z"
 last_activity: 2026-08-24
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 24
-  completed_plans: 22
+  completed_plans: 23
   percent: 67
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-23 — v2.0 SCA Tracker milestone sta
 ## Current Position
 
 Phase: 11 (analytics-ai-reviews) — EXECUTING
-Plan: 4 of 5
+Plan: 5 of 5
 Status: Ready to execute
 Last activity: 2026-08-24
 
-Progress: [█████████░] 92%
+Progress: [██████████] 96%
 
 ## Milestone Summary
 
@@ -84,6 +84,7 @@ Progress: [█████████░] 92%
 | Phase 11 P01 | 1min | 2 tasks | 2 files |
 | Phase 11 P02 | 1min | 3 tasks | 3 files |
 | Phase 11 P03 | 2min | 2 tasks | 2 files |
+| Phase 11 P04 | 3min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -118,6 +119,8 @@ Recent decisions affecting current work:
 - [Phase 11]: Phase 11 Plan 01: buildTrendSeries always delegates distance_from_winning to deriveScoreMetrics (never re-derived inline); input array order is preserved since getAllCooksWithScores() already returns ascending cooked_at
 - [Phase 11]: Plan 02: AiReviewWithCook derived via intersection with generated ScaCookAiReviewRow alias rather than hand-typed columns; embed select string shared via AI_REVIEW_EMBED_SELECT const between list and detail queries to prevent drift
 - [Phase 11]: Phase 11 Plan 03: TrendChart consolidates to a single svg viewBox wrapper rendered once with conditional zero/one/many-point children (rather than three duplicated svg blocks) so the literal viewBox/role/aria-label strings each appear exactly once in source, per the plan's grep-based acceptance criteria; each of the 7 charts on /sca/analytics scales to its own y-domain independently
+- [Phase 11]: Plan 04: AI Reviews list row's cook link renders conditionally on review.cook (never a non-null assertion); when null, the same cookColumnLabel() text renders as plain <p> instead of a Link with an undefined href
+- [Phase 11]: Plan 04: AI Review detail footer gates View Competition on review.cook?.competition independently of review.cook, so a present cook with a null competition still yields View Cook without View Competition
 
 ### Pending Todos
 
@@ -172,6 +175,6 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 
 ## Session Continuity
 
-Last session: 2026-08-24T21:19:18.758Z
-Stopped at: Phase 11 UI-SPEC approved
-Resume file: None
+Last session: 2026-08-24T21:25:51.580Z
+Stopped at: Phase 11 Plan 04 (AI Reviews UI) complete, ready for 11-05
+Resume file: 
