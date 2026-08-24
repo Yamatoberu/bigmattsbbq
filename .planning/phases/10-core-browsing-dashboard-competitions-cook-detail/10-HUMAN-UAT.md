@@ -1,9 +1,9 @@
 ---
-status: diagnosed
+status: resolved
 phase: 10-core-browsing-dashboard-competitions-cook-detail
 source: [10-09-PLAN.md Task 2 human verification]
 started: 2026-08-24T00:48:00-06:00
-updated: 2026-08-24T00:52:00-06:00
+updated: 2026-08-24T12:45:00-06:00
 ---
 
 ## Current Test
@@ -44,3 +44,16 @@ blocked: 0
   affected_requirement: COMP-03
   affected_files: ["app/sca/competitions/[id]/page.tsx", "lib/sca/comparison.ts"]
   suggested_fix: "On Competition detail, pass the overall/global aggregate (computed once across all cooks, same source as the Dashboard's Cook Averages) into the comparison table instead of recomputing Worst/Best/Average scoped to just this competition's cooks."
+
+## Re-verification (10-12, gap closure round)
+
+status: approved
+verified: 2026-08-24
+
+Both gaps closed by 10-10 (G-10-1) and 10-11 (G-10-2). Re-tested against live Supabase data (21 cooks, 14 competitions; single-cook competition id 4, multi-cook id 1) with the dev server running:
+
+1. **G-10-1** — `/sca/cooks` index lists all 21 cooks newest-first with working `View Cook` links; nav bar reads Dashboard · Competitions · Cooks; Cooks link stays highlighted on cook detail pages. Developer confirmed.
+2. **G-10-2** — `/sca/competitions/4` (single-cook) shows `Worst Cook (All Time)`, `Best Cook (All Time)`, `Cook Averages (All Time)`; Cook Averages Total Score (245.08) differs from the single cook's own Total Score (232.5). `/sca/competitions/1` (multi-cook) still lists every cook plus all-time aggregates. Developer confirmed.
+3. **Non-regression** — Dashboard's aggregate columns carry no `(All Time)` suffix and are unchanged; Competitions list, Cook Detail, 404 handling, and storefront pages render as before. Developer confirmed.
+
+Developer verdict: **approved**. No new gaps.
