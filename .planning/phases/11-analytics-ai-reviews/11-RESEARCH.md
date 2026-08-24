@@ -399,17 +399,19 @@ Not applicable — this phase's technical approach (SSR SVG, Postgrest embeds) i
 
 *All other claims in this document — function signatures, table/column names, existing file structure, `ScaNavBar`'s current 3-link state, `package.json` dependency list — were read directly from the repository during this research session (tagged implicitly `[VERIFIED: local codebase]` throughout; no external registry or web lookups were needed since this phase adds no new packages).*
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Exact chart pixel dimensions and point/label styling**
+1. **Exact chart pixel dimensions and point/label styling** — RESOLVED
    - What we know: D-02 requires static SVG with key values labeled near the chart; ember/smoke/gold tokens must be reused (no new visual system).
    - What's unclear: Exact `viewBox` dimensions, stroke widths, point radius — purely cosmetic, explicitly left to planner/implementer discretion in CONTEXT.md.
    - Recommendation: Planner should pick concrete numeric defaults (this research proposes `0 0 600 160`, 2.5px point radius) and let plan-checker/human review the actual rendered visual in verification rather than block planning on it.
+   - RESOLVED: `11-UI-SPEC.md` formalized `viewBox="0 0 600 160"` with first/last/min/max point labeling as the final visual contract; carried through unchanged into plan `11-03-PLAN.md`.
 
-2. **Whether to also link each AI Review's cook name to `/sca/cooks/:id` on the list page (not just the detail page)**
+2. **Whether to also link each AI Review's cook name to `/sca/cooks/:id` on the list page (not just the detail page)** — RESOLVED
    - What we know: AIRV-02 requires the detail page to link back to cook and competition. D-06 says the list item shows the cook inline via `cookColumnLabel`.
    - What's unclear: CONTEXT.md doesn't explicitly say whether the list item's cook name is itself a link to `/sca/cooks/:id`, or just display text (with the review's own `/sca/ai-reviews/:id` link being the only clickable target on that row).
    - Recommendation: Make the list item's cook name a secondary link to `/sca/cooks/:id` (low-risk, consistent with `app/sca/competitions/[id]/page.tsx`'s pattern of linking every cook row to its detail page) — but this is a minor UX enhancement, not a requirement gap; either choice satisfies AIRV-01/02 literally.
+   - RESOLVED: `11-UI-SPEC.md` locked the cook name as a secondary link to `/sca/cooks/:id`; implemented as specified in plan `11-04-PLAN.md`.
 
 ## Environment Availability
 
