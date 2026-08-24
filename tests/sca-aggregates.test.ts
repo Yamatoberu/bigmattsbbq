@@ -4,7 +4,8 @@ import {
   computeCategoryAverages,
   computeSummaryStats,
   getLatestCooks,
-  scoredCooks
+  scoredCooks,
+  sortCooksByRecencyDesc
 } from "../lib/sca/aggregates";
 import type { CookWithScore, ScaScoreRow } from "../lib/sca/types";
 
@@ -218,5 +219,54 @@ describe("computeSummaryStats", () => {
       averageTotalScore: null,
       averageDistanceFromWinning: null
     });
+  });
+});
+
+describe("sortCooksByRecencyDesc", () => {
+  it("returns [] for []", () => {
+    expect(sortCooksByRecencyDesc([])).toEqual([]);
+  });
+
+  it("orders cooks newest cooked_at first", () => {
+    const nov1 = makeCook({ id: 1, cooked_at: "2025-11-01T00:00:00Z" });
+    const nov5 = makeCook({ id: 2, cooked_at: "2025-11-05T00:00:00Z" });
+    const nov3 = makeCook({ id: 3, cooked_at: "2025-11-03T00:00:00Z" });
+
+    const result = sortCooksByRecencyDesc([nov1, nov5, nov3]);
+    expect(result.map((cook) => cook.id)).toEqual([2, 3, 1]);
+  });
+
+  it("breaks ties on identical cooked_at by descending id", () => {
+    const lowerId = makeCook({
+      id: 1,
+      cooked_at: "2025-11-05T00:00:00Z"
+    });
+    const higherId = makeCook({
+      id: 2,
+      cooked_at: "2025-11-05T00:00:00Z"
+    });
+
+    const result = sortCooksByRecencyDesc([lowerId, higherId]);
+    expect(result.map((cook) => cook.id)).toEqual([2, 1]);
+  });
+
+  it("does not mutate the input array", () => {
+    const nov1 = makeCook({ id: 1, cooked_at: "2025-11-01T00:00:00Z" });
+    const nov5 = makeCook({ id: 2, cooked_at: "2025-11-05T00:00:00Z" });
+    const input = [nov1, nov5];
+    const before = input.map((cook) => cook.id);
+
+    sortCooksByRecencyDesc(input);
+
+    expect(input.map((cook) => cook.id)).toEqual(before);
+  });
+
+  it("retains cooks with score: null (sort, not a filter)", () => {
+    const unscored = makeCook({ id: 1, cooked_at: "2025-11-01T00:00:00Z", score: null });
+    const scored = makeCook({ id: 2, cooked_at: "2025-11-05T00:00:00Z" });
+
+    const result = sortCooksByRecencyDesc([unscored, scored]);
+    expect(result).toHaveLength(2);
+    expect(result.find((cook) => cook.id === 1)?.score).toBeNull();
   });
 });

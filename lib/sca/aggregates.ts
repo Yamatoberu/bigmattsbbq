@@ -143,6 +143,18 @@ export function getLatestCooks(cooks: CookWithScore[]): CookWithScore[] {
     });
 }
 
+export function sortCooksByRecencyDesc(cooks: CookWithScore[]): CookWithScore[] {
+  return [...cooks].sort((a, b) => {
+    if (a.cooked_at < b.cooked_at) {
+      return 1;
+    }
+    if (a.cooked_at > b.cooked_at) {
+      return -1;
+    }
+    return b.id - a.id;
+  });
+}
+
 export function computeSummaryStats(cooks: CookWithScore[]): SummaryStats {
   const latestCooks = getLatestCooks(cooks);
   const { best, worst, averageTotalScore, averageDistanceFromWinning } =
