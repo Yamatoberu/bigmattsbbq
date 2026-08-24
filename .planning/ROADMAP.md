@@ -104,7 +104,7 @@ Plans:
 **Milestone Goal:** Ship a read-only, production-quality SCA (Steak Cookoff Association) competition tracker at `sca.bigmattsbbq.com`, sharing this repo, Vercel project, and Big Matt's BBQ visual design system with the storefront, reading live data from the existing Supabase `sca` schema via server-side service-role access. No new auth, no write/create/edit/delete flows this milestone.
 
 - [x] **Phase 9: Foundation & Subdomain Routing** - Service-role Supabase access to the `sca` schema, generated types, host-based subdomain routing, shared derived-score utility, and on-brand shell for `app/sca` (completed 2026-08-23)
-- [ ] **Phase 10: Core Browsing — Dashboard, Competitions & Cook Detail** - Dashboard summary/comparison/insights, competition list/detail, and cook detail pages sharing one comparison table module
+- [ ] **Phase 10: Core Browsing — Dashboard, Competitions & Cook Detail** - Dashboard summary/comparison/insights, competition list/detail, and cook detail pages sharing one comparison table module (all 9 plans executed; human verification found 2 gaps — see 10-HUMAN-UAT.md — pending gap closure)
 - [ ] **Phase 11: Analytics & AI Reviews** - Score/gap/category trend views plus AI appearance review list and detail pages
 
 #### Phase 9: Foundation & Subdomain Routing
@@ -173,7 +173,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 10-09-PLAN.md — Phase gate plus human verification against live data
+- [x] 10-09-PLAN.md — Phase gate plus human verification against live data
 
 #### Phase 11: Analytics & AI Reviews
 
@@ -235,7 +235,7 @@ Plans:
 | 7. Code Review Wave 2 | v1.1 | 4/4 | Complete   | 2026-05-07 |
 | 8. Mailing List & Email Platform | v1.1 | 3/3 | Complete | 2026-05-19 |
 | 9. Foundation & Subdomain Routing | v2.0 | 7/7 | Complete   | 2026-08-23 |
-| 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 8/9 | In Progress|  |
+| 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 9/9 | Gaps found | - |
 | 11. Analytics & AI Reviews | v2.0 | 0/TBD | Not started | - |
 
 ---
