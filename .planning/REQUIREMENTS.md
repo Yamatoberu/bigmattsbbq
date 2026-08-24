@@ -17,9 +17,9 @@ Requirements for this milestone. Each maps to a roadmap phase. Read-only only �
 
 ### Dashboard (DASH)
 
-- [ ] **DASH-01**: User can view summary cards for latest cooks, best cook, worst cook, average total score, and average gap to first
+- [x] **DASH-01**: User can view summary cards for latest cooks, best cook, worst cook, average total score, and average gap to first
 - [x] **DASH-02**: User can view a comparison table with named-cook columns (e.g. `Wurst - A`, `Wurst - Jackpot`) plus `Worst Cook`, `Best Cook`, and `Cook Averages` aggregate columns, with rows for Competition, Cook, Cook Placement, each judging category, Total Score, Distance From Winning, and Distance From Perfect Score
-- [ ] **DASH-03**: User can view a data-driven "what stands out" summary derived from real score data (e.g. biggest score swing, closest gap to first, most recent placement change) — not static copy
+- [x] **DASH-03**: User can view a data-driven "what stands out" summary derived from real score data (e.g. biggest score swing, closest gap to first, most recent placement change) — not static copy
 
 ### Competitions (COMP)
 
@@ -83,9 +83,9 @@ Populated by the roadmapper during phase creation.
 | INFRA-03 | Phase 9 | Complete |
 | INFRA-04 | Phase 9 | Complete |
 | INFRA-05 | Phase 9 | Complete |
-| DASH-01 | Phase 10 | Pending |
+| DASH-01 | Phase 10 | Complete |
 | DASH-02 | Phase 10 | Complete |
-| DASH-03 | Phase 10 | Pending |
+| DASH-03 | Phase 10 | Complete |
 | COMP-01 | Phase 10 | Complete |
 | COMP-02 | Phase 10 | Pending |
 | COMP-03 | Phase 10 | Pending |

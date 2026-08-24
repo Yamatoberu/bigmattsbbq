@@ -157,7 +157,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 10-02-PLAN.md — Aggregates (best/worst/average, empty-set safe) and the three DASH-03 insights
+- [x] 10-02-PLAN.md — Aggregates (best/worst/average, empty-set safe) and the three DASH-03 insights
 - [ ] 10-03-PLAN.md — Shared comparison-table model builder (D-01) and Cook Detail process-field selection
 - [ ] 10-04-PLAN.md — Server-only query layer (`lib/sca/queries.ts`) plus `parseScaId` route-id validation
 
@@ -235,7 +235,7 @@ Plans:
 | 7. Code Review Wave 2 | v1.1 | 4/4 | Complete   | 2026-05-07 |
 | 8. Mailing List & Email Platform | v1.1 | 3/3 | Complete | 2026-05-19 |
 | 9. Foundation & Subdomain Routing | v2.0 | 7/7 | Complete   | 2026-08-23 |
-| 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 1/9 | In Progress|  |
+| 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 2/9 | In Progress|  |
 | 11. Analytics & AI Reviews | v2.0 | 0/TBD | Not started | - |
 
 ---
