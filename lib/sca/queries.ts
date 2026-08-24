@@ -2,11 +2,15 @@ import "server-only";
 // Server-only data access. Import only from API routes and Server Components.
 import { getScaSupabaseClient } from "../supabase-sca";
 import type {
+  AiReviewWithCook,
   CompetitionWithCooks,
   CookWithDetails,
   CookWithScore,
   ScaCompetitionRow
 } from "./types";
+
+const AI_REVIEW_EMBED_SELECT =
+  "id, cook_id, model, review_type, prompt, comments, created_at, cook:cook_id(id, steak_label, competition:competition_id(id, name, event_date, city, state))";
 
 export function parseScaId(raw: string | string[] | undefined): number | null {
   if (typeof raw !== "string") return null;
@@ -68,6 +72,38 @@ export async function getCompetitionWithCooks(
   }
 
   return data as unknown as CompetitionWithCooks;
+}
+
+export async function getAllAiReviews(): Promise<AiReviewWithCook[]> {
+  const supabase = getScaSupabaseClient();
+  const { data, error } = await supabase
+    .from("cook_ai_review")
+    .select(AI_REVIEW_EMBED_SELECT)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return (data ?? []) as unknown as AiReviewWithCook[];
+}
+
+export async function getAiReviewById(id: number): Promise<AiReviewWithCook | null> {
+  const supabase = getScaSupabaseClient();
+  const { data, error } = await supabase
+    .from("cook_ai_review")
+    .select(AI_REVIEW_EMBED_SELECT)
+    .eq("id", id)
+    .single();
+
+  if (error?.code === "PGRST116") {
+    return null;
+  }
+  if (error) {
+    throw error;
+  }
+
+  return data as unknown as AiReviewWithCook;
 }
 
 export async function getCookWithDetails(id: number): Promise<CookWithDetails | null> {
