@@ -104,3 +104,7 @@ None - no external service configuration required.
 ---
 *Phase: 11-analytics-ai-reviews*
 *Completed: 2026-08-24*
+
+## Self-Check: PASSED
+
+All created/modified files (lib/sca/types.ts, lib/sca/queries.ts, tests/sca-queries.test.ts, this SUMMARY.md) confirmed present on disk. All four commit hashes (79629b6, cd01217, 407a60c, 5f7802c) confirmed present in git log.
