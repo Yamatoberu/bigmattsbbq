@@ -106,3 +106,10 @@ None - no external service configuration required.
 ---
 *Phase: 10-core-browsing-dashboard-competitions-cook-detail*
 *Completed: 2026-08-24*
+
+## Self-Check: PASSED
+
+- FOUND: `app/sca/cooks/[id]/page.tsx`
+- FOUND: `app/sca/not-found.tsx`
+- FOUND commit: `c4ba4fe`
+- FOUND commit: `b4a1085`

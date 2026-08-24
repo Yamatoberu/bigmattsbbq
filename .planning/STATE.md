@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: SCA Tracker
 status: executing
-stopped_at: Completed 10-06-PLAN.md
-last_updated: "2026-08-24T06:33:52.088Z"
+stopped_at: Completed 10-08-PLAN.md
+last_updated: "2026-08-24T06:39:08.593Z"
 last_activity: 2026-08-24
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 16
-  completed_plans: 14
+  completed_plans: 15
   percent: 33
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-23 — v2.0 SCA Tracker milestone sta
 ## Current Position
 
 Phase: 10 (core-browsing-dashboard-competitions-cook-detail) — EXECUTING
-Plan: 8 of 9
+Plan: 9 of 9
 Status: Ready to execute
 Last activity: 2026-08-24
 
-Progress: [████████░░] 81%
+Progress: [█████████░] 94%
 
 ## Milestone Summary
 
@@ -76,6 +76,7 @@ Progress: [████████░░] 81%
 | Phase 10 P04 | 20min | 2 tasks | 2 files |
 | Phase 10 P05 | 3min | 2 tasks | 3 files |
 | Phase 10 P06 | 3min | 2 tasks | 2 files |
+| Phase 10 P08 | 3min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -103,6 +104,7 @@ Recent decisions affecting current work:
 - [Phase 10]: Plan 04: parseScaId regex-gates route ids (/^\d+$/ + Number.isSafeInteger + >0) before any Supabase .eq() call; PGRST116-to-null mapping centralized in lib/sca/queries.ts so both [id] pages share identical notFound() semantics with zero duplicated error-code strings
 - [Phase 10]: Plan 05: components/sca/*.tsx presentational components (ComparisonTable, SummaryCards, WhatStandsOut) never import lib/sca/comparison.ts, aggregates.ts, or insights.ts -- only lib/sca/format.ts for display, keeping all aggregation/formatting logic in lib/sca/* per D-01
 - [Phase 10]: Plan 06 locked /sca Dashboard section order to h1 -> WhatStandsOut -> Summary -> Comparison Table per UI-SPEC visual hierarchy; closed WR-02 by rendering only the locked generic error string with logError() for the raw Supabase error
+- [Phase 10]: Plan 08: Cook Detail page falls back to cookColumnLabel for the h1 when steak_label is null, and the back-link target is conditional on cook.competition being non-null so it never links to a null competition id
 
 ### Pending Todos
 
@@ -157,6 +159,6 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 
 ## Session Continuity
 
-Last session: 2026-08-24T02:56:47.858Z
-Stopped at: Completed 10-06-PLAN.md
+Last session: 2026-08-24T06:39:08.585Z
+Stopped at: Completed 10-08-PLAN.md
 Resume file: None

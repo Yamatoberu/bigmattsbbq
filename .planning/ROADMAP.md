@@ -169,7 +169,7 @@ Plans:
 
 - [x] 10-06-PLAN.md — Dashboard rewrite of `/sca` (DASH-01/02/03) and the Competitions nav entry (D-11)
 - [x] 10-07-PLAN.md — Competitions list and competition detail pages (COMP-01/02/03)
-- [ ] 10-08-PLAN.md — Cook detail page (COOK-01/02) and the on-brand SCA 404
+- [x] 10-08-PLAN.md — Cook detail page (COOK-01/02) and the on-brand SCA 404
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
@@ -235,7 +235,7 @@ Plans:
 | 7. Code Review Wave 2 | v1.1 | 4/4 | Complete   | 2026-05-07 |
 | 8. Mailing List & Email Platform | v1.1 | 3/3 | Complete | 2026-05-19 |
 | 9. Foundation & Subdomain Routing | v2.0 | 7/7 | Complete   | 2026-08-23 |
-| 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 7/9 | In Progress|  |
+| 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 8/9 | In Progress|  |
 | 11. Analytics & AI Reviews | v2.0 | 0/TBD | Not started | - |
 
 ---
