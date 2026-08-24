@@ -178,7 +178,7 @@ Plans:
 **Wave 6 — gap closure** *(from 10-HUMAN-UAT.md: G-10-1, G-10-2)*
 
 - [x] 10-10-PLAN.md — Cooks index page (`/sca/cooks`) and `Cooks` nav entry, closing G-10-1 (COOK-01 discoverability)
-- [ ] 10-11-PLAN.md — Competition detail compares this event's cooks against all-time aggregates, closing G-10-2 (COMP-03)
+- [x] 10-11-PLAN.md — Competition detail compares this event's cooks against all-time aggregates, closing G-10-2 (COMP-03)
 
 **Wave 7** *(blocked on Wave 6 completion)*
 
@@ -244,7 +244,7 @@ Plans:
 | 7. Code Review Wave 2 | v1.1 | 4/4 | Complete   | 2026-05-07 |
 | 8. Mailing List & Email Platform | v1.1 | 3/3 | Complete | 2026-05-19 |
 | 9. Foundation & Subdomain Routing | v2.0 | 7/7 | Complete   | 2026-08-23 |
-| 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 10/12 | In Progress|  |
+| 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 11/12 | In Progress|  |
 | 11. Analytics & AI Reviews | v2.0 | 0/TBD | Not started | - |
 
 ---

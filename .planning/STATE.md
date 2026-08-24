@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: SCA Tracker
 status: executing
-stopped_at: Completed 10-10-PLAN.md
-last_updated: "2026-08-24T18:25:46.346Z"
+stopped_at: Completed 10-11-PLAN.md
+last_updated: "2026-08-24T18:31:20.891Z"
 last_activity: 2026-08-24
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 19
-  completed_plans: 17
+  completed_plans: 18
   percent: 33
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-23 — v2.0 SCA Tracker milestone sta
 ## Current Position
 
 Phase: 10 (core-browsing-dashboard-competitions-cook-detail) — EXECUTING
-Plan: 2 of 12
+Plan: 3 of 12
 Status: Ready to execute
 Last activity: 2026-08-24
 
-Progress: [█████████░] 89%
+Progress: [██████████] 95%
 
 ## Milestone Summary
 
@@ -78,6 +78,7 @@ Progress: [█████████░] 89%
 | Phase 10 P06 | 3min | 2 tasks | 2 files |
 | Phase 10 P08 | 3min | 2 tasks | 2 files |
 | Phase 10 P10 | 6min | 3 tasks | 4 files |
+| Phase 10 P11 | 8min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -107,6 +108,7 @@ Recent decisions affecting current work:
 - [Phase 10]: Plan 06 locked /sca Dashboard section order to h1 -> WhatStandsOut -> Summary -> Comparison Table per UI-SPEC visual hierarchy; closed WR-02 by rendering only the locked generic error string with logError() for the raw Supabase error
 - [Phase 10]: Plan 08: Cook Detail page falls back to cookColumnLabel for the h1 when steak_label is null, and the back-link target is conditional on cook.competition being non-null so it never links to a null competition id
 - [Phase 10]: Plan 10 (gap closure G-10-1/COOK-01): added /sca/cooks index route + sortCooksByRecencyDesc + Cooks nav entry — Human UAT found Cook Detail reachable only via a comparison table column header; this supersedes the nav half of D-11 (Cook Detail stays drill-down-only)
+- [Phase 10]: Plan 11 (gap closure G-10-2/COMP-03): buildComparisonTable gained an optional aggregateSource (defaults to cooks, preserving Dashboard behavior byte-for-byte) and aggregateScopeLabel; Competition detail now compares event cooks against all-time Worst/Best/Cook Averages via Promise.all(getCompetitionWithCooks, getAllCooksWithScores), closing the single-cook-competition degenerate-comparison gap
 
 ### Pending Todos
 
@@ -161,6 +163,6 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 
 ## Session Continuity
 
-Last session: 2026-08-24T18:25:46.338Z
-Stopped at: Completed 10-10-PLAN.md
+Last session: 2026-08-24T18:31:20.883Z
+Stopped at: Completed 10-11-PLAN.md
 Resume file: None
