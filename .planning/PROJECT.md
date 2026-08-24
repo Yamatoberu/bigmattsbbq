@@ -70,7 +70,7 @@ Customers can preorder frozen BBQ from a live drop without overselling — capac
 
 ## Context
 
-- **Shipped version**: v1.0 + Phase 6 code-review fixes complete — 22 plans total
+- **Shipped version**: v1.0 + v1.1 (Phases 6-8) complete; v2.0 SCA Tracker Phases 9-10 complete (Phase 11 next)
 - **Tech stack**: Next.js 16 App Router, TypeScript, Tailwind CSS, React 18, Supabase (Postgres), Resend, Square API
 - **Architecture**: Square for catalog/inventory/payments; Supabase for drops, orders, mailing list, email logs; Resend for email
 - **Pickup locations**: Cache Valley and Utah County, configurable per drop via `drop_pickup_options` table
@@ -116,4 +116,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-23 — v2.0 SCA Tracker milestone started*
+*Last updated: 2026-08-24 — Phase 10 (Core Browsing) complete, both UAT gaps closed and verified*
