@@ -40,14 +40,14 @@ created: 2026-08-24
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 11-0X-0X | TBD | 0 | ANLY-01 | — | `buildTrendSeries(cooks, "total_score")` returns chronological non-null points | unit | `npx vitest run tests/sca-trends.test.ts -t "total_score"` | ❌ W0 | ⬜ pending |
-| 11-0X-0X | TBD | 0 | ANLY-02 | — | `buildTrendSeries(cooks, "distance_from_winning")` matches `deriveScoreMetrics` output per cook | unit | `npx vitest run tests/sca-trends.test.ts -t "distance_from_winning"` | ❌ W0 | ⬜ pending |
-| 11-0X-0X | TBD | 0 | ANLY-03 | — | `buildTrendSeries` correctly reads each of the 5 category fields and skips null values | unit | `npx vitest run tests/sca-trends.test.ts -t "category"` | ❌ W0 | ⬜ pending |
-| 11-0X-0X | TBD | N | ANLY-01/02/03 (render) | — | `/sca/analytics` renders 7 `TrendChart` instances without throwing for `cooks=[]`, 1 cook, N cooks | manual | — human/browser check | — | ⬜ pending |
-| 11-0X-0X | TBD | 0 | AIRV-01 | V5 | `getAllAiReviews()` select string includes expected `cook_ai_review` columns, ordered `created_at` desc | unit | `npx vitest run tests/sca-queries.test.ts -t "getAllAiReviews"` | ❌ W0 (append) | ⬜ pending |
-| 11-0X-0X | TBD | 0 | AIRV-02 | V5 | `getAiReviewById()` returns `null` on `PGRST116`, rethrows other errors, returns row on success | unit | `npx vitest run tests/sca-queries.test.ts -t "getAiReviewById"` | ❌ W0 (append) | ⬜ pending |
-| 11-0X-0X | TBD | N | AIRV-01/02 (route) | V5 | `parseScaId()` reused verbatim for `/sca/ai-reviews/[id]`; `notFound()` on invalid/missing id | manual | — human/browser check + existing `parseScaId` unit coverage | — | ⬜ pending |
-| 11-0X-0X | TBD | N | All (error path) | Info Disclosure | Raw Supabase/Postgrest errors never rendered to the client — `logError()` + generic message on any new SSR fetch | manual | — code review against WR-02 pattern | — | ⬜ pending |
+| 11-01-01 | 01 | 1 | ANLY-01 | — | `buildTrendSeries(cooks, "total_score")` returns chronological non-null points | unit | `npx vitest run tests/sca-trends.test.ts -t "total_score"` | ❌ W0 (RED task) | ⬜ pending |
+| 11-01-01 | 01 | 1 | ANLY-02 | — | `buildTrendSeries(cooks, "distance_from_winning")` matches `deriveScoreMetrics` output per cook | unit | `npx vitest run tests/sca-trends.test.ts -t "distance_from_winning"` | ❌ W0 (RED task) | ⬜ pending |
+| 11-01-01 | 01 | 1 | ANLY-03 | — | `buildTrendSeries` correctly reads each of the 5 category fields and skips null values | unit | `npx vitest run tests/sca-trends.test.ts -t "category"` | ❌ W0 (RED task) | ⬜ pending |
+| 11-03-02 | 03 | 2 | ANLY-01/02/03 (render) | — | `/sca/analytics` renders 7 `TrendChart` instances without throwing for `cooks=[]`, 1 cook, N cooks | manual | — human/browser check (11-05-02) | — | ⬜ pending |
+| 11-02-02 | 02 | 1 | AIRV-01 | V5 | `getAllAiReviews()` select string includes expected `cook_ai_review` columns, ordered `created_at` desc | unit | `npx vitest run tests/sca-queries.test.ts -t "getAllAiReviews"` | ❌ W0 (append) | ⬜ pending |
+| 11-02-02 | 02 | 1 | AIRV-02 | V5 | `getAiReviewById()` returns `null` on `PGRST116`, rethrows other errors, returns row on success | unit | `npx vitest run tests/sca-queries.test.ts -t "getAiReviewById"` | ❌ W0 (append) | ⬜ pending |
+| 11-04-02 | 04 | 2 | AIRV-01/02 (route) | V5 | `parseScaId()` reused verbatim for `/sca/ai-reviews/[id]`; `notFound()` on invalid/missing id; back-links to both cook and competition | manual | — human/browser check (11-05-02) + existing `parseScaId` unit coverage | — | ⬜ pending |
+| 11-03-02 / 11-04-01 / 11-04-02 | 03, 04 | 2 | All (error path) | Info Disclosure | Raw Supabase/Postgrest errors never rendered to the client — `logError()` + generic message on any new SSR fetch | manual | — code review against WR-02 pattern | — | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 *Task IDs finalized once PLAN.md files are written — planner fills in real Plan/Task IDs.*
