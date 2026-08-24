@@ -1,8 +1,8 @@
 ---
 phase: 10
 slug: core-browsing-dashboard-competitions-cook-detail
-status: draft
-nyquist_compliant: false
+status: approved
+nyquist_compliant: true
 wave_0_complete: false
 created: 2026-08-23
 ---
@@ -40,14 +40,25 @@ created: 2026-08-23
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 10-XX-XX | TBD | 0 | DASH-01 | — | Best/Worst/Average computed correctly, including zero-scored-cook edge case | unit | `npx vitest run tests/sca-aggregates.test.ts` | ❌ W0 | ⬜ pending |
-| 10-XX-XX | TBD | 0 | DASH-02 | — | Comparison row-building (categories, em-dash for missing scores, column header formula) | unit | `npx vitest run tests/sca-comparison.test.ts` | ❌ W0 | ⬜ pending |
-| 10-XX-XX | TBD | 0 | DASH-03 | — | Insight computation (swing, gap, placement change; <2-cook omission per D-06) | unit | `npx vitest run tests/sca-insights.test.ts` | ❌ W0 | ⬜ pending |
-| 10-XX-XX | TBD | 0 | COMP-01/02/03 | — | Query shape correctness; comparison table reuse verified by shared unit tests | unit (shared logic) + manual (page render) | `npx vitest run tests/sca-comparison.test.ts` | ❌ W0 (shared with DASH-02) | ⬜ pending |
-| 10-XX-XX | TBD | 0 | COOK-01 | — | Non-null process-field selection | unit | `npx vitest run tests/sca-cook-detail-fields.test.ts` | ❌ W0 | ⬜ pending |
-| 10-XX-XX | TBD | — | COOK-02 | — | AI review list renders with zero rows ("No AI reviews yet") | manual only | — | n/a | ⬜ pending |
+| 10-01-T2 | 10-01 | 1 | DASH-02, COMP-01 | T-10-01, T-10-02 | Em-dash missing-value rule, cook column-label formula, date formatting with no timezone day-shift | unit | `npx vitest run tests/sca-format.test.ts` | ❌ W1 creates | ⬜ pending |
+| 10-02-T1 | 10-02 | 2 | DASH-01 | T-10-03 | Best/Worst/Average computed only over scored cooks; zero-scored-cook set returns nulls, never NaN | unit | `npx vitest run tests/sca-aggregates.test.ts` | ❌ W2 creates | ⬜ pending |
+| 10-02-T2 | 10-02 | 2 | DASH-03 | T-10-04 | Three insight types only; delta insights omitted below 2 scored cooks (D-06) | unit | `npx vitest run tests/sca-insights.test.ts` | ❌ W2 creates | ⬜ pending |
+| 10-03-T1 | 10-03 | 2 | DASH-02, COMP-03 | T-10-06, T-10-07 | Eleven-row model in fixed order; em dash for missing scores; aggregate columns safe on empty sets | unit | `npx vitest run tests/sca-comparison.test.ts` | ❌ W2 creates | ⬜ pending |
+| 10-03-T2 | 10-03 | 2 | COOK-01 | T-10-06 | Non-null process-field selection in declared order; `[]` when the cook_detail row is absent | unit | `npx vitest run tests/sca-cook-detail-fields.test.ts` | ❌ W2 creates | ⬜ pending |
+| 10-04-T1 | 10-04 | 2 | COMP-01, COMP-02, COOK-01, COOK-02 | T-10-11, T-10-12 | server-only guard; no error text formatted for users; PGRST116 mapped to null | typecheck | `npx tsc --noEmit` | n/a | ⬜ pending |
+| 10-04-T2 | 10-04 | 2 | COMP-01, COMP-02, COOK-01, COOK-02 | T-10-09, T-10-10 | `parseScaId` rejects non-numeric/negative/fractional/oversized/array ids before any query (ASVS V5) | unit | `npx vitest run tests/sca-queries.test.ts` | ❌ W2 creates | ⬜ pending |
+| 10-05-T1 | 10-05 | 3 | DASH-02, COMP-03 | T-10-14, T-10-16 | Table renders pre-formatted cells only; no `dangerouslySetInnerHTML`; no `"use client"` | typecheck + grep gate | `npx tsc --noEmit` | n/a | ⬜ pending |
+| 10-05-T2 | 10-05 | 3 | DASH-01, DASH-03 | T-10-14, T-10-15 | Summary/insight cards render view models only; no computation, no error text | typecheck + grep gate | `npx tsc --noEmit` | n/a | ⬜ pending |
+| 10-06-T1 | 10-06 | 4 | DASH-01, DASH-02, DASH-03 | — | Nav exposes Dashboard + Competitions only (D-11) | typecheck | `npx tsc --noEmit` | n/a | ⬜ pending |
+| 10-06-T2 | 10-06 | 4 | DASH-01, DASH-02, DASH-03 | T-10-17, T-10-18, T-10-20 | WR-02 closed: generic error copy, `logError` server-side, no `error.message` rendered | build + grep gate | `npm run build` | n/a | ⬜ pending |
+| 10-07-T1 | 10-07 | 4 | COMP-01 | T-10-23, T-10-24 | Null city/state/organizer omitted (D-08); generic error copy | build + grep gate | `npm run build` | n/a | ⬜ pending |
+| 10-07-T2 | 10-07 | 4 | COMP-02, COMP-03 | T-10-21, T-10-22, T-10-25 | `parseScaId` + `notFound()` before query; shared comparison table reused, no local table markup | build + curl 404 check | `npm run build` | n/a | ⬜ pending |
+| 10-08-T1 | 10-08 | 4 | COOK-01, COOK-02 | T-10-26, T-10-27, T-10-30 | Object-level score null guard; AI review text escaped via JSX; locked D-09/D-10 fallback copy | build + grep gate | `npm run build` | n/a | ⬜ pending |
+| 10-08-T2 | 10-08 | 4 | COOK-01, COOK-02 | T-10-26 | On-brand 404 inside the SCA shell, no data fetching | build | `npm run build` | n/a | ⬜ pending |
+| 10-09-T1 | 10-09 | 5 | all 8 | T-10-31, T-10-32, T-10-33 | Phase gate: full suite, typecheck, build, and repo-wide `dangerouslySetInnerHTML` / `error.message` grep gates | suite | `npm run test && npx tsc --noEmit && npm run build` | ✅ after W2 | ⬜ pending |
+| 10-09-T2 | 10-09 | 5 | all 8 | T-10-31, T-10-32, T-10-33 | Human render verification of all four pages incl. sparse-data and 404 paths | manual only | — | n/a | ⬜ pending |
 
-*Task IDs, plan numbers, and exact wave assignments are TBD until the planner produces PLAN.md files — this table's requirement rows are the binding contract; the planner fills in task/plan/wave identifiers.*
+*Filled in by the planner on 2026-08-24 from `10-01-PLAN.md` through `10-09-PLAN.md`. COOK-02's page-render behavior remains manual-only (see Manual-Only Verifications) because the repo has no React rendering test infrastructure.*
 
 ---
 
@@ -72,11 +83,11 @@ created: 2026-08-23
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 5s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies — the one exception (10-09-T2) declares `MISSING` with the framework-constraint rationale and pairs a `<human-check>` with 10-09-T1's automated gate
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify — every task carries `npx vitest run`, `npx tsc --noEmit`, or `npm run build`
+- [x] Wave 0 covers all MISSING references — the four planned test files plus `tests/sca-format.test.ts` and `tests/sca-queries.test.ts` are created in Waves 1-2, ahead of every consumer
+- [x] No watch-mode flags — all commands are `vitest run` / single-shot
+- [x] Feedback latency < 5s for unit tests
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** planner-approved 2026-08-24

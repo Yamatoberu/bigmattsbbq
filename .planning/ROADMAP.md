@@ -136,8 +136,19 @@ Plans:
   3. User can view a data-driven "what stands out" summary on the Dashboard reflecting real score data (e.g. biggest score swing, closest gap to first, most recent placement change), not static copy
   4. User can view a list of competitions ordered by event date with city/state/organizer, open a competition detail page showing event metadata and every cook entered, and compare all cooks in that competition side-by-side using the same comparison table module as the Dashboard
   5. User can open a single cook's detail page showing its competition, steak label, process variables, full score breakdown, and any AI review history for that cook
-**Plans**: TBD
+**Plans**: 9 plans in 5 waves
 **UI hint**: yes
+
+Plans:
+- [ ] 10-01-PLAN.md — Shared SCA view-model contracts (`lib/sca/types.ts`) and display formatters (em-dash rule, cook column label, date formatting)
+- [ ] 10-02-PLAN.md — Aggregates (best/worst/average, empty-set safe) and the three DASH-03 insights
+- [ ] 10-03-PLAN.md — Shared comparison-table model builder (D-01) and Cook Detail process-field selection
+- [ ] 10-04-PLAN.md — Server-only query layer (`lib/sca/queries.ts`) plus `parseScaId` route-id validation
+- [ ] 10-05-PLAN.md — `ComparisonTable`, `SummaryCards`, and `WhatStandsOut` Server Components
+- [ ] 10-06-PLAN.md — Dashboard rewrite of `/sca` (DASH-01/02/03) and the Competitions nav entry (D-11)
+- [ ] 10-07-PLAN.md — Competitions list and competition detail pages (COMP-01/02/03)
+- [ ] 10-08-PLAN.md — Cook detail page (COOK-01/02) and the on-brand SCA 404
+- [ ] 10-09-PLAN.md — Phase gate plus human verification against live data
 
 #### Phase 11: Analytics & AI Reviews
 
@@ -195,8 +206,8 @@ Plans:
 | 7. Code Review Wave 2 | v1.1 | 4/4 | Complete   | 2026-05-07 |
 | 8. Mailing List & Email Platform | v1.1 | 3/3 | Complete | 2026-05-19 |
 | 9. Foundation & Subdomain Routing | v2.0 | 7/7 | Complete   | 2026-08-23 |
-| 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 0/TBD | Not started | - |
+| 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 0/9 | Planned | - |
 | 11. Analytics & AI Reviews | v2.0 | 0/TBD | Not started | - |
 
 ---
-*Last updated: 2026-08-23 — v2.0 SCA Tracker roadmap created (Phases 9-11), awaiting approval*
+*Last updated: 2026-08-24 — Phase 10 planned (9 plans across 5 waves)*
