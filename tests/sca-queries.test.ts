@@ -194,6 +194,95 @@ describe("getCompetitionWithCooks", () => {
   });
 });
 
+describe("getAllAiReviews", () => {
+  it("queries the cook_ai_review table", async () => {
+    mockResult = { data: [], error: null };
+    const { getAllAiReviews } = await import("../lib/sca/queries");
+    await getAllAiReviews();
+    expect(lastCall.table).toBe("cook_ai_review");
+  });
+
+  it("passes a select string containing cook:cook_id and competition:competition_id", async () => {
+    mockResult = { data: [], error: null };
+    const { getAllAiReviews } = await import("../lib/sca/queries");
+    await getAllAiReviews();
+    expect(lastCall.select).toContain("cook:cook_id");
+    expect(lastCall.select).toContain("competition:competition_id");
+  });
+
+  it("does not filter by review_type", async () => {
+    mockResult = { data: [], error: null };
+    const { getAllAiReviews } = await import("../lib/sca/queries");
+    await getAllAiReviews();
+    expect(lastCall.select).not.toContain("review_type=");
+    expect(lastCall.eq).toBeNull();
+  });
+
+  it("calls .order with created_at and { ascending: false }", async () => {
+    mockResult = { data: [], error: null };
+    const { getAllAiReviews } = await import("../lib/sca/queries");
+    await getAllAiReviews();
+    expect(lastCall.order).toEqual(["created_at", { ascending: false }]);
+  });
+
+  it("returns [] when the client resolves { data: null, error: null }", async () => {
+    mockResult = { data: null, error: null };
+    const { getAllAiReviews } = await import("../lib/sca/queries");
+    const result = await getAllAiReviews();
+    expect(result).toEqual([]);
+  });
+
+  it("rejects when the client resolves a non-null error", async () => {
+    mockResult = { data: null, error: { message: "boom" } };
+    const { getAllAiReviews } = await import("../lib/sca/queries");
+    await expect(getAllAiReviews()).rejects.toBeTruthy();
+  });
+});
+
+describe("getAiReviewById", () => {
+  it("resolves to null for a PGRST116 error", async () => {
+    mockResult = { data: null, error: { code: "PGRST116" } };
+    const { getAiReviewById } = await import("../lib/sca/queries");
+    const result = await getAiReviewById(7);
+    expect(result).toBeNull();
+  });
+
+  it("rejects for a non-PGRST116 error", async () => {
+    mockResult = { data: null, error: { code: "500", message: "boom" } };
+    const { getAiReviewById } = await import("../lib/sca/queries");
+    await expect(getAiReviewById(7)).rejects.toBeTruthy();
+  });
+
+  it("returns the row on success and calls eq/single correctly", async () => {
+    const row = {
+      id: 7,
+      cook_id: 4,
+      model: "gpt-4o",
+      review_type: "photo_review",
+      prompt: "Describe the steak",
+      comments: "Nice crust and even color.",
+      created_at: "2026-08-01T12:00:00Z",
+      cook: {
+        id: 4,
+        steak_label: "A",
+        competition: {
+          id: 1,
+          name: "BBQ Pit Stop St George",
+          event_date: "2026-07-01",
+          city: "St George",
+          state: "UT"
+        }
+      }
+    };
+    mockResult = { data: row, error: null };
+    const { getAiReviewById } = await import("../lib/sca/queries");
+    const result = await getAiReviewById(7);
+    expect(result).toEqual(row);
+    expect(lastCall.eq).toEqual(["id", 7]);
+    expect(lastCall.single).toBe(true);
+  });
+});
+
 describe("getCookWithDetails", () => {
   it("resolves to null on PGRST116", async () => {
     mockResult = { data: null, error: { code: "PGRST116" } };
