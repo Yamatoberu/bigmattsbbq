@@ -247,17 +247,20 @@ Regex mirrors Square's own metadata *key* charset constraint (`[a-zA-Z0-9_-]`) e
 | A1 | Exact live column types of the `attribution_sources` table (`id` type, nullability) match CONTEXT.md's description (id, code, label, is_active, sort_order, requires_detail) — not independently verified against the live Supabase schema in this research session (no Supabase MCP/DB access available to this research agent). | Pitfall 4, Recommended Project Structure | Type mismatch in `database.types.ts` or a failed `.select()` if a column name/type differs from assumption; low risk (caught immediately by TypeScript/dev-time testing), but should be confirmed in Wave 0 before writing `lib/attributionSources.ts`. |
 | A2 | Square's Order `metadata` field remaining `x-release-status: BETA` does not carry a practical deprecation/removal risk for this phase's timeline. | Summary, Pitfall 1 | If Square ever removes/reworks the Beta `metadata` field, attribution silently stops persisting (though checkout itself would remain unaffected per the defensive design) — low likelihood given the field's multi-year presence in Square's public docs, but genuinely unverifiable beyond "it's still there and documented today." |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Exact Postgres column types for `attribution_sources`**
-   - What we know: CONTEXT.md lists columns (id, code, label, is_active, sort_order, requires_detail) and RLS behavior (anon/authenticated SELECT of active rows).
-   - What's unclear: Whether `id` is `uuid` or `int8`/`serial`, and whether `requires_detail`/`is_active` are non-nullable booleans with defaults.
-   - Recommendation: Wave 0 task — confirm via Supabase dashboard or `supabase db pull` before finalizing `AttributionSourceDTO`/`database.types.ts` edits; low-risk, low-effort check.
+> Both questions were closed during planning on 2026-08-28. Assumption A1 above is likewise resolved by Q1's answer. Nothing in this section is open.
 
-2. **Should the checkout route cross-check `attributionSourceCode` against live active Supabase rows?**
-   - What we know: CONTEXT.md leaves this explicitly to Claude's discretion; strict enum validation is impractical given the dynamic list.
-   - What's unclear: Whether the residual risk (an arbitrary client-supplied string landing in Square metadata / the Slack message if the UI is bypassed) is acceptable.
-   - Recommendation: Shape-only validation (Code Examples above) is sufficient — this is a best-effort analytics field, not a security boundary; a mismatched code degrades data quality, not correctness or safety.
+1. **Exact Postgres column types for `attribution_sources`** — **RESOLVED (2026-08-28, live schema check).**
+   - What we knew: CONTEXT.md listed columns (id, code, label, is_active, sort_order, requires_detail) and RLS behavior (anon/authenticated SELECT of active rows).
+   - What was unclear: Whether `id` is `uuid` or `int8`/`serial`, and whether `requires_detail`/`is_active` are non-nullable booleans with defaults.
+   - **Resolution:** The planner queried the live Supabase PostgREST OpenAPI definition for `public.attribution_sources`. `id` is **`bigint` (`int8`) → TypeScript `number`, NOT `uuid`/`string`**. All 8 columns are NOT NULL: `id` (identity), `code text`, `label text`, `is_active boolean` (default `true`), `sort_order integer` (default `0`), `requires_detail boolean` (default `false`), `created_at timestamptz` (default `now()`), `updated_at timestamptz` (default `now()`). Eight active rows exist (`referral`, `facebook`, `instagram`, `google`, `ai`, `event`, `returning`, `other`; `ai`/`event`/`other` have `requires_detail = true`).
+   - **Authoritative record:** the `<live_schema>` block in `12-01-PLAN.md`'s `<context>`. Note that Pattern 2's snippet above and `12-PATTERNS.md` both guessed `id: string` before this check — **use `number`**; do not re-derive the schema from this research document.
+
+2. **Should the checkout route cross-check `attributionSourceCode` against live active Supabase rows?** — **RESOLVED (adopted: NO — shape-only validation).**
+   - What we knew: CONTEXT.md leaves this explicitly to Claude's discretion; strict enum validation is impractical given the dynamic list.
+   - What was unclear: Whether the residual risk (an arbitrary client-supplied string landing in Square metadata / the Slack message if the UI is bypassed) is acceptable.
+   - **Resolution:** The recommendation was adopted as the final answer. `checkoutSchema` in `app/api/checkout/route.ts` validates **shape only** — `attributionSourceCode`: `z.string().trim().min(1).max(60).regex(/^[a-zA-Z0-9_-]+$/).optional()`, `attributionDetail`: `z.string().trim().min(1).max(255).optional()` — with **no** live Supabase cross-check. Implemented in `12-03-PLAN.md`. The accepted residual risk is recorded as threat `T-12-02` (Tampering, disposition **accept**) in `12-01-PLAN.md`'s threat register: this is a best-effort analytics field, not a security boundary; a mismatched code degrades data quality, not correctness or safety.
 
 ## Environment Availability
 
