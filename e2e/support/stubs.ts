@@ -1,4 +1,4 @@
-import { Page } from "@playwright/test";
+import { APIRequestContext, Page } from "@playwright/test";
 import { CheckoutResponseBody, DropDTO, FrozenItemDTO, CartItem } from "../../lib/types";
 import { frozenItemsFixture } from "../fixtures/frozenItems";
 import { activeDropFixture } from "../fixtures/activeDrop";
@@ -61,5 +61,16 @@ export async function seedCart(page: Page, items: CartItem[]): Promise<void> {
       window.localStorage.setItem(key as string, value as string);
     },
     [CART_STORAGE_KEY, JSON.stringify(items)]
+  );
+}
+
+export async function hasActiveDrop(request: APIRequestContext): Promise<boolean> {
+  const response = await request.get("/api/drop");
+  if (!response.ok()) {
+    return false;
+  }
+  const body = await response.json().catch(() => null);
+  return Boolean(
+    body && typeof body === "object" && (body as { status?: unknown }).status === "active"
   );
 }
