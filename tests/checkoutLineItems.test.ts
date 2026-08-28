@@ -312,7 +312,7 @@ describe("POST /api/checkout — attribution metadata on createOrder", () => {
     ).toBe(false);
   });
 
-  it("Test 8: attributionSourceCode with invalid characters is rejected with 400 before any Square call", async () => {
+  it("Test 8: attributionSourceCode with invalid characters is dropped, checkout still succeeds (D-10)", async () => {
     const cart = [{ variationId: "V-BRISKET", quantity: 1, productName: "brisket" }];
 
     const response = (await callCheckout({
@@ -327,11 +327,13 @@ describe("POST /api/checkout — attribution metadata on createOrder", () => {
       cart
     })) as unknown as { status: number };
 
-    expect(response.status).toBe(400);
-    expect(createOrderMock).not.toHaveBeenCalled();
+    expect(response.status).toBe(200);
+    expect(createOrderMock).toHaveBeenCalledOnce();
+    const callBody = createOrderMock.mock.calls[0][0] as { body: { order: Record<string, unknown> } };
+    expect(callBody.body.order.metadata).toBeUndefined();
   });
 
-  it("Test 9: attributionSourceCode longer than 60 chars is rejected with 400 before any Square call", async () => {
+  it("Test 9: attributionSourceCode longer than 60 chars is dropped, checkout still succeeds (D-10)", async () => {
     const cart = [{ variationId: "V-BRISKET", quantity: 1, productName: "brisket" }];
 
     const response = (await callCheckout({
@@ -346,11 +348,13 @@ describe("POST /api/checkout — attribution metadata on createOrder", () => {
       cart
     })) as unknown as { status: number };
 
-    expect(response.status).toBe(400);
-    expect(createOrderMock).not.toHaveBeenCalled();
+    expect(response.status).toBe(200);
+    expect(createOrderMock).toHaveBeenCalledOnce();
+    const callBody = createOrderMock.mock.calls[0][0] as { body: { order: Record<string, unknown> } };
+    expect(callBody.body.order.metadata).toBeUndefined();
   });
 
-  it("Test 10: attributionDetail longer than 255 chars is rejected with 400 before any Square call", async () => {
+  it("Test 10: attributionDetail longer than 255 chars is dropped but a valid code still persists (D-10)", async () => {
     const cart = [{ variationId: "V-BRISKET", quantity: 1, productName: "brisket" }];
 
     const response = (await callCheckout({
@@ -366,7 +370,9 @@ describe("POST /api/checkout — attribution metadata on createOrder", () => {
       cart
     })) as unknown as { status: number };
 
-    expect(response.status).toBe(400);
-    expect(createOrderMock).not.toHaveBeenCalled();
+    expect(response.status).toBe(200);
+    expect(createOrderMock).toHaveBeenCalledOnce();
+    const callBody = createOrderMock.mock.calls[0][0] as { body: { order: { metadata?: Record<string, string> } } };
+    expect(callBody.body.order.metadata).toEqual({ attribution_source: "ai" });
   });
 });

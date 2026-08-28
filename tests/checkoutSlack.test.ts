@@ -304,4 +304,27 @@ describe("POST /api/checkout — Slack attribution line", () => {
     expect(response.status).toBe(200);
     expect(globalThis.fetch).not.toHaveBeenCalled();
   });
+
+  it("Test 7: Slack mrkdwn special characters in attributionDetail are escaped, not interpreted", async () => {
+    resolveAttributionLabelMock.mockResolvedValue("Saw Big Matt's BBQ at an event");
+    const cart = [{ variationId: "V-BRISKET", quantity: 1, productName: "brisket" }];
+
+    await callCheckout({
+      dropId: DROP_ID,
+      pickupOptionId: PICKUP_ID,
+      customer: {
+        firstName: "Matt",
+        lastName: "Test",
+        email: "matt@example.com",
+        attributionSourceCode: "event",
+        attributionDetail: "<!channel> check <http://evil.example|this>"
+      },
+      cart
+    });
+
+    const text = getSlackMessageText();
+    expect(text).not.toContain("<!channel>");
+    expect(text).not.toContain("<http://evil.example|this>");
+    expect(text).toContain("&lt;!channel&gt; check &lt;http://evil.example|this&gt;");
+  });
 });

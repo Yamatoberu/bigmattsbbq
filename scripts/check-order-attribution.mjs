@@ -41,7 +41,7 @@ async function main() {
 
   let response;
   try {
-    response = await fetch(`${host}/v2/orders/${orderId}`, {
+    response = await fetch(`${host}/v2/orders/${encodeURIComponent(orderId)}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${accessToken}`,

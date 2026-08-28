@@ -41,7 +41,7 @@ Open `http://localhost:3000`.
 
 ## Square version header
 
-All Square API requests use `Square-Version: 2024-12-18`. Update in `lib/square.ts` if needed.
+All Square API requests use the `SQUARE_VERSION` constant pinned at the top of `lib/square.ts` (currently `2026-04-21`). Update there if needed — this line intentionally doesn't restate the value to avoid drifting out of sync.
 
 ## How to get Square IDs
 

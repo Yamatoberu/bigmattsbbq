@@ -97,65 +97,65 @@ token — Square's Dashboard will never show it natively.
 
 ## 5. Reliability contract
 
-Attribution is best-effort and must never fail a checkout (D-10). Two
-independent layers enforce this:
+Attribution is best-effort and must never fail a checkout (D-10) — including
+the checkout request itself, not just a hypothetical later persistence step.
+`attributionSourceCode`/`attributionDetail` are deliberately **not** part of
+`checkoutSchema`'s strict validation (that schema still gates `dropId`,
+`customer.email`, `cart`, etc. as normal — only attribution is exempted).
+Instead:
 
-- **Zod bounds at `POST /api/checkout`** (`app/api/checkout/route.ts`):
-  `attributionSourceCode` max 60 chars, charset `[a-zA-Z0-9_-]`;
-  `attributionDetail` max 255 chars. Out-of-bounds input is rejected with a
-  400 **before any Square call is made.**
-- **`buildAttributionMetadata()` in `lib/square.ts`** independently trims and
-  byte-truncates the value (UTF-8 byte length via `Buffer.byteLength`, not JS
-  string `.length`, so emoji/CJK detail text can never overflow Square's
-  byte-oriented limit) and cannot throw.
+1. **`checkoutSchema`** accepts `attributionSourceCode`/`attributionDetail` as
+   unconstrained optional strings, so a malformed value can never fail
+   `safeParse` and therefore can never 400 the whole checkout.
+2. **`sanitizeAttribution()`** in `app/api/checkout/route.ts` applies the real
+   bounds (`attributionSourceCode` max 60 chars, charset `[a-zA-Z0-9_-]`;
+   `attributionDetail` max 255 chars) *after* the checkout payload has already
+   passed validation. A value that fails these bounds is silently dropped —
+   the order still creates with no `metadata` (or with just the code, if only
+   `detail` was invalid) — and the drop is logged via `logError` for
+   visibility, never returned to the customer as an error.
+3. **`buildAttributionMetadata()` in `lib/square.ts`** is a second, independent
+   layer: it re-trims and byte-truncates the already-sanitized value (UTF-8
+   byte length via `Buffer.byteLength`, not JS string `.length`, so emoji/CJK
+   detail text can never overflow Square's byte-oriented limit) and cannot
+   throw.
+
+This matters because the Supabase-managed source list (`attribution_sources`)
+is explicitly designed to change without a deploy — an operator can add a row
+via Supabase Studio with a code containing a space, apostrophe, emoji, or
+more than 60 characters. Before this fix, that row would have silently broken
+checkout for every customer who selected it, because the bounds were enforced
+inside the same Zod object that gates the whole request. `sanitizeAttribution()`
+exists precisely so that scenario degrades to "no attribution" instead.
 
 A Supabase failure loading the source list hides the question entirely
 (the dropdown never renders) rather than blocking the checkout page (D-09).
 The submitted code is deliberately **not** cross-checked against live active
 Supabase rows at submit time — the source list can change without a deploy,
-and a mismatch is a data-quality issue, not a correctness one.
+and a mismatch is a data-quality issue, not a correctness one; `sanitizeAttribution()`
+only enforces shape (length/charset), never membership in the active list.
 
-### Residual risk: D-10 holds by validation, not by call isolation
+### Why the metadata write itself can't be "isolated" like the Slack call
 
 D-10 is phrased as "a failure to persist attribution (after order/payment
-otherwise succeeded) must not fail the checkout response." That phrasing
-presumes a *separable* persistence step that can fail on its own — the shape
-of the Slack notification, which is a genuinely separate,
-`fire-and-forget notifySlackNewOrder` call that is `.catch()`-swallowed after
-the order already exists.
+otherwise succeeded) must not fail the checkout response" — language that
+presumes a *separable* persistence step, the shape of the Slack notification
+(a genuinely separate, `fire-and-forget notifySlackNewOrder` call that is
+`.catch()`-swallowed after the order already exists).
 
-Attribution is **not** that shape. `attribution_source` / `attribution_detail`
-ride inline in the `metadata` map of the very same `POST /v2/orders` request
-that creates the order. There is no second call to isolate: if that request
-400s because of a bad metadata value, no order is created at all. The failure
-mode D-10 literally describes (a persistence step failing after the order
-already exists) cannot occur for attribution, and the failure mode that
-*can* occur — a bad value poisoning order creation itself — would be worse
-than the one D-10 describes.
+The Square metadata write is **not** that shape: `attribution_source`/
+`attribution_detail` ride inline in the `metadata` map of the very same
+`POST /v2/orders` request that creates the order. There is no second call to
+isolate. That's exactly why validation has to happen *before* the request is
+built (Section 5, steps 1–3) rather than by wrapping the Square call in a
+try/catch that swallows failures — by the time that call would run, a bad
+value would already have prevented the order (and payment) from being
+created at all. Making the value un-rejectable before the request is sent is
+the only way to guarantee D-10 for a field that rides inline.
 
-Therefore the guarantee is delivered by making the value **un-rejectable
-before the request is sent**, not by isolating a call afterwards. The two
-layers named in Section 5 are deliberately redundant:
-
-1. Zod bounds at `POST /api/checkout` reject out-of-range input with a 400
-   before Square is contacted at all.
-2. `buildAttributionMetadata()` in `lib/square.ts` independently trims,
-   byte-truncates to Square's UTF-8 limits, type-guards non-string input, and
-   contains no `throw` — so even if the Zod bounds and Square's real limits
-   ever drift apart, the value placed in the order body is in-spec.
-
-Removing either layer silently re-opens the risk.
-
-This is a **design** mitigation, not a **runtime** one. Nothing at runtime
-catches an attribution-caused `CreateOrder` rejection and retries without
-metadata. The residual risk is accepted because both layers are unit-tested
-(`tests/attributionMetadata.test.ts`, including multi-byte boundary cases)
-and because Square's documented limits for this field are stable.
-
-**Re-verification trigger:** if Square's metadata limits change, if
-`buildAttributionMetadata()` ever gains a code path that can throw, or if the
-Zod bounds are loosened, this tradeoff must be re-evaluated — and a runtime
-retry-without-metadata fallback should be considered at that point.
+**Re-verification trigger:** if Square's metadata limits change, or if
+`buildAttributionMetadata()` ever gains a code path that can throw, re-check
+that `sanitizeAttribution()`'s bounds still match Square's real limits.
 
 ## 6. Out of scope
 

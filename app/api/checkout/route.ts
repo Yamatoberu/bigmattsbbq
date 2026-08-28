@@ -28,6 +28,10 @@ const PRODUCT_NAME_LABELS: Record<string, string> = {
   freezer_filler: "Freezer Filler Bundle",
 };
 
+function escapeSlackText(value: string): string {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
 function notifySlackNewOrder({
   customer,
   cart,
@@ -61,7 +65,7 @@ function notifySlackNewOrder({
     `Pickup: ${locationLabel} — ${pickupDateLabel}`,
     ...(attributionLabel
       ? [
-          `Heard about us: ${attributionLabel}${attributionDetail ? ` (${attributionDetail})` : ""}`
+          `Heard about us: ${escapeSlackText(attributionLabel)}${attributionDetail ? ` (${escapeSlackText(attributionDetail)})` : ""}`
         ]
       : []),
     `Order ID: ${orderId}`,
@@ -104,17 +108,43 @@ const checkoutSchema = z.object({
     lastName: z.string().min(1),
     email: z.string().email(),
     phone: z.string().optional(),
-    attributionSourceCode: z
-      .string()
-      .trim()
-      .min(1)
-      .max(60)
-      .regex(/^[a-zA-Z0-9_-]+$/)
-      .optional(),
-    attributionDetail: z.string().trim().max(255).optional()
+    // Intentionally unconstrained here — attribution is optional metadata sourced from an
+    // operator-editable Supabase table with no deploy gate on `code`/`detail` shape. Bounds
+    // are enforced separately below via sanitizeAttribution() so a malformed value degrades
+    // to "no attribution" instead of ever failing the checkout (D-10).
+    attributionSourceCode: z.string().optional(),
+    attributionDetail: z.string().optional()
   }),
   cart: z.array(cartSchema).min(1)
 });
+
+const attributionSourceCodeSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(60)
+  .regex(/^[a-zA-Z0-9_-]+$/);
+const attributionDetailSchema = z.string().trim().min(1).max(255);
+
+function sanitizeAttribution(
+  rawCode: string | undefined,
+  rawDetail: string | undefined,
+  requestId: string
+): { code?: string; detail?: string } {
+  const codeResult = attributionSourceCodeSchema.safeParse(rawCode);
+  if (rawCode !== undefined && !codeResult.success) {
+    logError("Dropped malformed attribution source code (never blocks checkout)", codeResult.error, requestId);
+  }
+  if (!codeResult.success) {
+    return {};
+  }
+
+  const detailResult = attributionDetailSchema.safeParse(rawDetail);
+  return {
+    code: codeResult.data,
+    detail: detailResult.success ? detailResult.data : undefined
+  };
+}
 
 async function releaseReserved(
   supabase: ReturnType<typeof getSupabaseClient>,
@@ -261,6 +291,11 @@ export async function POST(request: Request) {
     try {
       const env = getSquareEnv();
       const { customer, cart } = parsed.data;
+      const attribution = sanitizeAttribution(
+        customer.attributionSourceCode,
+        customer.attributionDetail,
+        requestId
+      );
 
       const customerSearch = await searchCustomerByEmail({
         host: env.host,
@@ -338,8 +373,8 @@ export async function POST(request: Request) {
               }
             ],
             metadata: buildAttributionMetadata({
-              code: parsed.data.customer.attributionSourceCode,
-              detail: parsed.data.customer.attributionDetail
+              code: attribution.code,
+              detail: attribution.detail
             })
           }
         }
@@ -417,8 +452,8 @@ export async function POST(request: Request) {
         ])
       });
 
-      const resolvedAttributionLabel = customer.attributionSourceCode
-        ? await resolveAttributionLabel(customer.attributionSourceCode)
+      const resolvedAttributionLabel = attribution.code
+        ? await resolveAttributionLabel(attribution.code)
         : undefined;
 
       notifySlackNewOrder({
@@ -427,8 +462,8 @@ export async function POST(request: Request) {
         locationLabel: pickupRow.location_label,
         pickupDateLabel,
         orderId: orderId ?? "",
-        attributionLabel: resolvedAttributionLabel ?? customer.attributionSourceCode,
-        attributionDetail: customer.attributionDetail
+        attributionLabel: resolvedAttributionLabel ?? attribution.code,
+        attributionDetail: attribution.detail
       });
     } catch (squareError) {
       // Square call failed — release reserved capacity so the slot is not stranded.
