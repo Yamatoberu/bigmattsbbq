@@ -55,10 +55,11 @@ describe("GET /api/attribution-sources", () => {
     const response = await GET();
 
     expect(response.status).toBe(500);
-    expect(typeof (response.body as { error: string }).error).toBe("string");
-    expect(typeof (response.body as { requestId: string }).requestId).toBe("string");
-    expect((response.body as { error: string }).error).not.toContain("PGRST301");
-    expect((response.body as { error: string }).error).not.toContain("permission denied");
+    const errorBody = response.body as unknown as { error: string; requestId: string };
+    expect(typeof errorBody.error).toBe("string");
+    expect(typeof errorBody.requestId).toBe("string");
+    expect(errorBody.error).not.toContain("PGRST301");
+    expect(errorBody.error).not.toContain("permission denied");
   });
 
   it("logs the failure exactly once with the same requestId as the response body", async () => {
@@ -68,6 +69,7 @@ describe("GET /api/attribution-sources", () => {
 
     expect(logError).toHaveBeenCalledTimes(1);
     const call = vi.mocked(logError).mock.calls[0];
-    expect(call[2]).toBe((response.body as { requestId: string }).requestId);
+    const body = response.body as unknown as { requestId: string };
+    expect(call[2]).toBe(body.requestId);
   });
 });
