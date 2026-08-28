@@ -91,6 +91,7 @@ Milestone audit: `.planning/milestones/v2.0-MILESTONE-AUDIT.md`
 | 9. Foundation & Subdomain Routing | v2.0 | 7/7 | Complete   | 2026-08-23 |
 | 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 12/12 | Complete    | 2026-08-24 |
 | 11. Analytics & AI Reviews | v2.0 | 5/5 | Complete    | 2026-08-28 |
+| 12. Checkout Attribution Tracking | — | 5/5 | Complete | 2026-08-28 |
 
 ### Phase 12: Checkout Attribution Tracking
 
@@ -118,4 +119,4 @@ Plans:
 - [x] 12-05: E2E coverage, Sandbox verification script, docs (wave 4)
 
 ---
-*Last updated: 2026-08-28 — Phase 12 planned (5 plans, 4 waves), plan-checker passed with 0 blockers*
+*Last updated: 2026-08-28 — Phase 12 (Checkout Attribution Tracking) complete: 5/5 plans, code review found and fixed a checkout-blocking bug, verified 10/10 against a real Square Sandbox order*
