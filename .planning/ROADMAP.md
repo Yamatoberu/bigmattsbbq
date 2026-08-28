@@ -100,10 +100,21 @@ Milestone audit: `.planning/milestones/v2.0-MILESTONE-AUDIT.md`
 **Plans:** 5 plans
 
 Plans:
+**Wave 1**
+
 - [ ] 12-01: `database.types.ts`/`types.ts` entry for `attribution_sources`, `buildAttributionMetadata()` helper (wave 1)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 12-02: `lib/attributionSources.ts` + `GET /api/attribution-sources` route (wave 2)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 12-03: `app/api/checkout/route.ts` — order metadata + Slack line (wave 3)
 - [ ] 12-04: `CheckoutClient.tsx` dropdown + detail field (wave 3)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 12-05: E2E coverage, Sandbox verification script, docs (wave 4)
 
 ---
