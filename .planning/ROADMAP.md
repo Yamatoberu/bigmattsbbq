@@ -92,5 +92,15 @@ Milestone audit: `.planning/milestones/v2.0-MILESTONE-AUDIT.md`
 | 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 12/12 | Complete    | 2026-08-24 |
 | 11. Analytics & AI Reviews | v2.0 | 5/5 | Complete    | 2026-08-28 |
 
+### Phase 12: Checkout Attribution Tracking
+
+**Goal:** Add a customer-facing "How did you hear about us?" question to checkout, sourced from Supabase `public.attribution_sources`, persisted against the Square order via the most appropriate current Square API (researched first), never blocking a valid checkout
+**Requirements**: TBD
+**Depends on:** Phase 11
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 12 to break down)
+
 ---
 *Last updated: 2026-08-28 — v2.0 SCA Tracker milestone shipped and archived*

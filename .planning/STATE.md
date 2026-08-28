@@ -89,6 +89,10 @@ Last activity: 2026-08-28 - Completed quick task 260828-fhk: Scaffold Playwright
 
 ## Accumulated Context
 
+### Roadmap Evolution
+
+- Phase 12 added: Checkout Attribution Tracking — customer-facing "How did you hear about us?" capture in checkout, sourced from Supabase `public.attribution_sources`, persisted against the Square order via a to-be-researched Square API mechanism, never blocking a valid checkout
+
 ### Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table.
