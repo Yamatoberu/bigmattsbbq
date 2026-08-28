@@ -15,6 +15,7 @@ import {
 import { logError } from "../../../lib/logger";
 import { getSupabaseClient } from "../../../lib/supabase";
 import { checkDropReady } from "../../../lib/drops";
+import { resolveAttributionLabel } from "../../../lib/attributionSources";
 
 export const runtime = "nodejs";
 
@@ -33,12 +34,16 @@ function notifySlackNewOrder({
   locationLabel,
   pickupDateLabel,
   orderId,
+  attributionLabel,
+  attributionDetail,
 }: {
   customer: { firstName: string; lastName: string; email: string };
   cart: Array<{ productName?: string; quantity: number }>;
   locationLabel: string;
   pickupDateLabel: string;
   orderId: string;
+  attributionLabel?: string;
+  attributionDetail?: string;
 }): void {
   const webhookUrl = process.env.SLACK_ORDERS_WEBHOOK_URL;
   if (!webhookUrl) return;
@@ -54,6 +59,11 @@ function notifySlackNewOrder({
     "Order:",
     ...lines,
     `Pickup: ${locationLabel} — ${pickupDateLabel}`,
+    ...(attributionLabel
+      ? [
+          `Heard about us: ${attributionLabel}${attributionDetail ? ` (${attributionDetail})` : ""}`
+        ]
+      : []),
     `Order ID: ${orderId}`,
   ].join("\n");
 
@@ -407,12 +417,18 @@ export async function POST(request: Request) {
         ])
       });
 
+      const resolvedAttributionLabel = customer.attributionSourceCode
+        ? await resolveAttributionLabel(customer.attributionSourceCode)
+        : undefined;
+
       notifySlackNewOrder({
         customer,
         cart: parsed.data.cart,
         locationLabel: pickupRow.location_label,
         pickupDateLabel,
-        orderId: orderId ?? ""
+        orderId: orderId ?? "",
+        attributionLabel: resolvedAttributionLabel ?? customer.attributionSourceCode,
+        attributionDetail: customer.attributionDetail
       });
     } catch (squareError) {
       // Square call failed — release reserved capacity so the slot is not stranded.
