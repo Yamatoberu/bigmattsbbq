@@ -113,3 +113,7 @@ None - no external service configuration required.
 ---
 *Phase: 12-checkout-attribution-tracking*
 *Completed: 2026-08-28*
+
+## Self-Check: PASSED
+
+All created files exist on disk (`lib/attributionSources.ts`, `app/api/attribution-sources/route.ts`, `tests/attributionSourcesRoute.test.ts`) and all referenced commit hashes (d80c25d, c796a02, 14db826, b1bda0d) are present in git history.
