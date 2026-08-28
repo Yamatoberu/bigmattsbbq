@@ -22,7 +22,7 @@ export function ScaNavBar() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-[#2b2b2f] bg-[#17181c]/85 backdrop-blur">
-      <div className="flex flex-row items-center gap-6 px-6 py-3 md:px-12">
+      <div className="flex flex-row flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3 md:flex-nowrap md:px-12">
         <Link
           href="https://bigmattsbbq.com"
           rel="noopener"
@@ -35,7 +35,7 @@ export function ScaNavBar() {
         </Link>
 
         <nav
-          className="flex flex-row items-center gap-8"
+          className="flex flex-row flex-wrap items-center gap-x-6 gap-y-2 md:flex-nowrap md:gap-x-8"
           aria-label="SCA Tracker"
         >
           {scaNavLinks.map((link) => (
