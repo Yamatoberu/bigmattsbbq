@@ -4,8 +4,8 @@ milestone: v2.0
 milestone_name: SCA Tracker
 status: Awaiting next milestone
 stopped_at: Phase 11 (Analytics & AI Reviews) complete — all 5 plans shipped, human-verified. v2.0 SCA Tracker milestone's 3 phases all complete.
-last_updated: "2026-08-28T16:35:58.880Z"
-last_activity: 2026-08-28 — Milestone v2.0 completed and archived
+last_updated: "2026-08-28T16:56:04.000Z"
+last_activity: 2026-08-28 — SCA subdomain DNS cutover plan scrubbed; /sca is canonical
 progress:
   total_phases: 3
   completed_phases: 3
@@ -124,6 +124,7 @@ Recent decisions affecting current work:
 - [Phase 11]: Plan 04: AI Review detail footer gates View Competition on review.cook?.competition independently of review.cook, so a present cook with a null competition still yields View Cook without View Competition
 - [Phase 11]: Plan 05 checkpoint found a real mobile horizontal-scroll regression (5-item ScaNavBar didn't wrap below ~945px) during human verification; fixed same-session with flex-wrap below md: (reverting to the original flex-nowrap classes at md: and up) per explicit user request rather than deferred to separate gap-closure planning
 - [Phase 11]: Plan 05 checkpoint approved by human -- all five ROADMAP Phase 11 success criteria (ANLY-01, ANLY-02, ANLY-03, AIRV-01, AIRV-02) confirmed true against live Supabase data (21 cooks, 20 scores, 3 AI reviews). Phase 11 (5/5 plans) is complete. v2.0 SCA Tracker milestone's 3 phases (9, 10, 11) are all complete.
+- [Quick 260828-f3i]: The `sca.bigmattsbbq.com` subdomain and its DNS cutover were decided against; `/sca` is the canonical SCA Tracker URL and is sufficient. `docs/sca-subdomain-deployment.md` was deleted; README.md and PROJECT.md were updated to drop the pending-cutover framing. The shipped routing code (`proxy.ts`, `lib/sca/routing.ts`, `SCA_HOSTNAME`) was deliberately left in place — it is inert when no `sca.*` host is bound and is already tested, so removing it would be churn with regression risk and no benefit. No CNAME was ever created at Hostinger and no Vercel domain binding was ever added, so the dangling-subdomain-takeover concern documented in the deleted rollback section does not apply — there is nothing to unwind.
 
 ### Pending Todos
 
@@ -176,6 +177,7 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 | 20260520-fix-pickup-issoldout | Fix pickup isSoldOut incorrectly true when capacity_enforced is false | 2026-05-20 | 1a4e57c | [20260520-fix-pickup-issoldout](./.planning/quick/20260520-fix-pickup-issoldout/) |
 | 20260520-package-item-display-name | Add displayName to PackageItemConfig for clean sauce label override | 2026-05-20 | eca119b | [20260520-package-item-display-name](./.planning/quick/20260520-package-item-display-name/) |
 | 20260819-slack-order-notification | Add fire-and-forget Slack notification to checkout route on new order | 2026-08-19 | 7c3918a | [20260819-slack-order-notification](./.planning/quick/20260819-slack-order-notification/) |
+| 260828-f3i | Scrub the SCA subdomain DNS cutover plan — decided against, /sca path is sufficient | 2026-08-28 | 4f3cd2c | [260828-f3i-scrub-the-sca-subdomain-dns-cutover-plan](./.planning/quick/260828-f3i-scrub-the-sca-subdomain-dns-cutover-plan/) |
 | 2026-05-07 | fast | Increase cart item price text size and highlight with ember-400 color | ✅ | — |
 | 2026-05-07 | fast | Bump Square API version from 2024-12-18 to 2026-04-21 | ✅ | — |
 | 2026-05-07 | fast | Normalize catalogName bundle match and add console.warn on mismatch in CheckoutClient | ✅ | — |
