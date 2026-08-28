@@ -4,6 +4,7 @@ import { z } from "zod";
 import { getSquareEnv } from "../../../lib/env";
 import { newIdempotencyKey } from "../../../lib/idempotency";
 import {
+  buildAttributionMetadata,
   createCustomer,
   createInvoice,
   createOrder,
@@ -92,7 +93,15 @@ const checkoutSchema = z.object({
     firstName: z.string().min(1),
     lastName: z.string().min(1),
     email: z.string().email(),
-    phone: z.string().optional()
+    phone: z.string().optional(),
+    attributionSourceCode: z
+      .string()
+      .trim()
+      .min(1)
+      .max(60)
+      .regex(/^[a-zA-Z0-9_-]+$/)
+      .optional(),
+    attributionDetail: z.string().trim().max(255).optional()
   }),
   cart: z.array(cartSchema).min(1)
 });
@@ -317,7 +326,11 @@ export async function POST(request: Request) {
                   }
                 }
               }
-            ]
+            ],
+            metadata: buildAttributionMetadata({
+              code: parsed.data.customer.attributionSourceCode,
+              detail: parsed.data.customer.attributionDetail
+            })
           }
         }
       });
