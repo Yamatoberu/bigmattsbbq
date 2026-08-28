@@ -45,6 +45,8 @@ export interface CheckoutRequestBody {
     lastName: string;
     email: string;
     phone?: string;
+    attributionSourceCode?: string;
+    attributionDetail?: string;
   };
   cart: CartItem[];
 }
@@ -62,6 +64,14 @@ export interface PickupOptionDTO {
   pickupDateLabel: string;
   pickupAtISO: string;
   isSoldOut: boolean;
+}
+
+export interface AttributionSourceDTO {
+  id: number;
+  code: string;
+  label: string;
+  requiresDetail: boolean;
+  sortOrder: number;
 }
 
 export interface DropDTO {

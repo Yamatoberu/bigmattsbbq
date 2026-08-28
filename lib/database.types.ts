@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      attribution_sources: {
+        Row: {
+          code: string
+          created_at: string
+          id: number
+          is_active: boolean
+          label: string
+          requires_detail: boolean
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: number
+          is_active?: boolean
+          label: string
+          requires_detail?: boolean
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: number
+          is_active?: boolean
+          label?: string
+          requires_detail?: boolean
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       drop_pickup_options: {
         Row: {
           capacity_backyard_host: number
