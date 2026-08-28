@@ -297,3 +297,39 @@ export function mapCatalogToFrozenItems(params: {
 export function extractVariationIds(items: FrozenItemDTO[]) {
   return items.flatMap((item) => item.variations.map((variation) => variation.variationId));
 }
+
+function truncateToByteLimit(value: string, limit: number): string {
+  if (Buffer.byteLength(value, "utf8") <= limit) {
+    return value;
+  }
+
+  const codePoints = Array.from(value).slice(0, limit);
+  while (codePoints.length > 0 && Buffer.byteLength(codePoints.join(""), "utf8") > limit) {
+    codePoints.pop();
+  }
+
+  return codePoints.join("");
+}
+
+export function buildAttributionMetadata(params: {
+  code?: string;
+  detail?: string;
+}): Record<string, string> | undefined {
+  const rawCode = params?.code;
+  const trimmedCode = typeof rawCode === "string" ? rawCode.trim() : "";
+  if (!trimmedCode) {
+    return undefined;
+  }
+
+  const metadata: Record<string, string> = {
+    attribution_source: truncateToByteLimit(trimmedCode, 60)
+  };
+
+  const rawDetail = params?.detail;
+  const trimmedDetail = typeof rawDetail === "string" ? rawDetail.trim() : "";
+  if (trimmedDetail) {
+    metadata.attribution_detail = truncateToByteLimit(trimmedDetail, 255);
+  }
+
+  return metadata;
+}
