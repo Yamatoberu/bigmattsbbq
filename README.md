@@ -68,6 +68,12 @@ routing exists in `proxy.ts` at the repo root (Next.js 16 renamed `middleware.ts
 and would rewrite an `sca.*` host into `/sca`, but no such subdomain is bound and none is
 planned — `/sca` is the intended access route.
 
+## Checkout Attribution
+
+The "How did you hear about us?" checkout question is documented in
+[`docs/checkout-attribution.md`](docs/checkout-attribution.md) — key naming,
+extensibility path, and the Square Seller Dashboard visibility caveat.
+
 ## Tests
 
 ```bash
