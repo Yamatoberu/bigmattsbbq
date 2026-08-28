@@ -105,7 +105,7 @@ Plans:
 
 - [x] **Phase 9: Foundation & Subdomain Routing** - Service-role Supabase access to the `sca` schema, generated types, host-based subdomain routing, shared derived-score utility, and on-brand shell for `app/sca` (completed 2026-08-23)
 - [x] **Phase 10: Core Browsing — Dashboard, Competitions & Cook Detail** - Dashboard summary/comparison/insights, competition list/detail, and cook detail pages sharing one comparison table module (human verification found 2 gaps — G-10-1 cook discoverability, G-10-2 competition aggregate scope — closed by gap-closure plans 10-10..10-12 and re-verified against live data) (completed 2026-08-24)
-- [ ] **Phase 11: Analytics & AI Reviews** - Score/gap/category trend views plus AI appearance review list and detail pages
+- [x] **Phase 11: Analytics & AI Reviews** - Score/gap/category trend views plus AI appearance review list and detail pages (completed 2026-08-28)
 
 #### Phase 9: Foundation & Subdomain Routing
 
@@ -213,7 +213,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 11-05-PLAN.md — `ScaNavBar` Analytics + AI Reviews entries (D-07) and human verification against live data
+- [x] 11-05-PLAN.md — `ScaNavBar` Analytics + AI Reviews entries (D-07) and human verification against live data
 
 ---
 
@@ -260,7 +260,7 @@ Plans:
 | 8. Mailing List & Email Platform | v1.1 | 3/3 | Complete | 2026-05-19 |
 | 9. Foundation & Subdomain Routing | v2.0 | 7/7 | Complete   | 2026-08-23 |
 | 10. Core Browsing — Dashboard, Competitions & Cook Detail | v2.0 | 12/12 | Complete    | 2026-08-24 |
-| 11. Analytics & AI Reviews | v2.0 | 4/5 | In Progress|  |
+| 11. Analytics & AI Reviews | v2.0 | 5/5 | Complete   | 2026-08-28 |
 
 ---
 *Last updated: 2026-08-24 — Phase 11 planned (5 plans across 3 waves)*
