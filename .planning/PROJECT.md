@@ -7,6 +7,7 @@
 - **v1.0 (2026-04-22):** Database-driven storefront — Supabase-backed drops, atomic capacity enforcement, mailing list with broadcast.
 - **v1.1 (2026-05-19):** Code review hardening + Resend Contacts/Broadcasts migration.
 - **v2.0 SCA Tracker (2026-08-28):** Read-only SCA (Steak Cookoff Association) competition tracker at `/sca`, sharing this repo/Vercel project/design system with the storefront — Dashboard, Competitions, Cook Detail, Analytics trend charts, and AI Reviews, all reading live Supabase `sca` schema data via server-side service-role access. See `.planning/milestones/v2.0-ROADMAP.md` for full phase detail.
+- **Phase 12 — Checkout Attribution Tracking (2026-08-28, standalone, no milestone):** "How did you hear about us?" question added to checkout, sourced from Supabase `public.attribution_sources` (active rows, `sort_order`), persisted on the Square order via the `metadata` field (inline on `CreateOrder`, not the Beta-gated Order Custom Attributes API). Attribution can never fail a checkout — `sanitizeAttribution()` decouples bounds-checking from the blocking request schema so a malformed operator-edited source code degrades to "no attribution" instead of a 400. Verified end-to-end against a real Square Sandbox order (metadata round-trips via `RetrieveOrder`).
 
 ### Next Milestone Goals (candidates, not yet committed)
 
@@ -161,4 +162,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-28 — SCA subdomain dropped; /sca is the canonical SCA Tracker URL*
+*Last updated: 2026-08-28 — Phase 12 (Checkout Attribution Tracking) complete*
