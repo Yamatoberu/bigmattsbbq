@@ -1,7 +1,8 @@
 import { APIRequestContext, Page } from "@playwright/test";
-import { CheckoutResponseBody, DropDTO, FrozenItemDTO, CartItem } from "../../lib/types";
+import { CheckoutResponseBody, DropDTO, FrozenItemDTO, CartItem, AttributionSourceDTO } from "../../lib/types";
 import { frozenItemsFixture } from "../fixtures/frozenItems";
 import { activeDropFixture } from "../fixtures/activeDrop";
+import { attributionSourcesFixture } from "../fixtures/attributionSources";
 
 const CART_STORAGE_KEY = "big-matts-bbq-cart";
 
@@ -27,6 +28,19 @@ export async function stubActiveDrop(
       status: 200,
       contentType: "application/json",
       body: JSON.stringify(drop)
+    })
+  );
+}
+
+export async function stubAttributionSources(
+  page: Page,
+  sources: AttributionSourceDTO[] = attributionSourcesFixture
+): Promise<void> {
+  await page.route("**/api/attribution-sources", (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify(sources)
     })
   );
 }

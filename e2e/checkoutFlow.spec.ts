@@ -1,5 +1,5 @@
 import { test, expect, Page } from "@playwright/test";
-import { stubFrozenItems, stubCheckout, seedCart, hasActiveDrop } from "./support/stubs";
+import { stubFrozenItems, stubCheckout, stubAttributionSources, seedCart, hasActiveDrop } from "./support/stubs";
 import { variationIds } from "./fixtures/frozenItems";
 
 async function ensurePickupOptionSelected(page: Page) {
@@ -37,6 +37,7 @@ test.describe("checkout flow", () => {
 
   test("submitting checkout posts a valid body and reaches confirmation", async ({ page }) => {
     await stubFrozenItems(page);
+    await stubAttributionSources(page);
     await seedCart(page, [
       { variationId: variationIds.brisket, quantity: 1 },
       { variationId: variationIds.sauce, quantity: 1 }
@@ -90,5 +91,139 @@ test.describe("checkout flow", () => {
       expect(Number.isInteger(entry.quantity)).toBe(true);
       expect(entry.quantity).toBeGreaterThan(0);
     }
+  });
+
+  test("attribution dropdown reveals a contextual detail input for sources that require one", async ({ page }) => {
+    await stubFrozenItems(page);
+    await stubAttributionSources(page);
+    await stubCheckout(page, { orderId: "unused", invoiceId: "unused", pickupNote: "unused" });
+    await seedCart(page, [{ variationId: variationIds.brisket, quantity: 1 }]);
+
+    await page.goto("/checkout");
+
+    await expect(page.getByLabel("How did you hear about us? (optional)")).toBeVisible();
+    await expect(page.getByLabel("Which AI? (optional)")).not.toBeVisible();
+
+    await page.getByLabel("How did you hear about us? (optional)").selectOption("ai");
+    await expect(page.getByLabel("Which AI? (optional)")).toBeVisible();
+
+    await page.getByLabel("How did you hear about us? (optional)").selectOption("other");
+    await expect(page.getByLabel("Tell us more (optional)")).toBeVisible();
+    await expect(page.getByLabel("Which AI? (optional)")).not.toBeVisible();
+  });
+
+  test("switching to a source that needs no detail clears the stale detail text before submit", async ({ page }) => {
+    await stubFrozenItems(page);
+    await stubAttributionSources(page);
+    const checkoutHandle = await stubCheckout(page, {
+      orderId: "order-e2e-attr-1",
+      invoiceId: "invoice-e2e-attr-1",
+      pickupNote: "Pickup Saturday at Preston, 10am-2pm"
+    });
+    await seedCart(page, [{ variationId: variationIds.brisket, quantity: 1 }]);
+
+    await page.goto("/checkout");
+    await ensurePickupOptionSelected(page);
+
+    await page.getByLabel("First name").fill("Ember");
+    await page.getByLabel("Last name").fill("Tester");
+    await page.getByLabel("Email").fill("e2e-attribution-clear@example.com");
+
+    await page.getByLabel("How did you hear about us? (optional)").selectOption("ai");
+    await page.getByLabel("Which AI? (optional)").fill("ChatGPT");
+
+    await page.getByLabel("How did you hear about us? (optional)").selectOption("facebook");
+    await expect(page.getByLabel("Which AI? (optional)")).not.toBeVisible();
+
+    await page.getByRole("button", { name: "Submit Order" }).click();
+    await expect(page).toHaveURL(/\/confirmation/);
+
+    const body = checkoutHandle.getRequestBody() as {
+      customer: { attributionSourceCode?: string; attributionDetail?: string };
+    };
+
+    expect(body.customer.attributionSourceCode).toBe("facebook");
+    expect(body.customer.attributionDetail).toBeUndefined();
+  });
+
+  test("a selected source with detail is submitted as code plus detail", async ({ page }) => {
+    await stubFrozenItems(page);
+    await stubAttributionSources(page);
+    const checkoutHandle = await stubCheckout(page, {
+      orderId: "order-e2e-attr-2",
+      invoiceId: "invoice-e2e-attr-2",
+      pickupNote: "Pickup Saturday at Preston, 10am-2pm"
+    });
+    await seedCart(page, [{ variationId: variationIds.brisket, quantity: 1 }]);
+
+    await page.goto("/checkout");
+    await ensurePickupOptionSelected(page);
+
+    await page.getByLabel("First name").fill("Ember");
+    await page.getByLabel("Last name").fill("Tester");
+    await page.getByLabel("Email").fill("e2e-attribution-detail@example.com");
+
+    await page.getByLabel("How did you hear about us? (optional)").selectOption("ai");
+    await page.getByLabel("Which AI? (optional)").fill("ChatGPT");
+
+    await page.getByRole("button", { name: "Submit Order" }).click();
+    await expect(page).toHaveURL(/\/confirmation/);
+
+    const body = checkoutHandle.getRequestBody() as {
+      customer: { attributionSourceCode?: string; attributionDetail?: string };
+    };
+
+    expect(body.customer.attributionSourceCode).toBe("ai");
+    expect(body.customer.attributionDetail).toBe("ChatGPT");
+  });
+
+  test("checkout submits with no attribution selection", async ({ page }) => {
+    await stubFrozenItems(page);
+    await stubAttributionSources(page);
+    const checkoutHandle = await stubCheckout(page, {
+      orderId: "order-e2e-attr-3",
+      invoiceId: "invoice-e2e-attr-3",
+      pickupNote: "Pickup Saturday at Preston, 10am-2pm"
+    });
+    await seedCart(page, [{ variationId: variationIds.brisket, quantity: 1 }]);
+
+    await page.goto("/checkout");
+    await ensurePickupOptionSelected(page);
+
+    await page.getByLabel("First name").fill("Ember");
+    await page.getByLabel("Last name").fill("Tester");
+    await page.getByLabel("Email").fill("e2e-attribution-none@example.com");
+
+    await page.getByRole("button", { name: "Submit Order" }).click();
+    await expect(page).toHaveURL(/\/confirmation/);
+
+    const body = checkoutHandle.getRequestBody() as {
+      customer: { attributionSourceCode?: string };
+    };
+
+    expect(body.customer.attributionSourceCode).toBeUndefined();
+  });
+
+  test("confirmation page shows no attribution acknowledgment", async ({ page }) => {
+    await stubFrozenItems(page);
+    await stubAttributionSources(page);
+    await stubCheckout(page, {
+      orderId: "order-e2e-attr-4",
+      invoiceId: "invoice-e2e-attr-4",
+      pickupNote: "Pickup Saturday at Preston, 10am-2pm"
+    });
+    await seedCart(page, [{ variationId: variationIds.brisket, quantity: 1 }]);
+
+    await page.goto("/checkout");
+    await ensurePickupOptionSelected(page);
+
+    await page.getByLabel("First name").fill("Ember");
+    await page.getByLabel("Last name").fill("Tester");
+    await page.getByLabel("Email").fill("e2e-attribution-confirm@example.com");
+
+    await page.getByRole("button", { name: "Submit Order" }).click();
+    await expect(page).toHaveURL(/\/confirmation/);
+
+    await expect(page.getByText(/heard about us/i)).toHaveCount(0);
   });
 });
