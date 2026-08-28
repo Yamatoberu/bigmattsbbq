@@ -4,7 +4,7 @@
 
 - ✅ **v1.0 — Website Refresh & Frozen Drops** — Phases 1–5 (shipped 2026-04-22)
 - ✅ **v1.1** — Phases 6–8 (complete)
-- 📋 **v2.0 — SCA Tracker** — Phases 9–11 (planned)
+- ✅ **v2.0 — SCA Tracker** — Phases 9–11 (shipped 2026-08-28)
 
 ---
 
@@ -23,197 +23,27 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
 
 </details>
 
----
+<details>
+<summary>✅ v1.1 (Phases 6–8) — COMPLETE</summary>
 
-### ✅ v1.1 (Complete)
+- [x] Phase 6: Code Review Wave 1 (3/3 plans) — sandbox guard on /api/test-seed, releaseReserved helper, checkout dead-branch/searchParams fixes
+- [x] Phase 7: Code Review Wave 2 (4/4 plans) — nested `<main>` fix, CartContext dependency array, UNSUBSCRIBE_SECRET decoupling, useActiveDrop polling fix
+- [x] Phase 8: Mailing List & Email Platform (3/3 plans) — Resend Contacts migration, native Broadcasts API, React Email templates, native List-Unsubscribe
 
-#### Phase 6: Code Review Wave 1
+</details>
 
-**Goal:** Fix the four pre-drop issues from the code review before the next active drop opens.
+<details>
+<summary>✅ v2.0 — SCA Tracker (Phases 9–11) — SHIPPED 2026-08-28</summary>
 
-**Issues addressed:**
+- [x] Phase 9: Foundation & Subdomain Routing (7/7 plans) — service-role Supabase access to `sca` schema, generated types, host-based subdomain routing, shared derived-score utility, on-brand SCA shell (completed 2026-08-23)
+- [x] Phase 10: Core Browsing — Dashboard, Competitions & Cook Detail (12/12 plans) — dashboard summary/comparison/insights, competition list/detail, cook detail sharing one comparison table module; 2 human-UAT gaps (cook discoverability, competition aggregate scope) closed and re-verified (completed 2026-08-24)
+- [x] Phase 11: Analytics & AI Reviews (5/5 plans) — score/gap/category trend views plus AI appearance review list and detail pages; mobile nav-overflow gap found and fixed during human verification (completed 2026-08-28)
 
-- Issue 1 — `/api/test-seed` has no access control (🔴 Critical)
-- Issue 2 — Capacity release logic duplicated 4× in checkout route (🔴 Critical)
-- Issue 5 — `CheckoutClient` compares item ID to variation ID (🟠 High)
-- Issue 8 — `confirmation/page.tsx` uses synchronous `searchParams` (🟡 Medium)
+Full archive: `.planning/milestones/v2.0-ROADMAP.md`
+Requirements archive: `.planning/milestones/v2.0-REQUIREMENTS.md`
+Milestone audit: `.planning/milestones/v2.0-MILESTONE-AUDIT.md`
 
-**Files in scope:** `app/api/test-seed/route.ts`, `app/api/checkout/route.ts`, `components/CheckoutClient.tsx`, `app/confirmation/page.tsx`
-
-**Plans:** 3 plans
-
-Plans:
-
-- [x] 06-01-PLAN.md — Add sandbox guard to /api/test-seed (Issue 1)
-- [x] 06-02-PLAN.md — Extract releaseReserved helper in checkout route, parallelize via allSettled (Issue 2)
-- [x] 06-03-PLAN.md — Remove dead branch in CheckoutClient sauceVariationIds + async searchParams in confirmation page (Issues 5 & 8)
-
----
-
-#### Phase 7: Code Review Wave 2
-
-**Goal:** Fix the four correctness and safety issues from Wave 2 of the code review — nested `<main>` regression, stale-closure risk in CartContext, UNSUBSCRIBE_SECRET coupling, and runaway polling in useActiveDrop.
-
-**Issues addressed:**
-
-- Issue 3 — Nested `<main>` elements on checkout/confirmation/orders pages (🟠 High)
-- Issue 4 — `CartContext` `useMemo` has incomplete dependency array (🟠 High)
-- Issue 7 — `UNSUBSCRIBE_SECRET` falls back to `BROADCAST_SECRET` (🟡 Medium)
-- Issue 12 — `useActiveDrop` polls indefinitely even when drop is inactive (🟡 Medium)
-
-**Files in scope:** `app/layout.tsx`, `app/checkout/page.tsx`, `app/confirmation/page.tsx`, `app/orders/page.tsx`, `components/cart/CartContext.tsx`, `lib/unsubscribeToken.ts`, `.env.example`, `components/hooks/useActiveDrop.ts`
-
-**Plans:** 4/4 plans complete
-
-Plans:
-
-- [x] 07-01-PLAN.md — Replace `<main>` wrapper in app/layout.tsx with `<div id="page-content">` (Issue 3)
-- [x] 07-02-PLAN.md — Wrap CartContext callbacks in useCallback and complete useMemo dep array (Issue 4)
-- [x] 07-03-PLAN.md — Decouple UNSUBSCRIBE_SECRET from BROADCAST_SECRET fallback + .env.example docs (Issue 7)
-- [x] 07-04-PLAN.md — Stop useActiveDrop polling when drop is null/closed/inactive (Issue 12)
-
----
-
-#### Phase 8: Mailing List & Email Platform
-
-**Goal:** Migrate the mailing list from Supabase to Resend Contacts as the source of truth, upgrade the broadcast from a sequential per-subscriber loop to Resend's native single-call Broadcasts API, convert the drop-notification email to a React Email component, and remove the custom JWT unsubscribe flow in favor of Resend's native List-Unsubscribe handling. (MAIL-01 remains deferred — explicitly out of scope for this phase per CONTEXT.md.)
-
-**Issues addressed:**
-
-- Broadcast scalability — sequential `for` loop in `/api/admin/broadcast` doesn't scale beyond a handful of subscribers (D-05)
-- Subscriber management — Supabase-only list with no platform-level bounce/unsubscribe handling (D-01, D-03)
-- Custom JWT unsubscribe surface — replaced by Resend native List-Unsubscribe (D-09, D-10, D-11)
-- Email template fragility — raw HTML + sanitize-html replaced by structured React Email components (D-07, D-08, D-13)
-
-**Files in scope:** `package.json`, `package-lock.json`, `.env.example`, `lib/env.ts`, `app/api/mailing-list/route.ts`, `app/api/admin/broadcast/route.ts` (renamed to `route.tsx`), `emails/DropNotificationEmail.tsx` (NEW), `tests/mailingList.test.ts`, `tests/broadcast.test.ts`. **Deletions:** `lib/unsubscribeToken.ts`, `tests/unsubscribeToken.test.ts`, `app/api/unsubscribe/route.ts`, `app/unsubscribe/page.tsx`.
-
-**Plans:** 3 plans
-
-Plans:
-
-- [x] 08-01-PLAN.md — Wave 1: install React Email, uninstall jose/sanitize-html, delete unsubscribe surface, add `getResendEnv()` helper, update `.env.example` (D-04, D-09, D-10, D-11, D-12, D-13)
-- [x] 08-02-PLAN.md — Wave 1: create `emails/DropNotificationEmail.tsx` React Email component (D-07, D-08)
-- [x] 08-03-PLAN.md — Wave 2: rewrite `app/api/mailing-list/route.ts` for Resend Contacts, rename + rewrite broadcast route as `route.tsx` calling `resend.broadcasts.create`, rewrite both test files (D-03, D-05, D-06)
-
----
-
----
-
-### 📋 v2.0 — SCA Tracker (Planned)
-
-**Milestone Goal:** Ship a read-only, production-quality SCA (Steak Cookoff Association) competition tracker at `sca.bigmattsbbq.com`, sharing this repo, Vercel project, and Big Matt's BBQ visual design system with the storefront, reading live data from the existing Supabase `sca` schema via server-side service-role access. No new auth, no write/create/edit/delete flows this milestone.
-
-- [x] **Phase 9: Foundation & Subdomain Routing** - Service-role Supabase access to the `sca` schema, generated types, host-based subdomain routing, shared derived-score utility, and on-brand shell for `app/sca` (completed 2026-08-23)
-- [x] **Phase 10: Core Browsing — Dashboard, Competitions & Cook Detail** - Dashboard summary/comparison/insights, competition list/detail, and cook detail pages sharing one comparison table module (human verification found 2 gaps — G-10-1 cook discoverability, G-10-2 competition aggregate scope — closed by gap-closure plans 10-10..10-12 and re-verified against live data) (completed 2026-08-24)
-- [x] **Phase 11: Analytics & AI Reviews** - Score/gap/category trend views plus AI appearance review list and detail pages (completed 2026-08-28)
-
-#### Phase 9: Foundation & Subdomain Routing
-
-**Goal**: The app is technically ready to serve a live, secure, on-brand SCA subdomain reading real data from Supabase.
-**Depends on**: Nothing (first phase of v2.0)
-**Requirements**: INFRA-01, INFRA-02, INFRA-03, INFRA-04, INFRA-05
-**Success Criteria** (what must be TRUE):
-
-  1. Requests to `sca.bigmattsbbq.com` are routed via host-based routing (`proxy.ts` — Next.js 16 renamed `middleware.ts`) into the `app/sca` path segment, without changing any existing bigmattsbbq.com route or behavior
-  2. Server-side code can query the `sca` schema using generated TypeScript types (`lib/database-sca.types.ts`, kept separate from the storefront's `public` types per D-06) and a service-role Supabase client that is never bundled into browser JS
-  3. A single shared lib function computes `distance_from_winning` and `distance_from_perfect` for reuse by every SCA page, with no duplicated derivation logic
-  4. Any page rendered under `app/sca` visually matches the site's existing ember/smoke theme, fonts, and card/shadow conventions rather than introducing a new visual system
-  5. Project documentation lists the exact remaining manual DNS steps at Hostinger needed to complete the subdomain cutover
-
-**Plans**: 7 plans in 4 waves
-
-Plans:
-
-- [x] 09-01-PLAN.md — Expose the `sca` schema to PostgREST (confirmed PGRST106 blocker) and add a `npm run check:sca` preflight
-- [x] 09-02-PLAN.md — Host-based routing: `proxy.ts` rewrite, pure routing resolver, root-layout chrome suppression, `SCA_HOSTNAME`
-- [x] 09-03-PLAN.md — Generate `lib/database-sca.types.ts` and build the server-only sca-scoped service-role client
-- [x] 09-04-PLAN.md — Vercel + Hostinger subdomain activation checklist (documentation only, cutover NOT performed)
-- [x] 09-05-PLAN.md — `deriveScoreMetrics()` shared derived-score utility with real-row type compatibility
-- [x] 09-06-PLAN.md — SCA shell (`ScaNavBar`, `ScaFooter`, `app/sca/layout.tsx`) plus `/sca` index page with a live sca-schema read
-- [x] 09-07-PLAN.md — Human verification of the SCA shell and storefront non-regression
-
-**UI hint**: yes
-
-#### Phase 10: Core Browsing — Dashboard, Competitions & Cook Detail
-
-**Goal**: A chef/spectator can browse Big Matt's full SCA competition history — dashboard overview, competition list/detail, and individual cook detail — with side-by-side comparisons throughout.
-**Depends on**: Phase 9
-**Requirements**: DASH-01, DASH-02, DASH-03, COMP-01, COMP-02, COMP-03, COOK-01, COOK-02
-**Success Criteria** (what must be TRUE):
-
-  1. User can view Dashboard summary cards for latest cooks, best cook, worst cook, average total score, and average gap to first
-  2. User can view a Dashboard comparison table with named-cook columns plus Worst Cook, Best Cook, and Cook Averages aggregate columns, with rows for Competition, Cook, Cook Placement, each judging category, Total Score, Distance From Winning, and Distance From Perfect Score
-  3. User can view a data-driven "what stands out" summary on the Dashboard reflecting real score data (e.g. biggest score swing, closest gap to first, most recent placement change), not static copy
-  4. User can view a list of competitions ordered by event date with city/state/organizer, open a competition detail page showing event metadata and every cook entered, and compare all cooks in that competition side-by-side using the same comparison table module as the Dashboard
-  5. User can open a single cook's detail page showing its competition, steak label, process variables, full score breakdown, and any AI review history for that cook
-
-**Plans**: 12 plans in 7 waves (9 original + 3 gap-closure)
-**UI hint**: yes
-
-Plans:
-**Wave 1**
-
-- [x] 10-01-PLAN.md — Shared SCA view-model contracts (`lib/sca/types.ts`) and display formatters (em-dash rule, cook column label, date formatting)
-
-**Wave 2** *(blocked on Wave 1 completion)*
-
-- [x] 10-02-PLAN.md — Aggregates (best/worst/average, empty-set safe) and the three DASH-03 insights
-- [x] 10-03-PLAN.md — Shared comparison-table model builder (D-01) and Cook Detail process-field selection
-- [x] 10-04-PLAN.md — Server-only query layer (`lib/sca/queries.ts`) plus `parseScaId` route-id validation
-
-**Wave 3** *(blocked on Wave 2 completion)*
-
-- [x] 10-05-PLAN.md — `ComparisonTable`, `SummaryCards`, and `WhatStandsOut` Server Components
-
-**Wave 4** *(blocked on Wave 3 completion)*
-
-- [x] 10-06-PLAN.md — Dashboard rewrite of `/sca` (DASH-01/02/03) and the Competitions nav entry (D-11)
-- [x] 10-07-PLAN.md — Competitions list and competition detail pages (COMP-01/02/03)
-- [x] 10-08-PLAN.md — Cook detail page (COOK-01/02) and the on-brand SCA 404
-
-**Wave 5** *(blocked on Wave 4 completion)*
-
-- [x] 10-09-PLAN.md — Phase gate plus human verification against live data
-
-**Wave 6 — gap closure** *(from 10-HUMAN-UAT.md: G-10-1, G-10-2)*
-
-- [x] 10-10-PLAN.md — Cooks index page (`/sca/cooks`) and `Cooks` nav entry, closing G-10-1 (COOK-01 discoverability)
-- [x] 10-11-PLAN.md — Competition detail compares this event's cooks against all-time aggregates, closing G-10-2 (COMP-03)
-
-**Wave 7** *(blocked on Wave 6 completion)*
-
-- [x] 10-12-PLAN.md — Developer re-verification of both closed gaps against live data
-
-#### Phase 11: Analytics & AI Reviews
-
-**Goal**: A chef/spectator can see how Big Matt's scores trend over time and browse the AI-generated appearance reviews tied to each cook.
-**Depends on**: Phase 9, Phase 10
-**Requirements**: ANLY-01, ANLY-02, ANLY-03, AIRV-01, AIRV-02
-**Success Criteria** (what must be TRUE):
-
-  1. User can view a trend of total score over time across cooks
-  2. User can view a trend of gap-to-first (`distance_from_winning`) over time
-  3. User can view trends for key judging categories (appearance, doneness, texture, taste, overall impression) over time
-  4. User can view a list of all stored AI appearance reviews across cooks
-  5. User can open a single AI review's detail (model, review type, prompt if present, full comments) linked back to its cook and competition
-
-**Plans**: 5 plans in 3 waves
-**UI hint**: yes
-
-Plans:
-**Wave 1**
-
-- [x] 11-01-PLAN.md — `buildTrendSeries()` trend-series helper (`lib/sca/trends.ts`) + unit suite (ANLY-01/02/03 data layer)
-- [x] 11-02-PLAN.md — `AiReviewWithCook` types, `getAllAiReviews()` / `getAiReviewById()` queries + unit suites (AIRV-01/02 data layer)
-
-**Wave 2** *(blocked on Wave 1 completion)*
-
-- [x] 11-03-PLAN.md — Shared static-SVG `TrendChart` Server Component and the `/sca/analytics` route rendering all 7 trends (ANLY-01/02/03)
-- [x] 11-04-PLAN.md — `/sca/ai-reviews` list and `/sca/ai-reviews/[id]` detail routes (AIRV-01/02)
-
-**Wave 3** *(blocked on Wave 2 completion)*
-
-- [x] 11-05-PLAN.md — `ScaNavBar` Analytics + AI Reviews entries (D-07) and human verification against live data
+</details>
 
 ---
 
@@ -263,4 +93,4 @@ Plans:
 | 11. Analytics & AI Reviews | v2.0 | 5/5 | Complete    | 2026-08-28 |
 
 ---
-*Last updated: 2026-08-24 — Phase 11 planned (5 plans across 3 waves)*
+*Last updated: 2026-08-28 — v2.0 SCA Tracker milestone shipped and archived*

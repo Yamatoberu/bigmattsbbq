@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: SCA Tracker
-status: milestone_complete
-stopped_at: Milestone complete (Phase 11 was final phase)
-last_updated: 2026-08-28T16:27:31.639Z
-last_activity: 2026-08-28
+status: Awaiting next milestone
+stopped_at: Phase 11 (Analytics & AI Reviews) complete — all 5 plans shipped, human-verified. v2.0 SCA Tracker milestone's 3 phases all complete.
+last_updated: "2026-08-28T16:35:58.880Z"
+last_activity: 2026-08-28 — Milestone v2.0 completed and archived
 progress:
   total_phases: 3
   completed_phases: 3
@@ -25,12 +25,10 @@ See: .planning/PROJECT.md (updated 2026-08-23 — v2.0 SCA Tracker milestone sta
 
 ## Current Position
 
-Phase: 11
-Plan: Not started
-Status: Milestone complete
-Last activity: 2026-08-28
-
-Progress: [██████████] 100%
+Phase: Milestone v2.0 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-08-28 — Milestone v2.0 completed and archived
 
 ## Milestone Summary
 
@@ -149,6 +147,10 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 | quick_task | 260417-rpl-fix-checkout-square-error-logging-update | missing summary |
 | quick_task | 260421-cs6-fix-navbar-breakpoint-from-640px-to-960p | missing summary |
 | quick_task | 260421-d21-replace-nav-custom-css-classes-with-tail | missing summary |
+| quick_task | 16 additional pre-v2.0 quick tasks missing SUMMARY.md (see `gsd-sdk query audit-open` for full list) | acknowledged at v2.0 close 2026-08-28, deferred |
+| uat_gap | Phase 10: 10-HUMAN-UAT.md | resolved (0 pending scenarios) |
+| verification_gap | Phase 09: 09-VERIFICATION.md never generated (gsd-verifier step predates this phase); functionally covered by 09-07 human-verify checkpoint | acknowledged at v2.0 close 2026-08-28, deferred |
+| tech_debt | 20 non-blocking code review findings (10 Warning, 10 Info, 0 Critical) across 09-REVIEW.md/10-REVIEW.md/11-REVIEW.md | acknowledged at v2.0 close 2026-08-28, see v2.0-MILESTONE-AUDIT.md |
 
 ### Quick Tasks Completed
 
@@ -181,4 +183,8 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 
 Last session: 2026-08-28T00:00:00.000Z
 Stopped at: Phase 11 (Analytics & AI Reviews) complete — all 5 plans shipped, human-verified. v2.0 SCA Tracker milestone's 3 phases all complete.
-Resume file: 
+Resume file:
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone
