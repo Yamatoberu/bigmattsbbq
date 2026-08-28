@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: SCA Tracker
 status: executing
-stopped_at: Completed 12-02-PLAN.md
-last_updated: "2026-08-28T21:26:10.442Z"
+stopped_at: Completed 12-03-PLAN.md
+last_updated: "2026-08-28T21:31:32.135Z"
 last_activity: 2026-08-28
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 29
-  completed_plans: 26
+  completed_plans: 27
   percent: 75
 ---
 
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-08-28 — v2.0 SCA Tracker milestone shi
 ## Current Position
 
 Phase: 12 (checkout-attribution-tracking) — EXECUTING
-Plan: 3 of 5
+Plan: 4 of 5
 Status: Ready to execute
 Last activity: 2026-08-28
 
@@ -88,6 +88,7 @@ Last activity: 2026-08-28
 | Phase 11 P05 | 25min | 2 tasks | 1 files |
 | Phase 12 P01 | 3min | 2 tasks | 4 files |
 | Phase 12 P02 | 3min | 2 tasks | 3 files |
+| Phase 12 P03 | 5min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -133,6 +134,8 @@ Recent decisions affecting current work:
 - [Quick 260828-f3i]: The `sca.bigmattsbbq.com` subdomain and its DNS cutover were decided against; `/sca` is the canonical SCA Tracker URL and is sufficient. `docs/sca-subdomain-deployment.md` was deleted; README.md and PROJECT.md were updated to drop the pending-cutover framing. The shipped routing code (`proxy.ts`, `lib/sca/routing.ts`, `SCA_HOSTNAME`) was deliberately left in place — it is inert when no `sca.*` host is bound and is already tested, so removing it would be churn with regression risk and no benefit. No CNAME was ever created at Hostinger and no Vercel domain binding was ever added, so the dangling-subdomain-takeover concern documented in the deleted rollback section does not apply — there is nothing to unwind.
 - [Phase 12]: Plan 01: attribution_sources types shipped -- AttributionSourceDTO.id is number (bigint), correcting an earlier string/uuid guess; buildAttributionMetadata() truncates to 60/255 UTF-8 bytes (code-point-aware, never .slice() on string length) so multi-byte attribution detail can never overflow Square's metadata limits and abort checkout (D-10)
 - [Phase 12]: Plan 02: resolveAttributionLabel() intentionally does NOT filter on is_active -- a source deactivated between page load and checkout submit should still resolve to a readable label for the D-01 Slack line
+- [Phase 12]: Plan 03: attribution metadata written unconditionally as a literal object key (metadata: buildAttributionMetadata(...)); no conditional spread, matching the existing phone_number: customer.phone precedent that relies on JSON.stringify dropping undefined keys
+- [Phase 12]: Plan 03: resolveAttributionLabel() call site uses '?? customer.attributionSourceCode' as its fallback rather than a try/catch, since the resolver is contractually non-throwing (plan 02) and this call sits inside a try block whose catch releases already-reserved capacity and rethrows
 
 ### Pending Todos
 
@@ -193,8 +196,8 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 
 ## Session Continuity
 
-Last session: 2026-08-28T21:26:10.432Z
-Stopped at: Completed 12-02-PLAN.md
+Last session: 2026-08-28T21:31:32.126Z
+Stopped at: Completed 12-03-PLAN.md
 Resume file:
 
 None
