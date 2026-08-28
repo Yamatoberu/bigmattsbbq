@@ -61,13 +61,12 @@ You can also fetch catalog data via the Square Catalog API if you prefer CLI too
 - `POST /api/dev/set-inventory` (sandbox only)
   - Updates physical counts for testing.
 
-## SCA Tracker subdomain
+## SCA Tracker
 
-The SCA Tracker lives under `app/sca` and is reachable at `/sca` on any host. Host-based routing lives
-in `proxy.ts` at the repo root (Next.js 16 renamed `middleware.ts` to `proxy.ts`), which rewrites
-`sca.bigmattsbbq.com` traffic into `/sca`. `SCA_HOSTNAME` is an optional env var, defaulting to
-`sca.bigmattsbbq.com`. The DNS cutover for `sca.bigmattsbbq.com` is not yet performed — see
-[docs/sca-subdomain-deployment.md](docs/sca-subdomain-deployment.md) for the remaining manual steps.
+The SCA Tracker lives under `app/sca` and is served at `/sca` — the canonical URL. Host-based
+routing exists in `proxy.ts` at the repo root (Next.js 16 renamed `middleware.ts` to `proxy.ts`)
+and would rewrite an `sca.*` host into `/sca`, but no such subdomain is bound and none is
+planned — `/sca` is the intended access route.
 
 ## Tests
 
