@@ -95,12 +95,16 @@ Milestone audit: `.planning/milestones/v2.0-MILESTONE-AUDIT.md`
 ### Phase 12: Checkout Attribution Tracking
 
 **Goal:** Add a customer-facing "How did you hear about us?" question to checkout, sourced from Supabase `public.attribution_sources`, persisted against the Square order via the most appropriate current Square API (researched first), never blocking a valid checkout
-**Requirements**: TBD
+**Requirements**: D-01 through D-10 (see 12-CONTEXT.md — this repo has no REQUIREMENTS.md)
 **Depends on:** Phase 11
-**Plans:** 0 plans
+**Plans:** 5 plans
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 12 to break down)
+- [ ] 12-01: `database.types.ts`/`types.ts` entry for `attribution_sources`, `buildAttributionMetadata()` helper (wave 1)
+- [ ] 12-02: `lib/attributionSources.ts` + `GET /api/attribution-sources` route (wave 2)
+- [ ] 12-03: `app/api/checkout/route.ts` — order metadata + Slack line (wave 3)
+- [ ] 12-04: `CheckoutClient.tsx` dropdown + detail field (wave 3)
+- [ ] 12-05: E2E coverage, Sandbox verification script, docs (wave 4)
 
 ---
-*Last updated: 2026-08-28 — v2.0 SCA Tracker milestone shipped and archived*
+*Last updated: 2026-08-28 — Phase 12 planned (5 plans, 4 waves), plan-checker passed with 0 blockers*
