@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "check:sca": "node --env-file-if-exists=.env.local scripts/check-sca-schema.mjs",
+    "check:attribution": "node --env-file-if-exists=.env.local scripts/check-order-attribution.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
