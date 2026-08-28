@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "./cart/CartContext";
 import { useFrozenItems } from "./hooks/useFrozenItems";
+import { useAttributionSources } from "./hooks/useAttributionSources";
 import { formatMoney } from "../lib/format";
 import { isSauceBumpNeeded } from "../lib/cart";
 import { PACKAGES } from "../lib/config";
@@ -14,6 +15,14 @@ interface CheckoutClientProps {
   drop: DropDTO;
 }
 
+const ATTRIBUTION_DETAIL_LABELS: Record<string, string> = {
+  ai: "Which AI? (optional)",
+  event: "Which event? (optional)",
+  other: "Tell us more (optional)"
+};
+
+const ATTRIBUTION_DETAIL_FALLBACK_LABEL = "Tell us more (optional)";
+
 function normalizeMatch(value: string) {
   return value.trim().toLowerCase();
 }
@@ -22,13 +31,16 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
   const router = useRouter();
   const { items, setQuantity, addItem, clear, selectedPackageId } = useCart();
   const { items: frozenItems, isLoading } = useFrozenItems();
+  const { sources: attributionSources, error: attributionSourcesError } = useAttributionSources();
   const firstAvailable = drop.pickupOptions.find((o) => !o.isSoldOut);
   const [pickupOptionId, setPickupOptionId] = useState<string | undefined>(firstAvailable?.id);
   const [formState, setFormState] = useState({
     firstName: "",
     lastName: "",
     email: "",
-    phone: ""
+    phone: "",
+    attributionSourceCode: "",
+    attributionDetail: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | undefined>();
@@ -135,6 +147,13 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
 
   const needsSauce = isSauceBumpNeeded(items, sauceVariationIds);
 
+  const selectedAttributionSource = attributionSources.find(
+    (source) => source.code === formState.attributionSourceCode
+  );
+  const showAttributionDetail = Boolean(selectedAttributionSource?.requiresDetail);
+  const attributionDetailLabel =
+    ATTRIBUTION_DETAIL_LABELS[formState.attributionSourceCode] ?? ATTRIBUTION_DETAIL_FALLBACK_LABEL;
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(undefined);
@@ -165,7 +184,9 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
             firstName: formState.firstName,
             lastName: formState.lastName,
             email: formState.email,
-            phone: formState.phone || undefined
+            phone: formState.phone || undefined,
+            attributionSourceCode: formState.attributionSourceCode || undefined,
+            attributionDetail: formState.attributionDetail || undefined
           },
           cart: items.map((item) => ({
             variationId: item.variationId,
@@ -358,6 +379,46 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
                 onChange={(event) => setFormState({ ...formState, phone: event.target.value })}
               />
             </label>
+            {!attributionSourcesError && attributionSources.length > 0 && (
+              <>
+                <label className="text-sm text-smoke-600">
+                  How did you hear about us? (optional)
+                  <select
+                    className="input-field mt-2"
+                    value={formState.attributionSourceCode}
+                    onChange={(event) => {
+                      const nextCode = event.target.value;
+                      const nextSource = attributionSources.find((source) => source.code === nextCode);
+                      setFormState({
+                        ...formState,
+                        attributionSourceCode: nextCode,
+                        attributionDetail: nextSource?.requiresDetail ? formState.attributionDetail : ""
+                      });
+                    }}
+                  >
+                    <option value="">Select an option</option>
+                    {attributionSources.map((source) => (
+                      <option key={source.id} value={source.code}>
+                        {source.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                {showAttributionDetail && (
+                  <label className="text-sm text-smoke-600">
+                    {attributionDetailLabel}
+                    <input
+                      className="input-field mt-2"
+                      maxLength={255}
+                      value={formState.attributionDetail}
+                      onChange={(event) =>
+                        setFormState({ ...formState, attributionDetail: event.target.value })
+                      }
+                    />
+                  </label>
+                )}
+              </>
+            )}
           </div>
           {error && <p className="mt-4 text-sm text-ember-600">{error}</p>}
           <button
