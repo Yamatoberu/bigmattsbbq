@@ -4,13 +4,13 @@ milestone: v2.0
 milestone_name: SCA Tracker
 status: executing
 stopped_at: Phase 12 context gathered
-last_updated: "2026-08-28T21:16:29.778Z"
-last_activity: 2026-08-28 -- Phase 12 planning complete
+last_updated: "2026-08-28T21:21:04.478Z"
+last_activity: 2026-08-28
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 29
-  completed_plans: 24
+  completed_plans: 25
   percent: 75
 ---
 
@@ -22,14 +22,14 @@ See: .planning/PROJECT.md (updated 2026-08-28 — v2.0 SCA Tracker milestone shi
 
 **Core value (storefront):** Customers can preorder frozen BBQ from a live drop without overselling — capacity is enforced, pickup is clear, and confirmation is immediate.
 **Core value (SCA Tracker):** A chef/spectator can browse, compare, and understand Big Matt's SCA steak cookoff history — cooks, scores, process detail, and AI appearance reviews — in one place that looks and feels like it belongs on bigmattsbbq.com.
-**Current focus:** No milestone in progress — next milestone TBD via `/gsd:new-milestone`
+**Current focus:** Phase 12 — checkout-attribution-tracking
 
 ## Current Position
 
-Phase: Milestone v2.0 complete
-Plan: —
+Phase: 12 (checkout-attribution-tracking) — EXECUTING
+Plan: 2 of 5
 Status: Ready to execute
-Last activity: 2026-08-28 -- Phase 12 planning complete
+Last activity: 2026-08-28
 
 ## Milestone Summary
 
@@ -86,6 +86,7 @@ Last activity: 2026-08-28 -- Phase 12 planning complete
 | Phase 11 P03 | 2min | 2 tasks | 2 files |
 | Phase 11 P04 | 3min | 2 tasks | 2 files |
 | Phase 11 P05 | 25min | 2 tasks | 1 files |
+| Phase 12 P01 | 3min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -129,6 +130,7 @@ Recent decisions affecting current work:
 - [Phase 11]: Plan 05 checkpoint found a real mobile horizontal-scroll regression (5-item ScaNavBar didn't wrap below ~945px) during human verification; fixed same-session with flex-wrap below md: (reverting to the original flex-nowrap classes at md: and up) per explicit user request rather than deferred to separate gap-closure planning
 - [Phase 11]: Plan 05 checkpoint approved by human -- all five ROADMAP Phase 11 success criteria (ANLY-01, ANLY-02, ANLY-03, AIRV-01, AIRV-02) confirmed true against live Supabase data (21 cooks, 20 scores, 3 AI reviews). Phase 11 (5/5 plans) is complete. v2.0 SCA Tracker milestone's 3 phases (9, 10, 11) are all complete.
 - [Quick 260828-f3i]: The `sca.bigmattsbbq.com` subdomain and its DNS cutover were decided against; `/sca` is the canonical SCA Tracker URL and is sufficient. `docs/sca-subdomain-deployment.md` was deleted; README.md and PROJECT.md were updated to drop the pending-cutover framing. The shipped routing code (`proxy.ts`, `lib/sca/routing.ts`, `SCA_HOSTNAME`) was deliberately left in place — it is inert when no `sca.*` host is bound and is already tested, so removing it would be churn with regression risk and no benefit. No CNAME was ever created at Hostinger and no Vercel domain binding was ever added, so the dangling-subdomain-takeover concern documented in the deleted rollback section does not apply — there is nothing to unwind.
+- [Phase 12]: Plan 01: attribution_sources types shipped -- AttributionSourceDTO.id is number (bigint), correcting an earlier string/uuid guess; buildAttributionMetadata() truncates to 60/255 UTF-8 bytes (code-point-aware, never .slice() on string length) so multi-byte attribution detail can never overflow Square's metadata limits and abort checkout (D-10)
 
 ### Pending Todos
 
@@ -189,10 +191,10 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 
 ## Session Continuity
 
-Last session: 2026-08-28T18:20:25.272Z
+Last session: 2026-08-28T21:19:47.303Z
 Stopped at: Phase 12 context gathered
 Resume file:
 
-.planning/phases/12-checkout-attribution-tracking-add-customer-facing-how-did-yo/12-CONTEXT.md
+None
 
 - Start the next milestone with /gsd-new-milestone

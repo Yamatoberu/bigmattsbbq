@@ -97,12 +97,12 @@ Milestone audit: `.planning/milestones/v2.0-MILESTONE-AUDIT.md`
 **Goal:** Add a customer-facing "How did you hear about us?" question to checkout, sourced from Supabase `public.attribution_sources`, persisted against the Square order via the most appropriate current Square API (researched first), never blocking a valid checkout
 **Requirements**: D-01 through D-10 (see 12-CONTEXT.md — this repo has no REQUIREMENTS.md)
 **Depends on:** Phase 11
-**Plans:** 5 plans
+**Plans:** 1/5 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 12-01: `database.types.ts`/`types.ts` entry for `attribution_sources`, `buildAttributionMetadata()` helper (wave 1)
+- [x] 12-01: `database.types.ts`/`types.ts` entry for `attribution_sources`, `buildAttributionMetadata()` helper (wave 1)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 

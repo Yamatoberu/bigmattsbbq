@@ -105,3 +105,7 @@ None - no external service configuration required.
 ---
 *Phase: 12-checkout-attribution-tracking*
 *Completed: 2026-08-28*
+
+## Self-Check: PASSED
+
+All created/modified files exist on disk and all referenced commit hashes (3a4e974, 0637f28, 5452cc4, 3855a2e) are present in git history.
