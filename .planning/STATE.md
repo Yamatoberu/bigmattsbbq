@@ -18,10 +18,11 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-08-23 — v2.0 SCA Tracker milestone started)
+See: .planning/PROJECT.md (updated 2026-08-28 — v2.0 SCA Tracker milestone shipped and archived)
 
-**Core value:** A chef/spectator can browse, compare, and understand Big Matt's SCA steak cookoff history — cooks, scores, process detail, and AI appearance reviews — in one place that looks and feels like it belongs on bigmattsbbq.com.
-**Current focus:** Milestone complete
+**Core value (storefront):** Customers can preorder frozen BBQ from a live drop without overselling — capacity is enforced, pickup is clear, and confirmation is immediate.
+**Core value (SCA Tracker):** A chef/spectator can browse, compare, and understand Big Matt's SCA steak cookoff history — cooks, scores, process detail, and AI appearance reviews — in one place that looks and feels like it belongs on bigmattsbbq.com.
+**Current focus:** No milestone in progress — next milestone TBD via `/gsd:new-milestone`
 
 ## Current Position
 
