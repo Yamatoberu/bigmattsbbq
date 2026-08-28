@@ -97,7 +97,7 @@ Milestone audit: `.planning/milestones/v2.0-MILESTONE-AUDIT.md`
 **Goal:** Add a customer-facing "How did you hear about us?" question to checkout, sourced from Supabase `public.attribution_sources`, persisted against the Square order via the most appropriate current Square API (researched first), never blocking a valid checkout
 **Requirements**: D-01 through D-10 (see 12-CONTEXT.md — this repo has no REQUIREMENTS.md)
 **Depends on:** Phase 11
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 **Wave 1**
@@ -115,7 +115,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 12-05: E2E coverage, Sandbox verification script, docs (wave 4)
+- [x] 12-05: E2E coverage, Sandbox verification script, docs (wave 4)
 
 ---
 *Last updated: 2026-08-28 — Phase 12 planned (5 plans, 4 waves), plan-checker passed with 0 blockers*

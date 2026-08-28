@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: SCA Tracker
-status: executing
-stopped_at: Completed 12-04-PLAN.md
-last_updated: "2026-08-28T21:35:50.064Z"
+status: verifying
+stopped_at: Completed 12-05-PLAN.md — Phase 12 (5/5 plans) complete
+last_updated: "2026-08-28T21:42:36.181Z"
 last_activity: 2026-08-28
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 29
-  completed_plans: 28
-  percent: 75
+  completed_plans: 29
+  percent: 100
 ---
 
 # Project State
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-08-28 — v2.0 SCA Tracker milestone shi
 
 Phase: 12 (checkout-attribution-tracking) — EXECUTING
 Plan: 5 of 5
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-08-28
 
 ## Milestone Summary
@@ -90,6 +90,7 @@ Last activity: 2026-08-28
 | Phase 12 P02 | 3min | 2 tasks | 3 files |
 | Phase 12 P03 | 5min | 2 tasks | 3 files |
 | Phase 12 P04 | 6min | 2 tasks | 2 files |
+| Phase 12 P05 | 7min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -139,6 +140,8 @@ Recent decisions affecting current work:
 - [Phase 12]: Plan 03: resolveAttributionLabel() call site uses '?? customer.attributionSourceCode' as its fallback rather than a try/catch, since the resolver is contractually non-throwing (plan 02) and this call sits inside a try block whose catch releases already-reserved capacity and rethrows
 - [Phase 12]: Plan 04: useAttributionSources hook surfaces its own error state; D-09 silent-degradation gate lives in CheckoutClient's render condition (!attributionSourcesError && attributionSources.length > 0), not the hook, matching the plan's separation of concerns
 - [Phase 12]: Plan 04: isLoading from useAttributionSources is never destructured in CheckoutClient so the attribution fetch can never enter the submit button's disabled expression
+- [Phase 12]: Plan 05: docs/checkout-attribution.md records D-10 as a design mitigation (validation-before-request) not a runtime one (call isolation) -- attribution metadata rides inline in the same POST /v2/orders that creates the order, so there is no separable call to isolate the way the fire-and-forget Slack notification isolates its own failure
+- [Phase 12]: Plan 05: e2e fixture hardcodes 4 deterministic attribution rows rather than reading live Supabase data so browser tests stay stable when the source list is edited; live-list correctness is instead proven by the load-bearing real-Sandbox check:attribution verification
 
 ### Pending Todos
 
@@ -199,8 +202,8 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 
 ## Session Continuity
 
-Last session: 2026-08-28T21:35:50.055Z
-Stopped at: Completed 12-04-PLAN.md
+Last session: 2026-08-28T21:42:36.171Z
+Stopped at: Completed 12-05-PLAN.md — Phase 12 (5/5 plans) complete
 Resume file:
 
 None
