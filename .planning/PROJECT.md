@@ -6,11 +6,10 @@
 
 - **v1.0 (2026-04-22):** Database-driven storefront — Supabase-backed drops, atomic capacity enforcement, mailing list with broadcast.
 - **v1.1 (2026-05-19):** Code review hardening + Resend Contacts/Broadcasts migration.
-- **v2.0 SCA Tracker (2026-08-28):** Read-only SCA (Steak Cookoff Association) competition tracker at `sca.bigmattsbbq.com`, sharing this repo/Vercel project/design system with the storefront — Dashboard, Competitions, Cook Detail, Analytics trend charts, and AI Reviews, all reading live Supabase `sca` schema data via server-side service-role access. See `.planning/milestones/v2.0-ROADMAP.md` for full phase detail.
+- **v2.0 SCA Tracker (2026-08-28):** Read-only SCA (Steak Cookoff Association) competition tracker at `/sca`, sharing this repo/Vercel project/design system with the storefront — Dashboard, Competitions, Cook Detail, Analytics trend charts, and AI Reviews, all reading live Supabase `sca` schema data via server-side service-role access. See `.planning/milestones/v2.0-ROADMAP.md` for full phase detail.
 
 ### Next Milestone Goals (candidates, not yet committed)
 
-- DNS cutover for `sca.bigmattsbbq.com` at Hostinger — the only outstanding manual step for v2.0 to go fully live (documented in `docs/sca-subdomain-deployment.md`)
 - Tech-debt cleanup pass: 10 Warning + 10 Info code-review findings across Phases 9–11 (0 Critical) — see `.planning/milestones/v2.0-MILESTONE-AUDIT.md`
 - Catering Quote Form and Admin Dashboard — both already scoped in ROADMAP.md's Backlog section
 - Branded Resend confirmation email (MAIL-01, deferred since v1.0) and Square API version bump (approaching EOL)
@@ -35,10 +34,10 @@
 
 ## What This Is
 
-A mobile-first website for Big Matt's BBQ that serves as a sales funnel for limited-run frozen BBQ drops and a catering presence, plus a companion read-only SCA steak cookoff competition tracker at `sca.bigmattsbbq.com` sharing the same repo, Vercel project, and design system. Customers preorder frozen BBQ products (sold in 0.5 lb bags), select a pickup location, and receive a Square invoice via email. The site captures mailing list subscribers for drop notifications and provides static catering/about/contact pages. The SCA Tracker lets a chef/spectator browse, compare, and understand Big Matt's competition history — cooks, scores, process detail, trend analytics, and AI appearance reviews.
+A mobile-first website for Big Matt's BBQ that serves as a sales funnel for limited-run frozen BBQ drops and a catering presence, plus a companion read-only SCA steak cookoff competition tracker at `/sca` sharing the same repo, Vercel project, and design system. Customers preorder frozen BBQ products (sold in 0.5 lb bags), select a pickup location, and receive a Square invoice via email. The site captures mailing list subscribers for drop notifications and provides static catering/about/contact pages. The SCA Tracker lets a chef/spectator browse, compare, and understand Big Matt's competition history — cooks, scores, process detail, trend analytics, and AI appearance reviews.
 
 v1.0 shipped: storefront is now database-driven (Supabase), capacity is enforced atomically, orders are persisted, mailing list is fully operational with unsubscribe and broadcast capability.
-v2.0 shipped: SCA Tracker is live at `/sca` (pending DNS cutover to `sca.bigmattsbbq.com`), fully database-driven from the existing Supabase `sca` schema, with zero impact on the storefront.
+v2.0 shipped: SCA Tracker is live at `/sca`, fully database-driven from the existing Supabase `sca` schema, with zero impact on the storefront.
 
 ## Core Value
 
@@ -90,7 +89,6 @@ v2.0 shipped: SCA Tracker is live at `/sca` (pending DNS cutover to `sca.bigmatt
 - [ ] Square API version bump from `2024-12-18` (reaches EOL ~June 2026)
 - [ ] Admin dashboard to manage drops, view orders, and manage mailing list
 - [ ] Admin can create/edit/close drops without editing Supabase directly
-- [ ] DNS cutover for `sca.bigmattsbbq.com` at Hostinger (manual step, checklist in `docs/sca-subdomain-deployment.md`)
 - [ ] Catering Quote Form (see ROADMAP.md Backlog)
 - [ ] No requirements currently active for a next milestone — see "Next Milestone Goals" above; run `/gsd:new-milestone` to scope one
 
@@ -112,7 +110,7 @@ v2.0 shipped: SCA Tracker is live at `/sca` (pending DNS cutover to `sca.bigmatt
 - **Architecture**: Square for catalog/inventory/payments; Supabase `public` schema for drops/orders/mailing list/email logs; Supabase `sca` schema (read-only, service-role) for the competition tracker; Resend for email
 - **Pickup locations**: Cache Valley and Utah County, configurable per drop via `drop_pickup_options` table
 - **Design system**: Custom Tailwind theme with `ember` (warm orange-red) and `smoke` (dark browns) palettes, Playfair Display + Source Sans 3 fonts — shared by both the storefront and the SCA Tracker (INFRA-04)
-- **SCA Tracker routing**: `sca.bigmattsbbq.com` → `app/sca` via host-based `proxy.ts` rewrite (Next.js 16 renamed `middleware.ts`); DNS cutover at Hostinger is the one remaining manual step, not yet performed (`docs/sca-subdomain-deployment.md`)
+- **SCA Tracker routing**: `/sca` is the canonical SCA Tracker URL. Host-based routing via `proxy.ts` (Next.js 16's renamed `middleware.ts`) ships and would support an `sca.*` subdomain, but the subdomain was decided against as unnecessary; the routing code is left in place as inert, already-tested infrastructure.
 - **Test suite**: 247 tests passing (25 test files) — storefront (inventory join, cart logic, idempotency, mailing list, broadcast, checkout reservation) plus SCA Tracker (scoring, aggregates, comparison, insights, trends, queries, format, cook-detail-fields)
 - **Known tech debt**: `productName` slug matching in CheckoutClient is fragile; `aggregateByProduct` in lib/cart.ts is unused by production code (see v1.0-MILESTONE-AUDIT.md). v2.0: 10 Warning + 10 Info code-review findings across Phases 9-11 (0 Critical); Phase 9 has no formal VERIFICATION.md (functionally covered by its 09-07 human-verify checkpoint) — full detail in `.planning/milestones/v2.0-MILESTONE-AUDIT.md`
 
@@ -150,6 +148,7 @@ v2.0 shipped: SCA Tracker is live at `/sca` (pending DNS cutover to `sca.bigmatt
 | Single shared `buildComparisonTable()` for Dashboard + Competition Detail | One comparison-table implementation reused via an `aggregateSource` parameter rather than two separate builders | ✓ Good |
 | AI Review Detail stays drill-down-only, reached only from its own list (D-07) | Matches Cook/Competition Detail precedent; Cook Detail renders AI reviews inline instead of cross-linking to `/sca/ai-reviews/[id]` | ✓ Good |
 | Human-verify checkpoints at the end of each SCA Tracker phase | This repo has no jsdom/RTL rendering tests for `app/sca` pages — live browser checks were the only way to catch the Phase 10 discoverability/aggregate-scope gaps and Phase 11's mobile nav-overflow regression before shipping | ✓ Good |
+| `sca.bigmattsbbq.com` subdomain dropped; `/sca` path is canonical | The path already serves the tracker identically on every environment; a dedicated subdomain added a DNS dependency and a dangling-CNAME takeover surface for zero user-visible benefit | ✓ Good |
 
 ## Evolution
 
@@ -162,4 +161,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-28 — v2.0 SCA Tracker milestone shipped and archived*
+*Last updated: 2026-08-28 — SCA subdomain dropped; /sca is the canonical SCA Tracker URL*
