@@ -54,6 +54,10 @@ tsconfig.tsbuildinfo
 # local tooling / artifacts
 .claude/
 screenshots/
+/test-results
+/playwright-report
+/blob-report
+/playwright/.cache
 
 # System Files
 .DS_Store
