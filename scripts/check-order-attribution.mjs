@@ -13,7 +13,7 @@
 // 12-RESEARCH.md Pitfall 3.
 
 // Must stay in sync with SQUARE_VERSION in lib/square.ts.
-const SQUARE_VERSION = "2026-04-21";
+const SQUARE_VERSION = "2026-07-15";
 
 function printUsage() {
   console.error("Usage: npm run check:attribution -- <orderId>");
