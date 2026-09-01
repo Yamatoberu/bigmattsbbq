@@ -163,7 +163,6 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 | verification_gap | Phase 04: 04-VERIFICATION.md | human_needed |
 | verification_gap | Phase 05: 05-VERIFICATION.md | human_needed |
 | requirement | MAIL-01 branded Resend confirmation email | deferred (D-10) |
-| requirement | Square API version bump from 2024-12-18 (EOL ~June 2026) | pending |
 | quick_task | 260417-rpl-fix-checkout-square-error-logging-update | missing summary |
 | quick_task | 260421-cs6-fix-navbar-breakpoint-from-640px-to-960p | missing summary |
 | quick_task | 260421-d21-replace-nav-custom-css-classes-with-tail | missing summary |
@@ -198,6 +197,7 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 | 260828-f3i | Scrub the SCA subdomain DNS cutover plan — decided against, /sca path is sufficient | 2026-08-28 | 4f3cd2c | [260828-f3i-scrub-the-sca-subdomain-dns-cutover-plan](./.planning/quick/260828-f3i-scrub-the-sca-subdomain-dns-cutover-plan/) |
 | 260828-fhk | Scaffold Playwright for E2E testing; specs for browse/sold-out and checkout flow with sauce bump | 2026-08-28 | ed91ecc | [260828-fhk-scaffold-playwright-for-e2e-testing-and-](./.planning/quick/260828-fhk-scaffold-playwright-for-e2e-testing-and-/) |
 | 260831-s0z | Fix Square invoice due date to use selected pickup/drop date instead of today's date | 2026-08-31 | d799f89 | [260831-s0z-fix-square-invoice-due-date-to-use-selec](./.planning/quick/260831-s0z-fix-square-invoice-due-date-to-use-selec/) |
+| 260901-eul | Bump Square API version from 2026-04-21 to 2026-07-15 in lib/square.ts and scripts/check-order-attribution.mjs; corrected stale README/docs version references; removed stale STATE.md deferred item | 2026-09-01 | 5019ec9 | [260901-eul-bump-square-api-version-from-2026-04-21-](./.planning/quick/260901-eul-bump-square-api-version-from-2026-04-21-/) |
 | 2026-05-07 | fast | Increase cart item price text size and highlight with ember-400 color | ✅ | — |
 | 2026-05-07 | fast | Bump Square API version from 2024-12-18 to 2026-04-21 | ✅ | — |
 | 2026-05-07 | fast | Normalize catalogName bundle match and add console.warn on mismatch in CheckoutClient | ✅ | — |
@@ -212,3 +212,4 @@ None
 
 - Start the next milestone with /gsd-new-milestone
 - Last activity: 2026-08-31 - Completed quick task 260831-s0z: Fix Square invoice due date to use selected pickup/drop date instead of today's date
+- Last activity: 2026-09-01 - Completed quick task 260901-eul: Bump Square API version from 2026-04-21 to 2026-07-15; live Sandbox verification (check:attribution, check:sca) skipped — no .env.local credentials in this environment, outstanding manual follow-up
