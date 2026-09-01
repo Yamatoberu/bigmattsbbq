@@ -72,8 +72,15 @@ are `PUBLIC`). This is a risk knowingly accepted for this phase, because the
 field has been present and documented in Square's public docs for years.
 
 **Re-verification trigger:** re-check `x-release-status` on `Order.metadata`
-before any Square API version bump past the pinned `2026-04-21` in
+before any Square API version bump past the pinned `2026-07-15` in
 `lib/square.ts`.
+
+**Trigger fired (2026-09-01):** honored at the bump to the now-pinned
+`2026-07-15` (see git history for the prior pin). Finding: the `2026-07-15`
+release contained no Orders API changes affecting `Order.metadata` — its only
+Orders change was a closed-beta `IN_STORE` fulfillment type, unrelated to
+metadata. The field-level BETA risk documented above is unchanged and remains
+knowingly accepted.
 
 ## 4. Visibility — read this before reporting a bug
 
