@@ -390,8 +390,6 @@ export async function POST(request: Request) {
         );
       }
 
-      const dueDate = new Date().toISOString().slice(0, 10);
-
       const invoiceResponse = await createInvoice({
         host: env.host,
         accessToken: env.accessToken,
@@ -414,7 +412,7 @@ export async function POST(request: Request) {
             payment_requests: [
               {
                 request_type: "BALANCE",
-                due_date: dueDate
+                due_date: pickupRow.pickup_date
               }
             ],
             accepted_payment_methods: {
