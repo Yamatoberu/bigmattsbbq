@@ -163,10 +163,7 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 | verification_gap | Phase 04: 04-VERIFICATION.md | human_needed |
 | verification_gap | Phase 05: 05-VERIFICATION.md | human_needed |
 | requirement | MAIL-01 branded Resend confirmation email | deferred (D-10) |
-| quick_task | 260417-rpl-fix-checkout-square-error-logging-update | missing summary |
-| quick_task | 260421-cs6-fix-navbar-breakpoint-from-640px-to-960p | missing summary |
-| quick_task | 260421-d21-replace-nav-custom-css-classes-with-tail | missing summary |
-| quick_task | 16 additional pre-v2.0 quick tasks missing SUMMARY.md (see `gsd-sdk query audit-open` for full list) | acknowledged at v2.0 close 2026-08-28, deferred |
+| quick_task | 5 of the previously-deferred pre-v2.0 quick tasks — 20260501-hero-redesign (full-bleed hero), 20260505-catering-page-hook-trust-restructure, 20260505-homepage-funnel (copy), 260505-fus (no-active-drop gating), and 260507-fix-bundle-variation-ids (+orderItems expansion) — had SUMMARY.md backfilled by quick task 260901-fej on 2026-09-01 (see Quick Tasks Completed rows below for full directory names/commits); an unknown remaining count of older quick tasks may still lack a SUMMARY.md — `gsd-sdk query audit-open`'s "missing summary" list was found to be unreliable during 260901-fej (it flagged tasks that already had a SUMMARY.md on disk, and one row referenced a directory that never existed), so its output must be spot-checked against the filesystem with `ls` before being trusted, not assumed accurate | partially closed 2026-09-01, remaining count unverified |
 | uat_gap | Phase 10: 10-HUMAN-UAT.md | resolved (0 pending scenarios) |
 | verification_gap | Phase 09: 09-VERIFICATION.md never generated (gsd-verifier step predates this phase); functionally covered by 09-07 human-verify checkpoint | acknowledged at v2.0 close 2026-08-28, deferred |
 | tech_debt | 20 non-blocking code review findings (10 Warning, 10 Info, 0 Critical) across 09-REVIEW.md/10-REVIEW.md/11-REVIEW.md | acknowledged at v2.0 close 2026-08-28, see v2.0-MILESTONE-AUDIT.md |
@@ -175,15 +172,19 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
+| 20260501-hero-redesign-full-bleed | Hero section redesign — full-bleed atmospheric | 2026-05-01 | feef870 | [20260501-hero-redesign-full-bleed](./.planning/quick/20260501-hero-redesign-full-bleed/) |
 | 260501-sc1 | Hero section redesign | 2026-05-02 | a25a39a | [260501-sc1-hero-section-redesign](./.planning/quick/260501-sc1-hero-section-redesign/) |
 | 260502-eu1 | Fix Issue 10 — About page bio missing heading and section wrapper | 2026-05-02 | 3b427e7 | [260502-eu1-fix-issue-10-about-page-bio-missing-head](./.planning/quick/260502-eu1-fix-issue-10-about-page-bio-missing-head/) |
 | 260502-ex3 | Fix catering page max-width for desktop viewports (Issue 12) | 2026-05-02 | a27c739 | [260502-ex3-fix-catering-page-max-width-for-desktop-](./.planning/quick/260502-ex3-fix-catering-page-max-width-for-desktop-/) |
 | 20260502-ui-review-quick-batch | UI review quick batch — Issues 2, 5, 6, 7, 9, 11 | 2026-05-02 | 4b0a938 | [20260502-ui-review-quick-batch](./.planning/quick/20260502-ui-review-quick-batch/) |
 | 260502-ui3 | Fix Issue 3 — excessive blank whitespace at page bottom | 2026-05-02 | b74909d | [260502-ui3-fix-blank-whitespace-at-page-bottom](./.planning/quick/260502-ui3-fix-blank-whitespace-at-page-bottom/) |
+| 20260505-homepage-funnel-copy | Homepage funnel copy — hero hook, pre-sell block, origin story (Issues 1, 3, 8) | 2026-05-05 | 845099e | [20260505-homepage-funnel-copy](./.planning/quick/20260505-homepage-funnel-copy/) |
 | 20260505-sold-out-capture | Inline sold-out email capture in product cards (Funnel Issue 2) | 2026-05-05 | 733199f | [20260505-sold-out-capture](./.planning/quick/20260505-sold-out-capture/) |
 | 20260505-catering-page-hook-trust-restructure | Catering page Hook → Trust → Offer → CTA restructure (Funnel Issue 6) | 2026-05-05 | 3d89fcf | [20260505-catering-page-hook-trust-restructure](./.planning/quick/20260505-catering-page-hook-trust-restructure/) |
 | 260505-fkj | Add catering cross-sell block to homepage (Funnel Issue 5 — partial) | 2026-05-05 | 4939aaa | [260505-fkj-add-catering-cross-sell-block-to-homepag](./.planning/quick/260505-fkj-add-catering-cross-sell-block-to-homepag/) |
+| 260505-fus | Hide only hero/bundles/items when there is no active drop | 2026-05-05 | dde136a | [260505-fus-when-there-is-no-active-drop-hide-only-t](./.planning/quick/260505-fus-when-there-is-no-active-drop-hide-only-t/) |
 | 260505-rcp | Add capacity_enforced boolean flag to the drops table and wire it through all capacity gates | 2026-05-06 | 05c1fda | [260505-rcp-add-capacity-enforced-boolean-flag-to-th](./.planning/quick/260505-rcp-add-capacity-enforced-boolean-flag-to-th/) |
+| 260507-fix-bundle-variation-ids-and-orderitems | Fix bundle checkout — variation IDs + orderItems expansion | 2026-05-07 | c753abb | [260507-fix-bundle-variation-ids-and-orderitems](./.planning/quick/260507-fix-bundle-variation-ids-and-orderitems/) |
 | 260506-t9u | Expand stock tracking to all 6 menu items independently | 2026-05-07 | 179f157 | [260506-t9u-expand-stock-tracking-to-all-6-menu-item](./.planning/quick/260506-t9u-expand-stock-tracking-to-all-6-menu-item/) |
 | 260506-tr9 | Remove Square inventory from stock display — drive all in-stock checks off drop.soldOut from the database | 2026-05-07 | 1cdd49b | [260506-tr9-remove-square-inventory-from-stock-displ](./.planning/quick/260506-tr9-remove-square-inventory-from-stock-displ/) |
 | 260506-u3i | Fix cart showing Item instead of bundle name in CheckoutClient | 2026-05-07 | 8ba6268 | [260506-u3i-fix-cart-showing-item-instead-of-bundle-](./.planning/quick/260506-u3i-fix-cart-showing-item-instead-of-bundle-/) |
@@ -213,3 +214,4 @@ None
 - Start the next milestone with /gsd-new-milestone
 - Last activity: 2026-08-31 - Completed quick task 260831-s0z: Fix Square invoice due date to use selected pickup/drop date instead of today's date
 - Last activity: 2026-09-01 - Completed quick task 260901-eul: Bump Square API version from 2026-04-21 to 2026-07-15; check:sca confirmed PASS against 2026-07-15 (Supabase Sandbox reachable); check:attribution still open — no active drop in Supabase to check out against, not a credentials issue
+- Last activity: 2026-09-01 - Completed quick task 260901-fej: backfilled 5 missing quick-task SUMMARY.md files and cleaned 3 stale + 1 inaccurate STATE.md deferred-item rows
