@@ -197,6 +197,7 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 | 20260819-slack-order-notification | Add fire-and-forget Slack notification to checkout route on new order | 2026-08-19 | 7c3918a | [20260819-slack-order-notification](./.planning/quick/20260819-slack-order-notification/) |
 | 260828-f3i | Scrub the SCA subdomain DNS cutover plan — decided against, /sca path is sufficient | 2026-08-28 | 4f3cd2c | [260828-f3i-scrub-the-sca-subdomain-dns-cutover-plan](./.planning/quick/260828-f3i-scrub-the-sca-subdomain-dns-cutover-plan/) |
 | 260828-fhk | Scaffold Playwright for E2E testing; specs for browse/sold-out and checkout flow with sauce bump | 2026-08-28 | ed91ecc | [260828-fhk-scaffold-playwright-for-e2e-testing-and-](./.planning/quick/260828-fhk-scaffold-playwright-for-e2e-testing-and-/) |
+| 260831-s0z | Fix Square invoice due date to use selected pickup/drop date instead of today's date | 2026-08-31 | d799f89 | [260831-s0z-fix-square-invoice-due-date-to-use-selec](./.planning/quick/260831-s0z-fix-square-invoice-due-date-to-use-selec/) |
 | 2026-05-07 | fast | Increase cart item price text size and highlight with ember-400 color | ✅ | — |
 | 2026-05-07 | fast | Bump Square API version from 2024-12-18 to 2026-04-21 | ✅ | — |
 | 2026-05-07 | fast | Normalize catalogName bundle match and add console.warn on mismatch in CheckoutClient | ✅ | — |
@@ -210,3 +211,4 @@ Resume file:
 None
 
 - Start the next milestone with /gsd-new-milestone
+- Last activity: 2026-08-31 - Completed quick task 260831-s0z: Fix Square invoice due date to use selected pickup/drop date instead of today's date
