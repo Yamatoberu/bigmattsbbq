@@ -79,19 +79,24 @@ None - plan executed exactly as written. `npm install` was run first since `node
 ## Issues Encountered
 None - all three tasks completed on the first attempt with no auto-fixes required.
 
-## Live Sandbox Verification — Outstanding Manual Follow-up
+## Live Sandbox Verification — Update (2026-09-01, post-`.env.local`)
 
-`npm run check:attribution` and `npm run check:sca` were both attempted and both failed with **missing environment variable** errors (`Missing SQUARE_ACCESS_TOKEN...` and `Missing Supabase environment variables...` respectively) because no `.env.local` exists in this checkout — exactly the expected failure mode documented in the plan's `<environment_note>`. This is NOT a Square API incompatibility; it is a missing-credentials skip.
+`.env.local` was added to the checkout after this SUMMARY was first written. Re-ran both checks:
 
-**Action needed from the user:** run `npm run check:attribution -- <a-real-order-id>` and `npm run check:sca` in an environment with real Square/Supabase Sandbox credentials in `.env.local` to confirm live compatibility with `2026-07-15`. Given the changelog review in the plan's research findings found no relevant breaking changes, a failure here would be unexpected and worth investigating immediately.
+- **`npm run check:sca`**: `PASS: sca schema is reachable at wpziabhigztyjrmjpmbw.supabase.co.` — confirms Supabase Sandbox connectivity is unaffected by the `2026-07-15` bump.
+- **`npm run check:attribution`**: could not complete. It requires a real Square Sandbox order ID (`npm run check:attribution -- <orderId>`), which per Phase 12's own verification record can only be obtained by driving a real `POST /api/checkout` through the running app. `GET /api/drop` returned `null` — there is currently no `drops` row with `status: active` in Supabase, so no checkout can be submitted (same precondition the e2e suite's `hasActiveDrop` skip guards). The user was asked whether to insert a temporary active drop to unblock this and chose to skip it rather than write synthetic data into this Supabase instance.
+
+**Outcome:** `check:sca` is now a confirmed PASS against `2026-07-15`. `check:attribution` remains unverified against live Sandbox — not because of missing credentials, but because there is no active drop to check out against. This is an environmental gap, not a version-compatibility signal one way or the other.
+
+**Action needed from the user:** once a real drop is active, run a live checkout with an attribution selection and then `npm run check:attribution -- <orderId>` against the resulting order. Given the changelog review found no relevant Orders/Invoices/Customers changes between `2026-04-21` and `2026-07-15`, a failure here would be unexpected and worth investigating immediately.
 
 ## User Setup Required
-None - no new external service configuration required. The outstanding item is re-running existing verification scripts with existing credentials (see above), not new setup.
+None for `check:sca` (now passing). For `check:attribution`, the only remaining requirement is an active drop in Supabase — no new external service configuration needed.
 
 ## Next Phase Readiness
 - The app is on the current Square API release (`2026-07-15`); no further version-bump work is queued
 - STATE.md Deferred Items table no longer references the resolved version-bump item
-- Manual live-Sandbox verification (see above) remains open until the user runs it with real credentials
+- `check:sca` confirmed passing against `2026-07-15`; `check:attribution` remains open pending an active drop to check out against
 
 ---
 *Phase: 260901-eul*

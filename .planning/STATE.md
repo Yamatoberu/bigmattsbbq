@@ -212,4 +212,4 @@ None
 
 - Start the next milestone with /gsd-new-milestone
 - Last activity: 2026-08-31 - Completed quick task 260831-s0z: Fix Square invoice due date to use selected pickup/drop date instead of today's date
-- Last activity: 2026-09-01 - Completed quick task 260901-eul: Bump Square API version from 2026-04-21 to 2026-07-15; live Sandbox verification (check:attribution, check:sca) skipped — no .env.local credentials in this environment, outstanding manual follow-up
+- Last activity: 2026-09-01 - Completed quick task 260901-eul: Bump Square API version from 2026-04-21 to 2026-07-15; check:sca confirmed PASS against 2026-07-15 (Supabase Sandbox reachable); check:attribution still open — no active drop in Supabase to check out against, not a credentials issue
