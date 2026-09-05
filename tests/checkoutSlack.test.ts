@@ -59,9 +59,13 @@ vi.mock("../lib/supabase", () => ({
   getSupabaseClient: () => supabaseMock
 }));
 
-vi.mock("../lib/drops", () => ({
-  checkDropReady: () => ({ ok: true })
-}));
+vi.mock("../lib/drops", async () => {
+  const actual = await vi.importActual<typeof import("../lib/drops")>("../lib/drops");
+  return {
+    checkDropReady: () => ({ ok: true }),
+    formatPickupWindow: actual.formatPickupWindow
+  };
+});
 
 const resolveAttributionLabelMock = vi.fn();
 
@@ -83,7 +87,8 @@ const activeDropRow = {
 const activePickupRow = {
   id: PICKUP_ID,
   location_label: "Preston",
-  pickup_at: "2099-06-01T12:00:00Z",
+  pickup_start_date: "2099-06-01",
+  pickup_end_date: "2099-06-01",
   pickup_date: "2099-06-01"
 };
 
@@ -299,5 +304,50 @@ describe("POST /api/checkout — Slack attribution line", () => {
     expect(text).not.toContain("<!channel>");
     expect(text).not.toContain("<http://evil.example|this>");
     expect(text).toContain("&lt;!channel&gt; check &lt;http://evil.example|this&gt;");
+  });
+
+  it("Test 8: a multi-day pickup window renders as an en-dash range in the Slack pickup line", async () => {
+    resolveAttributionLabelMock.mockResolvedValue(null);
+    const multiDayPickupRow = {
+      id: PICKUP_ID,
+      location_label: "Preston",
+      pickup_start_date: "2099-06-01",
+      pickup_end_date: "2099-06-03",
+      pickup_date: "2099-06-01"
+    };
+    supabaseMock.from.mockImplementation((table: string) => {
+      if (table === "drops") {
+        return {
+          select: () => ({
+            eq: () => ({
+              maybeSingle: () => Promise.resolve({ data: activeDropRow, error: null })
+            })
+          })
+        };
+      }
+      if (table === "drop_pickup_options") {
+        return {
+          select: () => ({
+            eq: () => ({
+              eq: () => ({
+                maybeSingle: () => Promise.resolve({ data: multiDayPickupRow, error: null })
+              })
+            })
+          })
+        };
+      }
+      return {};
+    });
+    const cart = [{ variationId: "V-BRISKET", quantity: 1, productName: "brisket" }];
+
+    await callCheckout({
+      dropId: DROP_ID,
+      pickupOptionId: PICKUP_ID,
+      customer: { firstName: "Matt", lastName: "Test", email: "matt@example.com" },
+      cart
+    });
+
+    const text = getSlackMessageText();
+    expect(text).toContain("Jun 1 – Jun 3");
   });
 });

@@ -14,8 +14,9 @@ import {
 } from "../../../lib/square";
 import { logError } from "../../../lib/logger";
 import { getSupabaseClient } from "../../../lib/supabase";
-import { checkDropReady } from "../../../lib/drops";
+import { checkDropReady, formatPickupWindow } from "../../../lib/drops";
 import { resolveAttributionLabel } from "../../../lib/attributionSources";
+import { PICKUP_TIME_ZONE, zonedNoonToUtcISO } from "../../../lib/timezone";
 
 export const runtime = "nodejs";
 
@@ -187,7 +188,7 @@ export async function POST(request: Request) {
 
     const { data: pickupRow, error: pickupErr } = await supabase
       .from("drop_pickup_options")
-      .select("id, location_label, pickup_at, pickup_date")
+      .select("id, location_label, pickup_date, pickup_start_date, pickup_end_date")
       .eq("id", parsed.data.pickupOptionId)
       .eq("drop_id", parsed.data.dropId)
       .maybeSingle();
@@ -256,11 +257,7 @@ export async function POST(request: Request) {
         );
       }
 
-      const pickupDateLabel = new Date(pickupRow.pickup_at).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        timeZone: "America/Denver"
-      });
+      const pickupDateLabel = formatPickupWindow(pickupRow.pickup_start_date, pickupRow.pickup_end_date);
       pickupNote = `${pickupRow.location_label} Pickup - ${pickupDateLabel}`;
 
       const orderResponse = await createOrder({
@@ -286,7 +283,7 @@ export async function POST(request: Request) {
               {
                 type: "PICKUP",
                 pickup_details: {
-                  pickup_at: pickupRow.pickup_at,
+                  pickup_at: zonedNoonToUtcISO(pickupRow.pickup_start_date, PICKUP_TIME_ZONE),
                   note: pickupNote,
                   recipient: {
                     display_name: `${customer.firstName} ${customer.lastName}`

@@ -59,9 +59,13 @@ vi.mock("../lib/supabase", () => ({
   getSupabaseClient: () => supabaseMock
 }));
 
-vi.mock("../lib/drops", () => ({
-  checkDropReady: () => ({ ok: true })
-}));
+vi.mock("../lib/drops", async () => {
+  const actual = await vi.importActual<typeof import("../lib/drops")>("../lib/drops");
+  return {
+    checkDropReady: () => ({ ok: true }),
+    formatPickupWindow: actual.formatPickupWindow
+  };
+});
 
 const resolveAttributionLabelMock = vi.fn();
 
@@ -84,7 +88,8 @@ function makePickupRow(pickupDate: string) {
   return {
     id: PICKUP_ID,
     location_label: "Preston",
-    pickup_at: `${pickupDate}T12:00:00Z`,
+    pickup_start_date: pickupDate,
+    pickup_end_date: pickupDate,
     pickup_date: pickupDate
   };
 }
