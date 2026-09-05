@@ -174,7 +174,13 @@ export async function createOrder(params: {
   body: Record<string, unknown>;
   idempotencyKey: string;
 }) {
-  return squareFetch<{ order?: { id: string; total_money?: { amount: number } } }>({
+  return squareFetch<{
+    order?: {
+      id: string;
+      total_money?: { amount: number };
+      line_items?: Array<{ name?: string; quantity?: string }>;
+    };
+  }>({
     host: params.host,
     accessToken: params.accessToken,
     path: "/v2/orders",

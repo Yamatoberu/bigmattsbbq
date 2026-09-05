@@ -177,9 +177,12 @@ export type Database = {
           customer_name: string
           drop_id: string
           id: string
+          order_status: string
+          payment_status: string
           pickup_option_id: string
           square_invoice_id: string | null
           square_order_id: string | null
+          total_amount_cents: number | null
         }
         Insert: {
           assigned_pickup_date?: string | null
@@ -189,9 +192,12 @@ export type Database = {
           customer_name: string
           drop_id: string
           id?: string
+          order_status?: string
+          payment_status?: string
           pickup_option_id: string
           square_invoice_id?: string | null
           square_order_id?: string | null
+          total_amount_cents?: number | null
         }
         Update: {
           assigned_pickup_date?: string | null
@@ -201,9 +207,12 @@ export type Database = {
           customer_name?: string
           drop_id?: string
           id?: string
+          order_status?: string
+          payment_status?: string
           pickup_option_id?: string
           square_invoice_id?: string | null
           square_order_id?: string | null
+          total_amount_cents?: number | null
         }
         Relationships: [
           {
