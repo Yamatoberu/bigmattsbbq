@@ -94,6 +94,8 @@ function makePickupRow(pickupDate: string) {
   };
 }
 
+const ORDER_ROW_ID = "a1b2c3d4-0000-4000-8000-000000000099";
+
 function setupSupabaseMock(pickupRow: ReturnType<typeof makePickupRow>) {
   supabaseMock.from.mockImplementation((table: string) => {
     if (table === "drops") {
@@ -116,13 +118,31 @@ function setupSupabaseMock(pickupRow: ReturnType<typeof makePickupRow>) {
         })
       };
     }
+    if (table === "orders") {
+      return {
+        insert: () => ({
+          select: () => ({
+            single: () => Promise.resolve({ data: { id: ORDER_ROW_ID }, error: null })
+          })
+        }),
+        update: () => ({
+          eq: () => Promise.resolve({ error: null })
+        })
+      };
+    }
     return {};
   });
 }
 
 function setupSquareMocks(customerId = "cust-001", orderId = "order-001") {
   searchCustomerByEmailMock.mockResolvedValue({ customers: [{ id: customerId }] });
-  createOrderMock.mockResolvedValue({ order: { id: orderId } });
+  createOrderMock.mockResolvedValue({
+    order: {
+      id: orderId,
+      total_money: { amount: 4800 },
+      line_items: [{ name: "Brisket 0.5 lb", quantity: "2" }]
+    }
+  });
   createInvoiceMock.mockResolvedValue({ invoice: { id: "inv-001", version: 1 } });
   publishInvoiceMock.mockResolvedValue({});
 }

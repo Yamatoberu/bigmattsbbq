@@ -92,6 +92,8 @@ const activePickupRow = {
   pickup_date: "2099-06-01"
 };
 
+const ORDER_ROW_ID = "a1b2c3d4-0000-4000-8000-000000000099";
+
 function setupSupabaseMock() {
   supabaseMock.from.mockImplementation((table: string) => {
     if (table === "drops") {
@@ -114,13 +116,31 @@ function setupSupabaseMock() {
         })
       };
     }
+    if (table === "orders") {
+      return {
+        insert: () => ({
+          select: () => ({
+            single: () => Promise.resolve({ data: { id: ORDER_ROW_ID }, error: null })
+          })
+        }),
+        update: () => ({
+          eq: () => Promise.resolve({ error: null })
+        })
+      };
+    }
     return {};
   });
 }
 
 function setupSquareMocks(customerId = "cust-001", orderId = "order-001") {
   searchCustomerByEmailMock.mockResolvedValue({ customers: [{ id: customerId }] });
-  createOrderMock.mockResolvedValue({ order: { id: orderId } });
+  createOrderMock.mockResolvedValue({
+    order: {
+      id: orderId,
+      total_money: { amount: 4800 },
+      line_items: [{ name: "Brisket 0.5 lb", quantity: "2" }]
+    }
+  });
   createInvoiceMock.mockResolvedValue({ invoice: { id: "inv-001", version: 1 } });
   publishInvoiceMock.mockResolvedValue({});
 }
@@ -336,6 +356,18 @@ describe("POST /api/checkout — Slack attribution line", () => {
           })
         };
       }
+      if (table === "orders") {
+        return {
+          insert: () => ({
+            select: () => ({
+              single: () => Promise.resolve({ data: { id: ORDER_ROW_ID }, error: null })
+            })
+          }),
+          update: () => ({
+            eq: () => Promise.resolve({ error: null })
+          })
+        };
+      }
       return {};
     });
     const cart = [{ variationId: "V-BRISKET", quantity: 1, productName: "brisket" }];
@@ -349,5 +381,154 @@ describe("POST /api/checkout — Slack attribution line", () => {
 
     const text = getSlackMessageText();
     expect(text).toContain("Jun 1 – Jun 3");
+  });
+});
+
+describe("POST /api/checkout — Slack line items sourced from Square", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    setupSupabaseMock();
+    setupSquareMocks();
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true }) as unknown as typeof fetch;
+    process.env.SLACK_ORDERS_WEBHOOK_URL = "https://hooks.slack.test/T000/B000/xxx";
+    resolveAttributionLabelMock.mockResolvedValue(null);
+  });
+
+  afterEach(() => {
+    globalThis.fetch = originalFetch;
+    delete process.env.SLACK_ORDERS_WEBHOOK_URL;
+  });
+
+  it("Test 9: line items render as '  • <name> × <quantity>' bullets sourced from Square's response", async () => {
+    createOrderMock.mockResolvedValue({
+      order: {
+        id: "order-001",
+        total_money: { amount: 4800 },
+        line_items: [
+          { name: "Brisket 0.5 lb", quantity: "2" },
+          { name: "Pulled Pork 0.5 lb", quantity: "1" }
+        ]
+      }
+    });
+    const cart = [
+      { variationId: "V-BRISKET", quantity: 2, productName: "brisket" },
+      { variationId: "V-PORK", quantity: 1, productName: "pulled_pork" }
+    ];
+
+    await callCheckout({
+      dropId: DROP_ID,
+      pickupOptionId: PICKUP_ID,
+      customer: { firstName: "Matt", lastName: "Test", email: "matt@example.com" },
+      cart
+    });
+
+    const text = getSlackMessageText();
+    expect(text).toContain("  • Brisket 0.5 lb × 2");
+    expect(text).toContain("  • Pulled Pork 0.5 lb × 1");
+  });
+
+  it("Test 10: the legacy label map is gone — Square's catalog name renders, not the cart's productName label", async () => {
+    createOrderMock.mockResolvedValue({
+      order: {
+        id: "order-001",
+        total_money: { amount: 4800 },
+        line_items: [{ name: "Smoked Brisket Burnt Ends", quantity: "1" }]
+      }
+    });
+    const cart = [{ variationId: "V-BRISKET", quantity: 1, productName: "brisket" }];
+
+    await callCheckout({
+      dropId: DROP_ID,
+      pickupOptionId: PICKUP_ID,
+      customer: { firstName: "Matt", lastName: "Test", email: "matt@example.com" },
+      cart
+    });
+
+    const text = getSlackMessageText();
+    expect(text).toContain("Smoked Brisket Burnt Ends");
+    expect(text).not.toContain("Brisket ×");
+  });
+
+  it("Test 11: a line-item name containing Slack mrkdwn control sequences is escaped", async () => {
+    createOrderMock.mockResolvedValue({
+      order: {
+        id: "order-001",
+        total_money: { amount: 4800 },
+        line_items: [{ name: "<!channel> Brisket", quantity: "1" }]
+      }
+    });
+    const cart = [{ variationId: "V-BRISKET", quantity: 1, productName: "brisket" }];
+
+    await callCheckout({
+      dropId: DROP_ID,
+      pickupOptionId: PICKUP_ID,
+      customer: { firstName: "Matt", lastName: "Test", email: "matt@example.com" },
+      cart
+    });
+
+    const text = getSlackMessageText();
+    expect(text).not.toContain("<!channel>");
+    expect(text).toContain("&lt;!channel&gt; Brisket");
+  });
+
+  it("Test 12: createOrder resolving with no line_items key still returns 200 with no bullet lines", async () => {
+    createOrderMock.mockResolvedValue({
+      order: { id: "order-001", total_money: { amount: 4800 } }
+    });
+    const cart = [{ variationId: "V-BRISKET", quantity: 1, productName: "brisket" }];
+
+    const response = (await callCheckout({
+      dropId: DROP_ID,
+      pickupOptionId: PICKUP_ID,
+      customer: { firstName: "Matt", lastName: "Test", email: "matt@example.com" },
+      cart
+    })) as unknown as { status: number };
+
+    expect(response.status).toBe(200);
+    const text = getSlackMessageText();
+    expect(text).not.toContain("  • ");
+  });
+
+  it("Test 13: total_money.amount renders a Total line; no total_money omits it entirely", async () => {
+    createOrderMock.mockResolvedValue({
+      order: {
+        id: "order-001",
+        total_money: { amount: 4800 },
+        line_items: [{ name: "Brisket 0.5 lb", quantity: "1" }]
+      }
+    });
+    const cart = [{ variationId: "V-BRISKET", quantity: 1, productName: "brisket" }];
+
+    await callCheckout({
+      dropId: DROP_ID,
+      pickupOptionId: PICKUP_ID,
+      customer: { firstName: "Matt", lastName: "Test", email: "matt@example.com" },
+      cart
+    });
+
+    const text = getSlackMessageText();
+    expect(text).toContain("Total: $48.00");
+
+    vi.clearAllMocks();
+    setupSupabaseMock();
+    setupSquareMocks();
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true }) as unknown as typeof fetch;
+    resolveAttributionLabelMock.mockResolvedValue(null);
+    createOrderMock.mockResolvedValue({
+      order: {
+        id: "order-001",
+        line_items: [{ name: "Brisket 0.5 lb", quantity: "1" }]
+      }
+    });
+
+    await callCheckout({
+      dropId: DROP_ID,
+      pickupOptionId: PICKUP_ID,
+      customer: { firstName: "Matt", lastName: "Test", email: "matt@example.com" },
+      cart
+    });
+
+    const textNoTotal = getSlackMessageText();
+    expect(textNoTotal).not.toContain("Total:");
   });
 });
