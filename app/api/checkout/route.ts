@@ -17,59 +17,73 @@ import { getSupabaseClient } from "../../../lib/supabase";
 import { checkDropReady, formatPickupWindow } from "../../../lib/drops";
 import { resolveAttributionLabel } from "../../../lib/attributionSources";
 import { PICKUP_TIME_ZONE, zonedNoonToUtcISO } from "../../../lib/timezone";
+import { formatMoney } from "../../../lib/format";
+import type { Json } from "../../../lib/database.types";
 
 export const runtime = "nodejs";
-
-const PRODUCT_NAME_LABELS: Record<string, string> = {
-  pulled_pork: "Pulled Pork",
-  brisket: "Brisket",
-  sauce: "Sauce",
-  family_night: "Family Night Bundle",
-  backyard_host: "Backyard Host Bundle",
-  freezer_filler: "Freezer Filler Bundle",
-};
 
 function escapeSlackText(value: string): string {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+async function markOrderFailed(
+  supabase: ReturnType<typeof getSupabaseClient>,
+  orderRowId: string,
+  requestId: string
+): Promise<void> {
+  const { error } = await supabase
+    .from("orders")
+    .update({ order_status: "failed" })
+    .eq("id", orderRowId);
+
+  if (error) {
+    logError("Failed to mark order as failed", error, requestId);
+  }
+}
+
 function notifySlackNewOrder({
   customer,
-  cart,
+  lineItems,
+  totalAmountCents,
   locationLabel,
   pickupDateLabel,
-  orderId,
+  orderRecordId,
+  squareOrderId,
   attributionLabel,
   attributionDetail,
 }: {
   customer: { firstName: string; lastName: string; email: string };
-  cart: Array<{ productName?: string; quantity: number }>;
+  lineItems: Array<{ name?: string; quantity?: string }>;
+  totalAmountCents?: number;
   locationLabel: string;
   pickupDateLabel: string;
-  orderId: string;
+  orderRecordId: string;
+  squareOrderId: string;
   attributionLabel?: string;
   attributionDetail?: string;
 }): void {
   const webhookUrl = process.env.SLACK_ORDERS_WEBHOOK_URL;
   if (!webhookUrl) return;
 
-  const lines = cart
-    .filter((item) => item.productName && PRODUCT_NAME_LABELS[item.productName])
-    .map((item) => `  • ${PRODUCT_NAME_LABELS[item.productName!]} × ${item.quantity}`);
+  const lines = lineItems
+    .filter((item) => item.name)
+    .map((item) => `  • ${escapeSlackText(item.name!)} × ${item.quantity ?? "1"}`);
 
   const message = [
     "New Order — Big Matt's BBQ",
     "",
-    `Customer: ${customer.firstName} ${customer.lastName} · ${customer.email}`,
+    `Customer: ${escapeSlackText(customer.firstName)} ${escapeSlackText(customer.lastName)} · ${escapeSlackText(customer.email)}`,
     "Order:",
     ...lines,
+    ...(typeof totalAmountCents === "number" ? [`Total: ${formatMoney(totalAmountCents)}`] : []),
     `Pickup: ${locationLabel} — ${pickupDateLabel}`,
     ...(attributionLabel
       ? [
           `Heard about us: ${escapeSlackText(attributionLabel)}${attributionDetail ? ` (${escapeSlackText(attributionDetail)})` : ""}`
         ]
       : []),
-    `Order ID: ${orderId}`,
+    `Order ID: ${orderRecordId}`,
+    `Square Order: ${squareOrderId}`,
   ].join("\n");
 
   fetch(webhookUrl, {
@@ -208,6 +222,30 @@ export async function POST(request: Request) {
       );
     }
 
+    const { data: orderRow, error: orderInsertErr } = await supabase
+      .from("orders")
+      .insert({
+        drop_id: parsed.data.dropId,
+        pickup_option_id: parsed.data.pickupOptionId,
+        customer_email: parsed.data.customer.email,
+        customer_name: `${parsed.data.customer.firstName} ${parsed.data.customer.lastName}`,
+        cart_snapshot: parsed.data.cart as unknown as Json,
+        order_status: "pending",
+        payment_status: "unpaid"
+      })
+      .select("id")
+      .single();
+
+    if (orderInsertErr || !orderRow) {
+      logError("Checkout order persistence failed", orderInsertErr, requestId);
+      return NextResponse.json(
+        { error: "Unable to record your order. Please try again.", requestId },
+        { status: 500 }
+      );
+    }
+
+    const orderRecordId = orderRow.id;
+
     let orderId: string | undefined;
     let invoiceId: string | undefined;
     let pickupNote = "";
@@ -251,6 +289,7 @@ export async function POST(request: Request) {
       }
 
       if (!customerId) {
+        await markOrderFailed(supabase, orderRecordId, requestId);
         return NextResponse.json(
           { error: "Unable to create customer record.", requestId },
           { status: 500 }
@@ -302,10 +341,23 @@ export async function POST(request: Request) {
       orderId = orderResponse.order?.id;
 
       if (!orderId) {
+        await markOrderFailed(supabase, orderRecordId, requestId);
         return NextResponse.json(
           { error: "Unable to create order.", requestId },
           { status: 500 }
         );
+      }
+
+      const { error: orderUpdateErr } = await supabase
+        .from("orders")
+        .update({
+          square_order_id: orderId,
+          total_amount_cents: orderResponse.order?.total_money?.amount ?? null
+        })
+        .eq("id", orderRecordId);
+
+      if (orderUpdateErr) {
+        logError("Checkout order update (square_order_id) failed", orderUpdateErr, requestId);
       }
 
       const invoiceResponse = await createInvoice({
@@ -346,6 +398,7 @@ export async function POST(request: Request) {
       const invoiceVersion = invoiceResponse.invoice?.version;
 
       if (!invoiceId || invoiceVersion === undefined) {
+        await markOrderFailed(supabase, orderRecordId, requestId);
         return NextResponse.json(
           { error: "Unable to create invoice.", requestId },
           { status: 500 }
@@ -367,20 +420,35 @@ export async function POST(request: Request) {
         ])
       });
 
+      const { error: invoiceUpdateErr } = await supabase
+        .from("orders")
+        .update({
+          square_invoice_id: invoiceId,
+          order_status: "invoiced"
+        })
+        .eq("id", orderRecordId);
+
+      if (invoiceUpdateErr) {
+        logError("Checkout order update (invoiced) failed", invoiceUpdateErr, requestId);
+      }
+
       const resolvedAttributionLabel = attribution.code
         ? await resolveAttributionLabel(attribution.code)
         : undefined;
 
       notifySlackNewOrder({
         customer,
-        cart: parsed.data.cart,
+        lineItems: orderResponse.order?.line_items ?? [],
+        totalAmountCents: orderResponse.order?.total_money?.amount,
         locationLabel: pickupRow.location_label,
         pickupDateLabel,
-        orderId: orderId ?? "",
+        orderRecordId,
+        squareOrderId: orderId ?? "",
         attributionLabel: resolvedAttributionLabel ?? attribution.code,
         attributionDetail: attribution.detail
       });
     } catch (squareError) {
+      await markOrderFailed(supabase, orderRecordId, requestId);
       throw squareError;
     }
 
