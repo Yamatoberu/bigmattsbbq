@@ -87,20 +87,7 @@ export async function fetchActiveDrop(): Promise<DropDTO | null> {
 
 export interface DropReadinessRow {
   status: string;
-  capacity_pulled_pork: number;
-  capacity_brisket: number;
-  capacity_sauce: number;
-  capacity_family_night: number;
-  capacity_backyard_host: number;
-  capacity_freezer_filler: number;
-  reserved_pulled_pork: number;
-  reserved_brisket: number;
-  reserved_sauce: number;
-  reserved_family_night: number;
-  reserved_backyard_host: number;
-  reserved_freezer_filler: number;
   order_cutoff_at: string | null;
-  capacity_enforced: boolean;
 }
 
 export type DropReadiness =
@@ -127,26 +114,6 @@ export function checkDropReady(drop: DropReadinessRow | null): DropReadiness {
         error: "This drop has closed. Orders are no longer being accepted."
       };
     }
-  }
-  if (!drop.capacity_enforced) {
-    return { ok: true };
-  }
-  // Coarse gate: block only when every product type is globally exhausted.
-  // Per-product capacity (e.g. pulled pork sold out but brisket available) is
-  // enforced atomically by the reserve_pickup_slot RPC during checkout.
-  const globallySoldOut =
-    drop.reserved_pulled_pork >= drop.capacity_pulled_pork &&
-    drop.reserved_brisket >= drop.capacity_brisket &&
-    drop.reserved_sauce >= drop.capacity_sauce &&
-    drop.reserved_family_night >= drop.capacity_family_night &&
-    drop.reserved_backyard_host >= drop.capacity_backyard_host &&
-    drop.reserved_freezer_filler >= drop.capacity_freezer_filler;
-  if (globallySoldOut) {
-    return {
-      ok: false,
-      status: 409,
-      error: "This drop has sold out. No more orders can be taken."
-    };
   }
   return { ok: true };
 }

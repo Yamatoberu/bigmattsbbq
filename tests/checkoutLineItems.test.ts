@@ -52,8 +52,7 @@ vi.mock("../lib/idempotency", () => ({
 }));
 
 const supabaseMock = {
-  from: vi.fn(),
-  rpc: vi.fn()
+  from: vi.fn()
 };
 
 vi.mock("../lib/supabase", () => ({
@@ -76,39 +75,14 @@ const PICKUP_ID = "a1b2c3d4-0000-4000-8000-000000000002";
 const activeDropRow = {
   id: DROP_ID,
   status: "active",
-  order_cutoff_at: "2099-12-31T23:59:59Z",
-  capacity_pulled_pork: 200,
-  capacity_brisket: 200,
-  capacity_sauce: 200,
-  capacity_family_night: 200,
-  capacity_backyard_host: 200,
-  capacity_freezer_filler: 200,
-  reserved_pulled_pork: 0,
-  reserved_brisket: 0,
-  reserved_sauce: 0,
-  reserved_family_night: 0,
-  reserved_backyard_host: 0,
-  reserved_freezer_filler: 0,
-  capacity_enforced: false
+  order_cutoff_at: "2099-12-31T23:59:59Z"
 };
 
 const activePickupRow = {
   id: PICKUP_ID,
   location_label: "Preston",
   pickup_at: "2099-06-01T12:00:00Z",
-  pickup_date: "2099-06-01",
-  capacity_pulled_pork: 50,
-  capacity_brisket: 50,
-  capacity_sauce: 50,
-  capacity_family_night: 50,
-  capacity_backyard_host: 50,
-  capacity_freezer_filler: 50,
-  reserved_pulled_pork: 0,
-  reserved_brisket: 0,
-  reserved_sauce: 0,
-  reserved_family_night: 0,
-  reserved_backyard_host: 0,
-  reserved_freezer_filler: 0
+  pickup_date: "2099-06-01"
 };
 
 function setupSupabaseMock() {
@@ -135,7 +109,6 @@ function setupSupabaseMock() {
     }
     return {};
   });
-  supabaseMock.rpc.mockResolvedValue({ data: null, error: null });
 }
 
 function setupSquareMocks(customerId = "cust-001", orderId = "order-001") {

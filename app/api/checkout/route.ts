@@ -146,30 +146,6 @@ function sanitizeAttribution(
   };
 }
 
-async function releaseReserved(
-  supabase: ReturnType<typeof getSupabaseClient>,
-  reserved: Array<{ productName: string; quantity: number }>,
-  dropId: string,
-  pickupOptionId: string,
-  requestId: string
-): Promise<void> {
-  const results = await Promise.allSettled(
-    reserved.map((r) =>
-      supabase.rpc("release_pickup_slot", {
-        p_drop_id: dropId,
-        p_pickup_option_id: pickupOptionId,
-        p_product_name: r.productName,
-        p_quantity: r.quantity
-      })
-    )
-  );
-  for (const result of results) {
-    if (result.status === "rejected") {
-      logError("release_pickup_slot failed", result.reason, requestId);
-    }
-  }
-}
-
 export async function POST(request: Request) {
   const headerList = await headers();
   const requestId = headerList.get("x-request-id") ?? crypto.randomUUID();
@@ -189,7 +165,7 @@ export async function POST(request: Request) {
 
     const { data: dropRow, error: dropErr } = await supabase
       .from("drops")
-      .select("id, status, order_cutoff_at, capacity_pulled_pork, capacity_brisket, capacity_sauce, capacity_family_night, capacity_backyard_host, capacity_freezer_filler, reserved_pulled_pork, reserved_brisket, reserved_sauce, reserved_family_night, reserved_backyard_host, reserved_freezer_filler, capacity_enforced")
+      .select("id, status, order_cutoff_at")
       .eq("id", parsed.data.dropId)
       .maybeSingle();
 
@@ -209,13 +185,9 @@ export async function POST(request: Request) {
       );
     }
 
-    const capacityEnforced = dropRow?.capacity_enforced ?? true;
-
     const { data: pickupRow, error: pickupErr } = await supabase
       .from("drop_pickup_options")
-      .select(
-        "id, location_label, pickup_at, pickup_date, capacity_pulled_pork, capacity_brisket, capacity_sauce, capacity_family_night, capacity_backyard_host, capacity_freezer_filler, reserved_pulled_pork, reserved_brisket, reserved_sauce, reserved_family_night, reserved_backyard_host, reserved_freezer_filler"
-      )
+      .select("id, location_label, pickup_at, pickup_date")
       .eq("id", parsed.data.pickupOptionId)
       .eq("drop_id", parsed.data.dropId)
       .maybeSingle();
@@ -233,55 +205,6 @@ export async function POST(request: Request) {
         { error: "Pickup option not found for this drop.", requestId },
         { status: 404 }
       );
-    }
-
-    if (capacityEnforced) {
-      const pickupSoldOut =
-        pickupRow.reserved_pulled_pork >= pickupRow.capacity_pulled_pork &&
-        pickupRow.reserved_brisket >= pickupRow.capacity_brisket &&
-        pickupRow.reserved_sauce >= pickupRow.capacity_sauce &&
-        pickupRow.reserved_family_night >= pickupRow.capacity_family_night &&
-        pickupRow.reserved_backyard_host >= pickupRow.capacity_backyard_host &&
-        pickupRow.reserved_freezer_filler >= pickupRow.capacity_freezer_filler;
-      if (pickupSoldOut) {
-        return NextResponse.json(
-          { error: "This pickup slot is sold out. Please choose another.", requestId },
-          { status: 409 }
-        );
-      }
-    }
-
-    // Aggregate cart quantities by product type before reserving capacity.
-    const totals = new Map<string, number>();
-    for (const item of parsed.data.cart) {
-      if (item.productName) {
-        totals.set(item.productName, (totals.get(item.productName) ?? 0) + item.quantity);
-      }
-    }
-
-    // Reserve capacity slots before touching Square. Roll back on any failure.
-    const reserved: Array<{ productName: string; quantity: number }> = [];
-    if (capacityEnforced) {
-      for (const [productName, quantity] of totals) {
-        const { data: reserveResult, error: reserveErr } = await supabase.rpc("reserve_pickup_slot", {
-          p_drop_id: parsed.data.dropId,
-          p_pickup_option_id: parsed.data.pickupOptionId,
-          p_product_name: productName,
-          p_quantity: quantity
-        });
-        const reserveData = reserveResult as { ok: boolean; reason?: string } | null;
-        if (reserveErr || !reserveData?.ok) {
-          await releaseReserved(supabase, reserved, parsed.data.dropId, parsed.data.pickupOptionId, requestId);
-          return NextResponse.json(
-            {
-              error: reserveData?.reason ?? "Capacity unavailable for selected pickup.",
-              requestId
-            },
-            { status: 409 }
-          );
-        }
-        reserved.push({ productName, quantity });
-      }
     }
 
     let orderId: string | undefined;
@@ -327,7 +250,6 @@ export async function POST(request: Request) {
       }
 
       if (!customerId) {
-        await releaseReserved(supabase, reserved, parsed.data.dropId, parsed.data.pickupOptionId, requestId);
         return NextResponse.json(
           { error: "Unable to create customer record.", requestId },
           { status: 500 }
@@ -383,7 +305,6 @@ export async function POST(request: Request) {
       orderId = orderResponse.order?.id;
 
       if (!orderId) {
-        await releaseReserved(supabase, reserved, parsed.data.dropId, parsed.data.pickupOptionId, requestId);
         return NextResponse.json(
           { error: "Unable to create order.", requestId },
           { status: 500 }
@@ -428,7 +349,6 @@ export async function POST(request: Request) {
       const invoiceVersion = invoiceResponse.invoice?.version;
 
       if (!invoiceId || invoiceVersion === undefined) {
-        await releaseReserved(supabase, reserved, parsed.data.dropId, parsed.data.pickupOptionId, requestId);
         return NextResponse.json(
           { error: "Unable to create invoice.", requestId },
           { status: 500 }
@@ -464,8 +384,6 @@ export async function POST(request: Request) {
         attributionDetail: attribution.detail
       });
     } catch (squareError) {
-      // Square call failed — release reserved capacity so the slot is not stranded.
-      await releaseReserved(supabase, reserved, parsed.data.dropId, parsed.data.pickupOptionId, requestId);
       throw squareError;
     }
 
