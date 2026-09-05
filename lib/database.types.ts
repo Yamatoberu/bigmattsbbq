@@ -54,6 +54,8 @@ export type Database = {
           location_label: string
           pickup_at: string
           pickup_date: string
+          pickup_end_date: string
+          pickup_start_date: string
         }
         Insert: {
           drop_id: string
@@ -61,6 +63,8 @@ export type Database = {
           location_label: string
           pickup_at: string
           pickup_date: string
+          pickup_end_date: string
+          pickup_start_date: string
         }
         Update: {
           drop_id?: string
@@ -68,6 +72,8 @@ export type Database = {
           location_label?: string
           pickup_at?: string
           pickup_date?: string
+          pickup_end_date?: string
+          pickup_start_date?: string
         }
         Relationships: [
           {
@@ -167,6 +173,7 @@ export type Database = {
       }
       orders: {
         Row: {
+          assigned_pickup_date: string | null
           cart_snapshot: Json
           created_at: string
           customer_email: string
@@ -178,6 +185,7 @@ export type Database = {
           square_order_id: string | null
         }
         Insert: {
+          assigned_pickup_date?: string | null
           cart_snapshot: Json
           created_at?: string
           customer_email: string
@@ -189,6 +197,7 @@ export type Database = {
           square_order_id?: string | null
         }
         Update: {
+          assigned_pickup_date?: string | null
           cart_snapshot?: Json
           created_at?: string
           customer_email?: string
