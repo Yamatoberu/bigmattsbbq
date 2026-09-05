@@ -52,7 +52,6 @@ export type Database = {
           drop_id: string
           id: string
           location_label: string
-          pickup_at: string
           pickup_date: string
           pickup_end_date: string
           pickup_start_date: string
@@ -61,7 +60,6 @@ export type Database = {
           drop_id: string
           id?: string
           location_label: string
-          pickup_at: string
           pickup_date: string
           pickup_end_date: string
           pickup_start_date: string
@@ -70,7 +68,6 @@ export type Database = {
           drop_id?: string
           id?: string
           location_label?: string
-          pickup_at?: string
           pickup_date?: string
           pickup_end_date?: string
           pickup_start_date?: string
