@@ -2,13 +2,20 @@ import "server-only";
 import { getSupabaseClient } from "./supabase";
 import type { DropDTO, DropStatus, PickupOptionDTO } from "./types";
 
-export function formatPickupDate(isoDate: string): string {
-  const date = new Date(isoDate);
-  return date.toLocaleDateString("en-US", {
+export function formatPickupDate(date: string): string {
+  const [year, month, day] = date.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day)).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
-    timeZone: "America/Denver"
+    timeZone: "UTC"
   });
+}
+
+export function formatPickupWindow(startDate: string, endDate: string): string {
+  if (startDate === endDate) {
+    return formatPickupDate(startDate);
+  }
+  return `${formatPickupDate(startDate)} – ${formatPickupDate(endDate)}`;
 }
 
 export async function fetchActiveDrop(): Promise<DropDTO | null> {
@@ -31,9 +38,9 @@ export async function fetchActiveDrop(): Promise<DropDTO | null> {
 
   const { data: pickupRows, error: pickupErr } = await supabase
     .from("drop_pickup_options")
-    .select("id, location_label, pickup_date, pickup_at")
+    .select("id, location_label, pickup_date, pickup_start_date, pickup_end_date")
     .eq("drop_id", drop.id)
-    .order("pickup_at", { ascending: true });
+    .order("pickup_date", { ascending: true });
 
   if (pickupErr) {
     throw pickupErr;
@@ -42,8 +49,7 @@ export async function fetchActiveDrop(): Promise<DropDTO | null> {
   const pickupOptions: PickupOptionDTO[] = (pickupRows ?? []).map((row) => ({
     id: row.id,
     locationLabel: row.location_label,
-    pickupDateLabel: formatPickupDate(row.pickup_at),
-    pickupAtISO: row.pickup_at
+    pickupDateLabel: formatPickupWindow(row.pickup_start_date, row.pickup_end_date)
   }));
   return {
     id: drop.id,

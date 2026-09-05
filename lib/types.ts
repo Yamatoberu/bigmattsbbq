@@ -57,7 +57,6 @@ export interface PickupOptionDTO {
   id: string;
   locationLabel: string;
   pickupDateLabel: string;
-  pickupAtISO: string;
 }
 
 export interface AttributionSourceDTO {

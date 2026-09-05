@@ -293,13 +293,6 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
                         {option.locationLabel}
                       </p>
                       <p className="mt-1 text-sm text-smoke-700">{option.pickupDateLabel}</p>
-                      <p className="text-sm text-smoke-600">
-                        {new Date(option.pickupAtISO).toLocaleTimeString("en-US", {
-                          hour: "numeric",
-                          minute: "2-digit",
-                          timeZone: "America/Denver"
-                        })}
-                      </p>
                     </div>
                   </div>
                 </button>

@@ -11,14 +11,12 @@ export const activeDropFixture: DropDTO = {
     {
       id: "pickup-preston",
       locationLabel: "Preston",
-      pickupDateLabel: "Saturday, Aug 30",
-      pickupAtISO: new Date(Date.now() + THREE_DAYS_MS).toISOString()
+      pickupDateLabel: "Saturday, Aug 30"
     },
     {
       id: "pickup-orem",
       locationLabel: "Orem",
-      pickupDateLabel: "Sunday, Aug 31",
-      pickupAtISO: new Date(Date.now() + THREE_DAYS_MS + 24 * 60 * 60 * 1000).toISOString()
+      pickupDateLabel: "Sunday, Aug 31"
     }
   ]
 };

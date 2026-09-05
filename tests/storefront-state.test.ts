@@ -40,8 +40,7 @@ describe("DATA-05 — storefront state: Supabase is source of truth for pickup o
       const pickupOption = {
         id: "p1",
         locationLabel: "Preston",
-        pickupDateLabel: "May 9",
-        pickupAtISO: "2026-05-09T16:00:00-06:00"
+        pickupDateLabel: "May 9"
       };
 
       const drop = {
