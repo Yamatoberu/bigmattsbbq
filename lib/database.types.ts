@@ -49,61 +49,25 @@ export type Database = {
       }
       drop_pickup_options: {
         Row: {
-          capacity_backyard_host: number
-          capacity_brisket: number
-          capacity_family_night: number
-          capacity_freezer_filler: number
-          capacity_pulled_pork: number
-          capacity_sauce: number
           drop_id: string
           id: string
           location_label: string
           pickup_at: string
           pickup_date: string
-          reserved_backyard_host: number
-          reserved_brisket: number
-          reserved_family_night: number
-          reserved_freezer_filler: number
-          reserved_pulled_pork: number
-          reserved_sauce: number
         }
         Insert: {
-          capacity_backyard_host?: number
-          capacity_brisket?: number
-          capacity_family_night?: number
-          capacity_freezer_filler?: number
-          capacity_pulled_pork?: number
-          capacity_sauce?: number
           drop_id: string
           id?: string
           location_label: string
           pickup_at: string
           pickup_date: string
-          reserved_backyard_host?: number
-          reserved_brisket?: number
-          reserved_family_night?: number
-          reserved_freezer_filler?: number
-          reserved_pulled_pork?: number
-          reserved_sauce?: number
         }
         Update: {
-          capacity_backyard_host?: number
-          capacity_brisket?: number
-          capacity_family_night?: number
-          capacity_freezer_filler?: number
-          capacity_pulled_pork?: number
-          capacity_sauce?: number
           drop_id?: string
           id?: string
           location_label?: string
           pickup_at?: string
           pickup_date?: string
-          reserved_backyard_host?: number
-          reserved_brisket?: number
-          reserved_family_night?: number
-          reserved_freezer_filler?: number
-          reserved_pulled_pork?: number
-          reserved_sauce?: number
         }
         Relationships: [
           {
@@ -117,62 +81,23 @@ export type Database = {
       }
       drops: {
         Row: {
-          capacity_backyard_host: number
-          capacity_brisket: number
-          capacity_enforced: boolean
-          capacity_family_night: number
-          capacity_freezer_filler: number
-          capacity_pulled_pork: number
-          capacity_sauce: number
           created_at: string
           id: string
           order_cutoff_at: string | null
-          reserved_backyard_host: number
-          reserved_brisket: number
-          reserved_family_night: number
-          reserved_freezer_filler: number
-          reserved_pulled_pork: number
-          reserved_sauce: number
           status: string
           title: string
         }
         Insert: {
-          capacity_backyard_host?: number
-          capacity_brisket?: number
-          capacity_enforced?: boolean
-          capacity_family_night?: number
-          capacity_freezer_filler?: number
-          capacity_pulled_pork?: number
-          capacity_sauce?: number
           created_at?: string
           id?: string
           order_cutoff_at?: string | null
-          reserved_backyard_host?: number
-          reserved_brisket?: number
-          reserved_family_night?: number
-          reserved_freezer_filler?: number
-          reserved_pulled_pork?: number
-          reserved_sauce?: number
           status?: string
           title: string
         }
         Update: {
-          capacity_backyard_host?: number
-          capacity_brisket?: number
-          capacity_enforced?: boolean
-          capacity_family_night?: number
-          capacity_freezer_filler?: number
-          capacity_pulled_pork?: number
-          capacity_sauce?: number
           created_at?: string
           id?: string
           order_cutoff_at?: string | null
-          reserved_backyard_host?: number
-          reserved_brisket?: number
-          reserved_family_night?: number
-          reserved_freezer_filler?: number
-          reserved_pulled_pork?: number
-          reserved_sauce?: number
           status?: string
           title?: string
         }
@@ -305,24 +230,6 @@ export type Database = {
           p_opt_in?: boolean
           p_phone?: string
           p_pickup_id: string
-        }
-        Returns: Json
-      }
-      release_pickup_slot: {
-        Args: {
-          p_drop_id: string
-          p_pickup_option_id: string
-          p_product_name: string
-          p_quantity: number
-        }
-        Returns: Json
-      }
-      reserve_pickup_slot: {
-        Args: {
-          p_drop_id: string
-          p_pickup_option_id: string
-          p_product_name: string
-          p_quantity: number
         }
         Returns: Json
       }

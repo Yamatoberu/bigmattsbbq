@@ -19,7 +19,7 @@ export async function GET() {
     // 1. Query drops table — should return the seeded test drop
     const { data: drops, error: dropsError } = await supabase
       .from("drops")
-      .select("id, title, status, capacity_pulled_pork, capacity_brisket, reserved_pulled_pork, reserved_brisket");
+      .select("id, title, status");
 
     if (dropsError) {
       return NextResponse.json(
@@ -35,7 +35,7 @@ export async function GET() {
     if (dropId) {
       const { data, error } = await supabase
         .from("drop_pickup_options")
-        .select("id, location_label, pickup_date, capacity_pulled_pork, capacity_brisket")
+        .select("id, location_label, pickup_date")
         .eq("drop_id", dropId);
 
       if (error) {
