@@ -130,12 +130,6 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
                 const priceCents = bundleVariationId
                   ? (variationMap.get(bundleVariationId)?.priceCents ?? 0)
                   : resolved.reduce((sum, item) => sum + (variationMap.get(item.variationId)?.priceCents ?? 0) * item.quantity, 0);
-                const pkgSoldOutMap: Record<string, boolean> = {
-                  "family-night": drop.soldOut.familyNight,
-                  "backyard-host": drop.soldOut.backyardHost,
-                  "freezer-filler": drop.soldOut.freezerFiller
-                };
-                const pkgSoldOut = drop.capacityEnforced ? (pkgSoldOutMap[pkg.id] ?? false) : false;
                 return (
                   <PackageCard
                     key={pkg.id}
@@ -149,7 +143,6 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
                       setPackage(pkg.id);
                     }}
                     priceCents={priceCents}
-                    soldOut={pkgSoldOut}
                     isDisabled={!canAdd || isLoading || Boolean(error)}
                   />
                 );
@@ -184,22 +177,13 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
               <p className="text-sm text-smoke-500">Loading frozen menu...</p>
             ) : (
               <div className="mt-6 grid gap-5 md:grid-cols-3">
-                {individualItems.map((item) => {
-                  const nameLower = item.name.toLowerCase();
-                  const itemSoldOut = drop.capacityEnforced && (
-                    (nameLower.includes("pulled pork") && drop.soldOut.pulledPork) ||
-                    (nameLower.includes("brisket") && drop.soldOut.brisket) ||
-                    (nameLower.includes("sauce") && drop.soldOut.sauce)
-                  );
-                  return (
-                    <FrozenItemCard
-                      key={item.itemId}
-                      item={item}
-                      onAdd={(variationId) => addItem({ variationId, quantity: 1 })}
-                      soldOut={itemSoldOut}
-                    />
-                  );
-                })}
+                {individualItems.map((item) => (
+                  <FrozenItemCard
+                    key={item.itemId}
+                    item={item}
+                    onAdd={(variationId) => addItem({ variationId, quantity: 1 })}
+                  />
+                ))}
               </div>
             )}
           </div>

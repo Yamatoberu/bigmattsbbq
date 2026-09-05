@@ -32,7 +32,7 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
   const { items, setQuantity, addItem, clear, selectedPackageId } = useCart();
   const { items: frozenItems, isLoading } = useFrozenItems();
   const { sources: attributionSources, error: attributionSourcesError } = useAttributionSources();
-  const firstAvailable = drop.pickupOptions.find((o) => !o.isSoldOut);
+  const firstAvailable = drop.pickupOptions[0];
   const [pickupOptionId, setPickupOptionId] = useState<string | undefined>(firstAvailable?.id);
   const [formState, setFormState] = useState({
     firstName: "",
@@ -275,18 +275,14 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             {drop.pickupOptions.map((option) => {
               const isSelected = pickupOptionId === option.id;
-              const disabled = option.isSoldOut;
               const baseClasses = "rounded-lg border p-5 text-left min-h-[72px] transition-colors";
-              const stateClasses = disabled
-                ? "border-smoke-400 bg-pit-card opacity-60 cursor-not-allowed"
-                : isSelected
-                  ? "border-gold-400 bg-pit-card ring-1 ring-gold-400/40"
-                  : "border-smoke-400 bg-pit-card hover:border-gold-600";
+              const stateClasses = isSelected
+                ? "border-gold-400 bg-pit-card ring-1 ring-gold-400/40"
+                : "border-smoke-400 bg-pit-card hover:border-gold-600";
               return (
                 <button
                   key={option.id}
                   type="button"
-                  disabled={disabled}
                   onClick={() => setPickupOptionId(option.id)}
                   className={`${baseClasses} ${stateClasses}`}
                   aria-pressed={isSelected}
@@ -305,11 +301,6 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
                         })}
                       </p>
                     </div>
-                    {disabled && (
-                      <span className="rounded-full bg-smoke-300 px-2 py-0.5 text-xs font-semibold text-smoke-50">
-                        Sold Out
-                      </span>
-                    )}
                   </div>
                 </button>
               );

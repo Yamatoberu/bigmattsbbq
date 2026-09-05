@@ -1,7 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { stubFrozenItems, stubActiveDrop } from "./support/stubs";
 import { variationIds } from "./fixtures/frozenItems";
-import { withSoldOut } from "./fixtures/activeDrop";
 
 test.describe("browse frozen items", () => {
   test("renders in-stock items with prices and add-to-cart", async ({ page }) => {
@@ -35,26 +34,5 @@ test.describe("browse frozen items", () => {
         return raw ? JSON.parse(raw) : null;
       })
       .toEqual([{ variationId: variationIds.brisket, quantity: 1 }]);
-  });
-
-  test("sold-out item swaps add-to-cart for the notify capture", async ({ page }) => {
-    await stubActiveDrop(page, withSoldOut({ brisket: true }));
-    await stubFrozenItems(page);
-    await page.goto("/");
-
-    const brisketCard = page.getByRole("article").filter({
-      has: page.getByRole("heading", { name: "Brisket", exact: true })
-    });
-    const pulledPorkCard = page.getByRole("article").filter({
-      has: page.getByRole("heading", { name: "Pulled Pork", exact: true })
-    });
-
-    await expect(brisketCard.getByRole("button", { name: "Notify Me" })).toBeVisible();
-    await expect(
-      brisketCard.getByLabel("Email address for drop notifications")
-    ).toBeVisible();
-    await expect(brisketCard.getByRole("button", { name: "Add to Cart" })).toHaveCount(0);
-
-    await expect(pulledPorkCard.getByRole("button", { name: "Add to Cart" })).toBeEnabled();
   });
 });

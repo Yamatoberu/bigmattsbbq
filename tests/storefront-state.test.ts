@@ -41,8 +41,7 @@ describe("DATA-05 — storefront state: Supabase is source of truth for pickup o
         id: "p1",
         locationLabel: "Preston",
         pickupDateLabel: "May 9",
-        pickupAtISO: "2026-05-09T16:00:00-06:00",
-        isSoldOut: false
+        pickupAtISO: "2026-05-09T16:00:00-06:00"
       };
 
       const drop = {
@@ -50,17 +49,11 @@ describe("DATA-05 — storefront state: Supabase is source of truth for pickup o
         title: "April 2026 Drop",
         status: "active" as const,
         orderCutoffAt: null,
-        capacity: {
-          pulledPork: { total: 200, reserved: 50 },
-          brisket: { total: 200, reserved: 50 }
-        },
-        soldOut: { pulledPork: false, brisket: false },
         pickupOptions: [pickupOption]
       };
 
       expect(drop.pickupOptions).toHaveLength(1);
       expect(drop.pickupOptions[0].locationLabel).toBe("Preston");
-      expect(drop.pickupOptions[0].isSoldOut).toBe(false);
     });
   });
 

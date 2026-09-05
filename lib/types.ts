@@ -53,17 +53,11 @@ export interface CheckoutRequestBody {
 
 export type DropStatus = "upcoming" | "active" | "closed";
 
-export interface CapacitySlot {
-  total: number;
-  reserved: number;
-}
-
 export interface PickupOptionDTO {
   id: string;
   locationLabel: string;
   pickupDateLabel: string;
   pickupAtISO: string;
-  isSoldOut: boolean;
 }
 
 export interface AttributionSourceDTO {
@@ -79,24 +73,7 @@ export interface DropDTO {
   title: string;
   status: DropStatus;
   orderCutoffAt: string | null;
-  capacity: {
-    pulledPork: CapacitySlot;
-    brisket: CapacitySlot;
-    sauce: CapacitySlot;
-    familyNight: CapacitySlot;
-    backyardHost: CapacitySlot;
-    freezerFiller: CapacitySlot;
-  };
-  soldOut: {
-    pulledPork: boolean;
-    brisket: boolean;
-    sauce: boolean;
-    familyNight: boolean;
-    backyardHost: boolean;
-    freezerFiller: boolean;
-  };
   pickupOptions: PickupOptionDTO[];
-  capacityEnforced: boolean;
 }
 
 export interface CheckoutResponseBody {
