@@ -168,6 +168,50 @@ export type Database = {
         }
         Relationships: []
       }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string | null
+          item_name: string
+          order_id: string
+          quantity: number
+          unit_price_cents: number
+          variation_id: string
+          variation_name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          item_name: string
+          order_id: string
+          quantity: number
+          unit_price_cents: number
+          variation_id: string
+          variation_name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          item_name?: string
+          order_id?: string
+          quantity?: number
+          unit_price_cents?: number
+          variation_id?: string
+          variation_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           assigned_pickup_date: string | null
