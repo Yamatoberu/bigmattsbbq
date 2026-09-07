@@ -8,7 +8,9 @@ import {
   createCustomer,
   createInvoice,
   createOrder,
+  mapCatalogToFrozenItems,
   publishInvoice,
+  searchCatalogItems,
   searchCustomerByEmail,
   SquareError
 } from "../../../lib/square";
@@ -108,16 +110,10 @@ export const cartSchema = z.object({
   ]).optional()
 });
 
-const orderItemSchema = z.object({
-  variationId: z.string().min(1),
-  quantity: z.number().int().positive()
-});
-
 const checkoutSchema = z.object({
   dropId: z.string().uuid(),
   pickupOptionId: z.string().uuid(),
   packageId: z.string().optional(),
-  orderItems: z.array(orderItemSchema).min(1).optional(),
   customer: z.object({
     firstName: z.string().min(1),
     lastName: z.string().min(1),
@@ -222,6 +218,60 @@ export async function POST(request: Request) {
       );
     }
 
+    const env = getSquareEnv();
+
+    let catalogByVariationId: Map<
+      string,
+      { itemId: string; itemName: string; variationName: string; unitPriceCents: number }
+    >;
+
+    try {
+      const { items, relatedObjects } = await searchCatalogItems({
+        host: env.host,
+        accessToken: env.accessToken,
+        categoryId: env.frozenCategoryId,
+        requestId
+      });
+      const frozenItems = mapCatalogToFrozenItems({ items, relatedObjects });
+
+      catalogByVariationId = new Map();
+      for (const item of frozenItems) {
+        for (const variation of item.variations) {
+          catalogByVariationId.set(variation.variationId, {
+            itemId: item.itemId,
+            itemName: item.name,
+            variationName: variation.name,
+            unitPriceCents: variation.priceCents
+          });
+        }
+      }
+    } catch (catalogError) {
+      logError("Checkout catalog lookup failed", catalogError, requestId);
+      return NextResponse.json(
+        { error: "Unable to price your order right now. Please try again.", requestId },
+        { status: 500 }
+      );
+    }
+
+    const missingVariationIds = parsed.data.cart
+      .filter((item) => !catalogByVariationId.has(item.variationId))
+      .map((item) => item.variationId);
+
+    if (missingVariationIds.length > 0) {
+      logError(
+        "Checkout cart contained unknown catalog variation ids",
+        { missing: missingVariationIds },
+        requestId
+      );
+      return NextResponse.json(
+        {
+          error: "One or more items are no longer available. Please refresh and try again.",
+          requestId
+        },
+        { status: 400 }
+      );
+    }
+
     const { data: orderRow, error: orderInsertErr } = await supabase
       .from("orders")
       .insert({
@@ -246,12 +296,47 @@ export async function POST(request: Request) {
 
     const orderRecordId = orderRow.id;
 
+    const orderItemRows = parsed.data.cart.map((item) => {
+      const snapshot = catalogByVariationId.get(item.variationId)!;
+      return {
+        order_id: orderRecordId,
+        variation_id: item.variationId,
+        item_id: snapshot.itemId,
+        item_name: snapshot.itemName,
+        variation_name: snapshot.variationName,
+        quantity: item.quantity,
+        unit_price_cents: snapshot.unitPriceCents
+      };
+    });
+
+    const { error: itemsInsertErr } = await supabase.from("order_items").insert(orderItemRows);
+
+    if (itemsInsertErr) {
+      logError("Checkout order items persistence failed", itemsInsertErr, requestId);
+      const { error: deleteErr } = await supabase
+        .from("orders")
+        .delete()
+        .eq("id", orderRecordId);
+
+      if (deleteErr) {
+        logError(
+          "Failed to delete orders row after order_items insert failure",
+          deleteErr,
+          requestId
+        );
+      }
+
+      return NextResponse.json(
+        { error: "Unable to record your order. Please try again.", requestId },
+        { status: 500 }
+      );
+    }
+
     let orderId: string | undefined;
     let invoiceId: string | undefined;
     let pickupNote = "";
 
     try {
-      const env = getSquareEnv();
       const { customer, cart } = parsed.data;
       const attribution = sanitizeAttribution(
         customer.attributionSourceCode,
@@ -314,7 +399,7 @@ export async function POST(request: Request) {
           order: {
             location_id: env.locationId,
             customer_id: customerId,
-            line_items: (parsed.data.orderItems ?? cart).map((item) => ({
+            line_items: cart.map((item) => ({
               quantity: item.quantity.toString(),
               catalog_object_id: item.variationId
             })),
