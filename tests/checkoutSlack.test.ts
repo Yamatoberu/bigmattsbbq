@@ -20,7 +20,8 @@ vi.mock("../lib/env", () => ({
   getSquareEnv: () => ({
     host: "https://connect.squareup.com",
     accessToken: "test-token",
-    locationId: "loc-001"
+    locationId: "loc-001",
+    frozenCategoryId: "cat-frozen"
   })
 }));
 
@@ -29,6 +30,7 @@ const searchCustomerByEmailMock = vi.fn();
 const createCustomerMock = vi.fn();
 const createInvoiceMock = vi.fn();
 const publishInvoiceMock = vi.fn();
+const searchCatalogItemsMock = vi.fn();
 
 vi.mock("../lib/square", async () => {
   const actual = await vi.importActual<typeof import("../lib/square")>("../lib/square");
@@ -38,6 +40,8 @@ vi.mock("../lib/square", async () => {
     createOrder: (...args: unknown[]) => createOrderMock(...args),
     createInvoice: (...args: unknown[]) => createInvoiceMock(...args),
     publishInvoice: (...args: unknown[]) => publishInvoiceMock(...args),
+    searchCatalogItems: (...args: unknown[]) => searchCatalogItemsMock(...args),
+    mapCatalogToFrozenItems: actual.mapCatalogToFrozenItems,
     SquareError: class SquareError extends Error {},
     buildAttributionMetadata: actual.buildAttributionMetadata
   };
@@ -94,6 +98,79 @@ const activePickupRow = {
 
 const ORDER_ROW_ID = "a1b2c3d4-0000-4000-8000-000000000099";
 
+const CATALOG_ITEMS = [
+  {
+    id: "I-BRISKET",
+    type: "ITEM",
+    item_data: {
+      name: "Brisket",
+      variations: [
+        {
+          id: "V-BRISKET",
+          type: "ITEM_VARIATION",
+          item_variation_data: { name: "0.5 lb", price_money: { amount: 1800, currency: "USD" } }
+        }
+      ]
+    }
+  },
+  {
+    id: "I-PORK",
+    type: "ITEM",
+    item_data: {
+      name: "Pulled Pork",
+      variations: [
+        {
+          id: "V-PORK",
+          type: "ITEM_VARIATION",
+          item_variation_data: { name: "0.5 lb", price_money: { amount: 1200, currency: "USD" } }
+        }
+      ]
+    }
+  },
+  {
+    id: "I-SAUCE",
+    type: "ITEM",
+    item_data: {
+      name: "Sauce",
+      variations: [
+        {
+          id: "V-SAUCE",
+          type: "ITEM_VARIATION",
+          item_variation_data: { name: "Bottle", price_money: { amount: 900, currency: "USD" } }
+        }
+      ]
+    }
+  },
+  {
+    id: "I-V1",
+    type: "ITEM",
+    item_data: {
+      name: "Item One",
+      variations: [
+        {
+          id: "V1",
+          type: "ITEM_VARIATION",
+          item_variation_data: { name: "Single", price_money: { amount: 1500, currency: "USD" } }
+        }
+      ]
+    }
+  },
+  {
+    id: "I-V2",
+    type: "ITEM",
+    item_data: {
+      name: "Item Two",
+      variations: [
+        {
+          id: "V2",
+          type: "ITEM_VARIATION",
+          item_variation_data: { name: "Single", price_money: { amount: 2500, currency: "USD" } }
+        }
+      ]
+    }
+  }
+];
+
 function setupSupabaseMock() {
   supabaseMock.from.mockImplementation((table: string) => {
     if (table === "drops") {
@@ -125,7 +202,15 @@ function setupSupabaseMock() {
         }),
         update: () => ({
           eq: () => Promise.resolve({ error: null })
+        }),
+        delete: () => ({
+          eq: () => Promise.resolve({ error: null })
         })
+      };
+    }
+    if (table === "order_items") {
+      return {
+        insert: () => Promise.resolve({ error: null })
       };
     }
     return {};
@@ -134,6 +219,7 @@ function setupSupabaseMock() {
 
 function setupSquareMocks(customerId = "cust-001", orderId = "order-001") {
   searchCustomerByEmailMock.mockResolvedValue({ customers: [{ id: customerId }] });
+  searchCatalogItemsMock.mockResolvedValue({ items: CATALOG_ITEMS, relatedObjects: [] });
   createOrderMock.mockResolvedValue({
     order: {
       id: orderId,
@@ -365,7 +451,15 @@ describe("POST /api/checkout — Slack attribution line", () => {
           }),
           update: () => ({
             eq: () => Promise.resolve({ error: null })
+          }),
+          delete: () => ({
+            eq: () => Promise.resolve({ error: null })
           })
+        };
+      }
+      if (table === "order_items") {
+        return {
+          insert: () => Promise.resolve({ error: null })
         };
       }
       return {};

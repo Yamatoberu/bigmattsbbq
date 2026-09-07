@@ -173,17 +173,21 @@ const CATALOG_ITEMS = [
 const ordersInsertMock = vi.fn();
 const ordersUpdateMock = vi.fn();
 const ordersDeleteMock = vi.fn();
+const orderItemsInsertMock = vi.fn();
 
 let insertOutcome: { data: { id: string } | null; error: unknown };
 let updateOutcome: { error: unknown };
 let itemsInsertOutcome: { error: unknown };
-let callCountsAtInsertTime: { searchCustomerCalls: number; createOrderCalls: number } | undefined;
+let callCountsAtCatalogTime:
+  | { searchCustomerCalls: number; createOrderCalls: number; ordersInsertCalls: number }
+  | undefined;
+let callCountsAtItemsInsertTime: { createOrderCalls: number; ordersInsertCalls: number } | undefined;
 
 function setupSupabaseMock() {
   insertOutcome = { data: { id: ORDER_ROW_ID }, error: null };
   updateOutcome = { error: null };
   itemsInsertOutcome = { error: null };
-  callCountsAtInsertTime = undefined;
+  callCountsAtItemsInsertTime = undefined;
 
   supabaseMock.from.mockImplementation((table: string) => {
     if (table === "drops") {
@@ -210,10 +214,6 @@ function setupSupabaseMock() {
       return {
         insert: (values: Record<string, unknown>) => {
           ordersInsertMock(values);
-          callCountsAtInsertTime = {
-            searchCustomerCalls: searchCustomerByEmailMock.mock.calls.length,
-            createOrderCalls: createOrderMock.mock.calls.length
-          };
           return {
             select: () => ({
               single: () => Promise.resolve(insertOutcome)
@@ -236,7 +236,14 @@ function setupSupabaseMock() {
     }
     if (table === "order_items") {
       return {
-        insert: (rows: unknown[]) => Promise.resolve(itemsInsertOutcome)
+        insert: (rows: unknown[]) => {
+          orderItemsInsertMock(rows);
+          callCountsAtItemsInsertTime = {
+            createOrderCalls: createOrderMock.mock.calls.length,
+            ordersInsertCalls: ordersInsertMock.mock.calls.length
+          };
+          return Promise.resolve(itemsInsertOutcome);
+        }
       };
     }
     return {};
@@ -245,11 +252,18 @@ function setupSupabaseMock() {
 
 function setupSquareMocks(customerId = "cust-001", orderId = "order-001") {
   searchCustomerByEmailMock.mockResolvedValue({ customers: [{ id: customerId }] });
-  searchCatalogItemsMock.mockResolvedValue({ items: CATALOG_ITEMS, relatedObjects: [] });
+  searchCatalogItemsMock.mockImplementation(async () => {
+    callCountsAtCatalogTime = {
+      searchCustomerCalls: searchCustomerByEmailMock.mock.calls.length,
+      createOrderCalls: createOrderMock.mock.calls.length,
+      ordersInsertCalls: ordersInsertMock.mock.calls.length
+    };
+    return { items: CATALOG_ITEMS, relatedObjects: [] };
+  });
   createOrderMock.mockResolvedValue({
     order: {
       id: orderId,
-      total_money: { amount: 4800 },
+      total_money: { amount: 1800 },
       line_items: [{ name: "Brisket 0.5 lb", quantity: "2" }]
     }
   });
@@ -270,12 +284,14 @@ const baseCheckoutBody = {
   dropId: DROP_ID,
   pickupOptionId: PICKUP_ID,
   customer: { firstName: "Matt", lastName: "Test", email: "matt@example.com" },
-  cart: [{ variationId: "V-BRISKET", quantity: 2, productName: "brisket" }]
+  cart: [{ variationId: "V-BRISKET", quantity: 2 }]
 };
 
-describe("POST /api/checkout — Supabase order persistence", () => {
+describe("POST /api/checkout — order_items persistence", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    callCountsAtCatalogTime = undefined;
+    callCountsAtItemsInsertTime = undefined;
     setupSupabaseMock();
     setupSquareMocks();
     resolveAttributionLabelMock.mockResolvedValue(null);
@@ -283,123 +299,145 @@ describe("POST /api/checkout — Supabase order persistence", () => {
     delete process.env.SLACK_ORDERS_WEBHOOK_URL;
   });
 
-  it("Test 1: a successful checkout inserts exactly one orders row with the expected shape", async () => {
+  it("Test 1: the catalog lookup runs exactly once, before customer search, createOrder, or the orders insert", async () => {
     await callCheckout(baseCheckoutBody);
 
-    expect(ordersInsertMock).toHaveBeenCalledOnce();
-    const insertValues = ordersInsertMock.mock.calls[0][0] as Record<string, unknown>;
-
-    expect(insertValues.drop_id).toBe(DROP_ID);
-    expect(insertValues.pickup_option_id).toBe(PICKUP_ID);
-    expect(insertValues.customer_email).toBe("matt@example.com");
-    expect(insertValues.customer_name).toBe("Matt Test");
-    expect(insertValues.cart_snapshot).toEqual(baseCheckoutBody.cart);
-    expect(insertValues.order_status).toBe("pending");
-    expect(insertValues.payment_status).toBe("unpaid");
-    expect(insertValues.square_order_id ?? null).toBeNull();
-    expect(insertValues.square_invoice_id ?? null).toBeNull();
-    expect(insertValues.total_amount_cents ?? null).toBeNull();
+    expect(searchCatalogItemsMock).toHaveBeenCalledOnce();
+    expect(callCountsAtCatalogTime).toBeDefined();
+    expect(callCountsAtCatalogTime!.searchCustomerCalls).toBe(0);
+    expect(callCountsAtCatalogTime!.createOrderCalls).toBe(0);
+    expect(callCountsAtCatalogTime!.ordersInsertCalls).toBe(0);
   });
 
-  it("Test 2: the insert happens before any Square API call", async () => {
+  it("Test 2: order_items are written after the orders insert and before any Square order call", async () => {
     await callCheckout(baseCheckoutBody);
 
-    expect(ordersInsertMock).toHaveBeenCalledOnce();
-    expect(callCountsAtInsertTime).toBeDefined();
-    expect(callCountsAtInsertTime!.searchCustomerCalls).toBe(0);
-    expect(callCountsAtInsertTime!.createOrderCalls).toBe(0);
+    expect(orderItemsInsertMock).toHaveBeenCalledOnce();
+    expect(callCountsAtItemsInsertTime).toBeDefined();
+    expect(callCountsAtItemsInsertTime!.createOrderCalls).toBe(0);
+    expect(callCountsAtItemsInsertTime!.ordersInsertCalls).toBe(1);
   });
 
-  it("Test 3: after createOrder resolves, an update carries square_order_id and total_amount_cents against the inserted row id", async () => {
-    await callCheckout(baseCheckoutBody);
+  it("Test 3: a two-line cart produces exactly 2 order_items rows, in cart order, with catalog-derived fields", async () => {
+    const cart = [
+      { variationId: "V-BRISKET", quantity: 2 },
+      { variationId: "V-PORK", quantity: 1 }
+    ];
 
-    const matchingCall = ordersUpdateMock.mock.calls.find(
-      (call) => (call[0] as Record<string, unknown>).square_order_id !== undefined
+    await callCheckout({ ...baseCheckoutBody, cart });
+
+    expect(orderItemsInsertMock).toHaveBeenCalledOnce();
+    const rows = orderItemsInsertMock.mock.calls[0][0] as Array<Record<string, unknown>>;
+    expect(rows).toHaveLength(2);
+
+    expect(rows[0]).toMatchObject({
+      order_id: ORDER_ROW_ID,
+      variation_id: "V-BRISKET",
+      item_id: "I-BRISKET",
+      item_name: "Brisket",
+      variation_name: "0.5 lb",
+      unit_price_cents: 1800,
+      quantity: 2
+    });
+    expect(rows[1]).toMatchObject({
+      order_id: ORDER_ROW_ID,
+      variation_id: "V-PORK",
+      item_id: "I-PORK",
+      item_name: "Pulled Pork",
+      variation_name: "0.5 lb",
+      unit_price_cents: 1200,
+      quantity: 1
+    });
+  });
+
+  it("Test 4: the snapshot ignores the client — a client-supplied productName cannot influence the persisted name/price", async () => {
+    const cart = [{ variationId: "V-BRISKET", quantity: 1, productName: "pulled_pork" }];
+
+    await callCheckout({ ...baseCheckoutBody, cart });
+
+    expect(orderItemsInsertMock).toHaveBeenCalledOnce();
+    const rows = orderItemsInsertMock.mock.calls[0][0] as Array<Record<string, unknown>>;
+    expect(rows).toHaveLength(1);
+    const row = rows[0];
+
+    expect(row.item_name).toBe("Brisket");
+    expect(row.variation_name).toBe("0.5 lb");
+    expect(row.unit_price_cents).toBe(1800);
+    expect(Object.keys(row).sort()).toEqual(
+      [
+        "item_id",
+        "item_name",
+        "order_id",
+        "quantity",
+        "unit_price_cents",
+        "variation_id",
+        "variation_name"
+      ].sort()
     );
-    expect(matchingCall).toBeDefined();
-    const [values, column, value] = matchingCall!;
-    expect((values as Record<string, unknown>).square_order_id).toBe("order-001");
-    expect((values as Record<string, unknown>).total_amount_cents).toBe(4800);
-    expect(column).toBe("id");
-    expect(value).toBe(ORDER_ROW_ID);
   });
 
-  it("Test 4: after publishInvoice resolves, a further update carries square_invoice_id and order_status invoiced; payment_status is never written by an update", async () => {
-    await callCheckout(baseCheckoutBody);
-
-    const invoicedCall = ordersUpdateMock.mock.calls.find(
-      (call) => (call[0] as Record<string, unknown>).order_status === "invoiced"
-    );
-    expect(invoicedCall).toBeDefined();
-    const values = invoicedCall![0] as Record<string, unknown>;
-    expect(values.square_invoice_id).toBe("inv-001");
-    expect(values.order_status).toBe("invoiced");
-
-    for (const call of ordersUpdateMock.mock.calls) {
-      expect((call[0] as Record<string, unknown>).payment_status).toBeUndefined();
-    }
-  });
-
-  it("Test 5: createOrder rejecting marks the row failed, returns non-200, and never marks it invoiced", async () => {
+  it("Test 5: createOrder rejecting still leaves the order_items insert already performed, marks the order failed, and issues no compensating delete", async () => {
     createOrderMock.mockRejectedValue(new Error("square down"));
 
     const response = (await callCheckout(baseCheckoutBody)) as unknown as { status: number };
 
     expect(response.status).not.toBe(200);
+    expect(orderItemsInsertMock).toHaveBeenCalledOnce();
     const failedCall = ordersUpdateMock.mock.calls.find(
       (call) => (call[0] as Record<string, unknown>).order_status === "failed"
     );
     expect(failedCall).toBeDefined();
-    const invoicedCall = ordersUpdateMock.mock.calls.find(
-      (call) => (call[0] as Record<string, unknown>).order_status === "invoiced"
-    );
-    expect(invoicedCall).toBeUndefined();
+    expect(ordersDeleteMock).not.toHaveBeenCalled();
   });
 
-  it("Test 6: publishInvoice rejecting also marks the row failed", async () => {
-    publishInvoiceMock.mockRejectedValue(new Error("square down"));
-
-    const response = (await callCheckout(baseCheckoutBody)) as unknown as { status: number };
-
-    expect(response.status).not.toBe(200);
-    const failedCall = ordersUpdateMock.mock.calls.find(
-      (call) => (call[0] as Record<string, unknown>).order_status === "failed"
-    );
-    expect(failedCall).toBeDefined();
-  });
-
-  it("Test 7: the insert erroring returns HTTP 500 and never calls createOrder", async () => {
-    insertOutcome = { data: null, error: { message: "insert failed" } };
+  it("Test 6: a catalog lookup failure returns 500 and never reaches the orders insert, order_items insert, or customer search", async () => {
+    searchCatalogItemsMock.mockRejectedValue(new Error("catalog down"));
 
     const response = (await callCheckout(baseCheckoutBody)) as unknown as { status: number };
 
     expect(response.status).toBe(500);
-    expect(createOrderMock).not.toHaveBeenCalled();
+    expect(ordersInsertMock).not.toHaveBeenCalled();
+    expect(orderItemsInsertMock).not.toHaveBeenCalled();
+    expect(searchCustomerByEmailMock).not.toHaveBeenCalled();
   });
 
-  it("Test 8: an update erroring (best-effort) still yields a 200 response carrying an orderId", async () => {
-    updateOutcome = { error: { message: "update failed" } };
+  it("Test 7: an unknown cart variationId returns a 4xx and never reaches the orders insert, order_items insert, or customer search", async () => {
+    const cart = [{ variationId: "V-GHOST", quantity: 1 }];
 
-    const response = (await callCheckout(baseCheckoutBody)) as unknown as {
+    const response = (await callCheckout({ ...baseCheckoutBody, cart })) as unknown as {
       status: number;
-      body: { orderId: string };
     };
 
+    expect(response.status).toBeGreaterThanOrEqual(400);
+    expect(response.status).toBeLessThan(500);
+    expect(ordersInsertMock).not.toHaveBeenCalled();
+    expect(orderItemsInsertMock).not.toHaveBeenCalled();
+    expect(searchCustomerByEmailMock).not.toHaveBeenCalled();
+  });
+
+  it("Test 8: an order_items insert failure returns 500, deletes the just-inserted orders row, and never calls the customer search", async () => {
+    itemsInsertOutcome = { error: { message: "items insert failed" } };
+
+    const response = (await callCheckout(baseCheckoutBody)) as unknown as { status: number };
+
+    expect(response.status).toBe(500);
+    expect(ordersDeleteMock).toHaveBeenCalledWith("id", ORDER_ROW_ID);
+    expect(searchCustomerByEmailMock).not.toHaveBeenCalled();
+  });
+
+  it("Test 9: the dead orderItems request field is inert — Square line_items derive from cart, and checkout still succeeds", async () => {
+    const response = (await callCheckout({
+      ...baseCheckoutBody,
+      cart: [{ variationId: "V-BRISKET", quantity: 1 }],
+      orderItems: [{ variationId: "V-GHOST", quantity: 99 }]
+    })) as unknown as { status: number };
+
     expect(response.status).toBe(200);
-    expect(response.body.orderId).toBeTruthy();
-  });
-
-  it("Test 10: the orders insert is still called exactly once and its cart_snapshot still deep-equals the request cart", async () => {
-    await callCheckout(baseCheckoutBody);
-
-    expect(ordersInsertMock).toHaveBeenCalledOnce();
-    const insertValues = ordersInsertMock.mock.calls[0][0] as Record<string, unknown>;
-    expect(insertValues.cart_snapshot).toEqual(baseCheckoutBody.cart);
-  });
-
-  it("Test 11: no delete() is issued against orders on a fully successful checkout", async () => {
-    await callCheckout(baseCheckoutBody);
-
-    expect(ordersDeleteMock).not.toHaveBeenCalled();
+    expect(createOrderMock).toHaveBeenCalledOnce();
+    const callBody = createOrderMock.mock.calls[0][0] as {
+      body: { order: { line_items: Array<{ catalog_object_id: string }> } };
+    };
+    expect(callBody.body.order.line_items).toHaveLength(1);
+    expect(callBody.body.order.line_items[0].catalog_object_id).toBe("V-BRISKET");
   });
 });
