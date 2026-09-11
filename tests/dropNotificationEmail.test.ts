@@ -11,6 +11,13 @@ describe("DropNotificationEmail real render", () => {
     expect(html).toContain("{{{RESEND_UNSUBSCRIBE_URL}}}");
   });
 
+  it("preserves {{{FIRST_NAME|there}}} greeting merge tag through actual rendering", async () => {
+    const html = await render(
+      createElement(DropNotificationEmail, { subject: "Drop is live", dropId: "d1" })
+    );
+    expect(html).toContain("{{{FIRST_NAME|there}}}");
+  });
+
   it("includes dropId in order URL when provided", async () => {
     const html = await render(
       createElement(DropNotificationEmail, { subject: "Drop", dropId: "spring-24" })
