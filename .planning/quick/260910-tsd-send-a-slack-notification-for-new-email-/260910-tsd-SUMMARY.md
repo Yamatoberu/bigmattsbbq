@@ -47,7 +47,7 @@ completed: 2026-09-11
 - **Duration:** 2 min
 - **Started:** 2026-09-11T03:39:21Z
 - **Completed:** 2026-09-11T03:41:09Z
-- **Tasks:** 1 of 2 (Task 2 is a blocking human-verify checkpoint, intentionally not executed — see below)
+- **Tasks:** 2 of 2 (Task 2 is a blocking human-verify checkpoint; user confirmed live verification passed on 2026-09-11 — see below)
 - **Files modified:** 3 (2 modified, 1 created)
 
 ## Accomplishments
@@ -83,13 +83,13 @@ One incidental cleanup: `npm run build` regenerated `next-env.d.ts` (an auto-gen
 ## Issues Encountered
 None.
 
-## User Setup Required
+## User Setup Required (Completed)
 
-Task 2 in the plan (a `checkpoint:human-verify` with `gate="blocking-human"`) requires creating a new `#email` Slack channel and a channel-bound Incoming Webhook — there is no CLI/API path for this and workspace credentials are not available to the executor, so it was intentionally not attempted. Per the task constraints, the user has already set `SLACK_EMAIL_WEBHOOK_URL` in `.env.local` and in Vercel ahead of time. The remaining manual verification (submit a real signup, confirm exactly one message lands in `#email` with correct content, confirm an invalid-email attempt posts nothing) is still the user's to perform — see Task 2's `how-to-verify` steps in `260910-tsd-PLAN.md`.
+Task 2 in the plan (a `checkpoint:human-verify` with `gate="blocking-human"`) required creating a new `#email` Slack channel and a channel-bound Incoming Webhook — there is no CLI/API path for this and workspace credentials are not available to the executor, so it was intentionally not attempted by the executor. The user completed this manually (channel, webhook, `SLACK_EMAIL_WEBHOOK_URL` set in `.env.local` and Vercel) and confirmed on 2026-09-11 that a real signup produced exactly one correctly-formatted message in `#email`. Resume signal: **"Yes, tested it and it worked."**
 
 ## Next Phase Readiness
 
-Code and automated test coverage for Issue #15 are complete and merged. The only remaining step is the user's own live verification in Slack (Task 2), which does not require further code changes unless it surfaces a bug.
+Code, automated test coverage, and live human verification for Issue #15 are all complete. No further work required; issue closed.
 
 ---
 *Quick task: 260910-tsd*
