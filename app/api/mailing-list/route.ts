@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { z } from "zod";
 import { Resend } from "resend";
 import { logError } from "../../../lib/logger";
@@ -10,7 +10,7 @@ function escapeSlackText(value: string): string {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-function notifySlackNewSubscriber({
+async function notifySlackNewSubscriber({
   email,
   firstName,
   signedUpAt
@@ -18,7 +18,7 @@ function notifySlackNewSubscriber({
   email: string;
   firstName: string;
   signedUpAt: string;
-}): void {
+}): Promise<void> {
   const webhookUrl = process.env.SLACK_EMAIL_WEBHOOK_URL;
   if (!webhookUrl) return;
 
@@ -30,13 +30,18 @@ function notifySlackNewSubscriber({
     `Signed up: ${signedUpAt}`
   ].join("\n");
 
-  fetch(webhookUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text: message })
-  }).catch((err) => {
+  try {
+    const res = await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: message })
+    });
+    if (!res.ok) {
+      console.warn("Slack subscriber notification failed", res.status);
+    }
+  } catch (err) {
     console.warn("Slack subscriber notification failed", err);
-  });
+  }
 }
 
 const schema = z.object({
@@ -85,11 +90,13 @@ export async function POST(request: Request) {
       );
     }
 
-    notifySlackNewSubscriber({
-      email: parsed.data.email,
-      firstName: parsed.data.firstName,
-      signedUpAt: new Date().toISOString()
-    });
+    after(() =>
+      notifySlackNewSubscriber({
+        email: parsed.data.email,
+        firstName: parsed.data.firstName,
+        signedUpAt: new Date().toISOString()
+      })
+    );
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err) {
