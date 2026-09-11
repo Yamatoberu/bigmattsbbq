@@ -5,6 +5,7 @@ import { useState, type FormEvent } from "react";
 type FormState = "idle" | "submitting" | "success" | "error";
 
 export function MailingListSection() {
+  const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
@@ -19,7 +20,7 @@ export function MailingListSection() {
       const response = await fetch("/api/mailing-list", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ firstName, email })
       });
       if (!response.ok) {
         throw new Error("request failed");
@@ -56,6 +57,16 @@ export function MailingListSection() {
             noValidate
           >
             <input
+              type="text"
+              required
+              value={firstName}
+              onChange={(event) => setFirstName(event.target.value)}
+              placeholder="First name"
+              className="input-field sm:w-44"
+              aria-label="First name"
+              disabled={state === "submitting"}
+            />
+            <input
               type="email"
               required
               value={email}
@@ -68,7 +79,7 @@ export function MailingListSection() {
             <button
               type="submit"
               className="button-primary px-6 py-3 text-sm"
-              disabled={state === "submitting" || email.length === 0}
+              disabled={state === "submitting" || email.length === 0 || firstName.trim().length === 0}
             >
               {state === "submitting" ? "…" : "Notify Me"}
             </button>

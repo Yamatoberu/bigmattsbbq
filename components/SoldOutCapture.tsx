@@ -5,6 +5,7 @@ import { useState, type FormEvent } from "react";
 type FormState = "idle" | "submitting" | "success" | "error";
 
 export function SoldOutCapture() {
+  const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [state, setState] = useState<FormState>("idle");
 
@@ -17,7 +18,7 @@ export function SoldOutCapture() {
       const response = await fetch("/api/mailing-list", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ firstName, email }),
       });
       if (!response.ok) throw new Error("request failed");
       setState("success");
@@ -36,21 +37,33 @@ export function SoldOutCapture() {
 
   return (
     <div className="flex flex-col gap-1.5">
-      <form className="flex gap-2" onSubmit={handleSubmit} noValidate>
-        <input
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="your@email.com"
-          className="input-field min-w-0 flex-1 py-2 text-xs"
-          aria-label="Email address for drop notifications"
-          disabled={state === "submitting"}
-        />
+      <form className="flex flex-col gap-2" onSubmit={handleSubmit} noValidate>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            required
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder="First name"
+            className="input-field min-w-0 flex-1 py-2 text-xs"
+            aria-label="First name for drop notifications"
+            disabled={state === "submitting"}
+          />
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="your@email.com"
+            className="input-field min-w-0 flex-1 py-2 text-xs"
+            aria-label="Email address for drop notifications"
+            disabled={state === "submitting"}
+          />
+        </div>
         <button
           type="submit"
-          className="button-primary shrink-0 px-3 py-2 text-xs"
-          disabled={state === "submitting" || email.length === 0}
+          className="button-primary px-3 py-2 text-xs"
+          disabled={state === "submitting" || email.length === 0 || firstName.trim().length === 0}
         >
           {state === "submitting" ? "…" : "Notify Me"}
         </button>
