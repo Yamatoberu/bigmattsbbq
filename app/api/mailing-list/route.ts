@@ -6,6 +6,39 @@ import { getResendEnv } from "../../../lib/env";
 
 export const runtime = "nodejs";
 
+function escapeSlackText(value: string): string {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function notifySlackNewSubscriber({
+  email,
+  firstName,
+  signedUpAt
+}: {
+  email: string;
+  firstName: string;
+  signedUpAt: string;
+}): void {
+  const webhookUrl = process.env.SLACK_EMAIL_WEBHOOK_URL;
+  if (!webhookUrl) return;
+
+  const message = [
+    "New Email Subscriber — Big Matt's BBQ",
+    "",
+    `Name: ${escapeSlackText(firstName)}`,
+    `Email: ${escapeSlackText(email)}`,
+    `Signed up: ${signedUpAt}`
+  ].join("\n");
+
+  fetch(webhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text: message })
+  }).catch((err) => {
+    console.warn("Slack subscriber notification failed", err);
+  });
+}
+
 const schema = z.object({
   email: z.string().trim().toLowerCase().email(),
   firstName: z.string().trim().min(1)
@@ -51,6 +84,12 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
+
+    notifySlackNewSubscriber({
+      email: parsed.data.email,
+      firstName: parsed.data.firstName,
+      signedUpAt: new Date().toISOString()
+    });
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err) {
