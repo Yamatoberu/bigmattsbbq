@@ -7,7 +7,8 @@ import { getResendEnv } from "../../../lib/env";
 export const runtime = "nodejs";
 
 const schema = z.object({
-  email: z.string().trim().toLowerCase().email()
+  email: z.string().trim().toLowerCase().email(),
+  firstName: z.string().trim().min(1)
 });
 
 export async function POST(request: Request) {
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
 
     if (!parsed.success) {
       return NextResponse.json(
-        { error: "Invalid email.", requestId },
+        { error: "Invalid name or email.", requestId },
         { status: 400 }
       );
     }
@@ -39,6 +40,7 @@ export async function POST(request: Request) {
     const { error } = await resend.contacts.create({
       audienceId: env.audienceId,
       email: parsed.data.email,
+      firstName: parsed.data.firstName,
       unsubscribed: false
     });
 
