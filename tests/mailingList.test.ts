@@ -1,5 +1,25 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+const afterQueue = vi.hoisted(() => [] as Array<() => unknown>);
+
+vi.mock("next/server", async (importOriginal) => {
+  const original = await importOriginal<typeof import("next/server")>();
+  return {
+    ...original,
+    after: (cb: () => unknown) => {
+      afterQueue.push(cb);
+      return undefined;
+    }
+  };
+});
+
+async function flushAfter(): Promise<void> {
+  const callbacks = afterQueue.splice(0, afterQueue.length);
+  for (const cb of callbacks) {
+    await cb();
+  }
+}
+
 const contactsCreateMock = vi.fn();
 
 type ContactsResult = {
@@ -20,6 +40,7 @@ function mockResend(result: ContactsResult) {
 describe("POST /api/mailing-list", () => {
   beforeEach(() => {
     vi.resetModules();
+    afterQueue.length = 0;
     contactsCreateMock.mockReset();
     process.env.RESEND_API_KEY = "re_test";
     process.env.RESEND_AUDIENCE_ID = "aud_test_123";

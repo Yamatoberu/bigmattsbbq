@@ -1,5 +1,25 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+const afterQueue = vi.hoisted(() => [] as Array<() => unknown>);
+
+vi.mock("next/server", async (importOriginal) => {
+  const original = await importOriginal<typeof import("next/server")>();
+  return {
+    ...original,
+    after: (cb: () => unknown) => {
+      afterQueue.push(cb);
+      return undefined;
+    }
+  };
+});
+
+async function flushAfter(): Promise<void> {
+  const callbacks = afterQueue.splice(0, afterQueue.length);
+  for (const cb of callbacks) {
+    await cb();
+  }
+}
+
 const contactsCreateMock = vi.fn();
 
 type ContactsResult = {
@@ -34,6 +54,7 @@ function getSlackMessageText(): string {
 describe("POST /api/mailing-list — Slack notification", () => {
   beforeEach(() => {
     vi.resetModules();
+    afterQueue.length = 0;
     contactsCreateMock.mockReset();
     process.env.RESEND_API_KEY = "re_test";
     process.env.RESEND_AUDIENCE_ID = "aud_test_123";
@@ -59,6 +80,7 @@ describe("POST /api/mailing-list — Slack notification", () => {
     });
     const res = await POST(req);
     expect(res.status).toBe(200);
+    await flushAfter();
 
     const fetchMock = globalThis.fetch as unknown as ReturnType<typeof vi.fn>;
     expect(fetchMock).toHaveBeenCalledOnce();
@@ -81,6 +103,7 @@ describe("POST /api/mailing-list — Slack notification", () => {
       body: JSON.stringify({ email: "test@example.com", firstName: "Matt" })
     });
     await POST(req);
+    await flushAfter();
 
     const text = getSlackMessageText();
     expect(text).toMatch(/Signed up: \d{4}-\d{2}-\d{2}T[\d:.]+Z/);
@@ -153,6 +176,7 @@ describe("POST /api/mailing-list — Slack notification", () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.ok).toBe(true);
+    await flushAfter();
   });
 
   it("Test 8: a firstName containing <!channel> is escaped in the Slack message", async () => {
@@ -164,9 +188,85 @@ describe("POST /api/mailing-list — Slack notification", () => {
       body: JSON.stringify({ email: "ok@example.com", firstName: "<!channel> Matt" })
     });
     await POST(req);
+    await flushAfter();
 
     const text = getSlackMessageText();
     expect(text).not.toContain("<!channel>");
     expect(text).toContain("&lt;!channel&gt; Matt");
+  });
+
+  it("Test 9: the Slack fetch is deferred, not issued inline", async () => {
+    mockResend({ data: { object: "contact", id: "c_123" }, error: null });
+    const { POST } = await import("../app/api/mailing-list/route");
+    const req = new Request("http://localhost/api/mailing-list", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email: "test@example.com", firstName: "Matt" })
+    });
+    await POST(req);
+
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+
+    await flushAfter();
+
+    const fetchMock = globalThis.fetch as unknown as ReturnType<typeof vi.fn>;
+    expect(fetchMock).toHaveBeenCalledOnce();
+    expect(fetchMock.mock.calls[0][0]).toBe("https://hooks.slack.test/T000/B111/email");
+  });
+
+  it("Test 10: a successful signup registers exactly one after() callback, failure paths register none", async () => {
+    mockResend({ data: { object: "contact", id: "c_123" }, error: null });
+    const { POST } = await import("../app/api/mailing-list/route");
+    const req = new Request("http://localhost/api/mailing-list", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email: "test@example.com", firstName: "Matt" })
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    expect(afterQueue.length).toBe(1);
+    await flushAfter();
+
+    afterQueue.length = 0;
+    vi.resetModules();
+    contactsCreateMock.mockReset();
+    mockResend({ data: { object: "contact", id: "x" }, error: null });
+    const { POST: POST400 } = await import("../app/api/mailing-list/route");
+    const badReq = new Request("http://localhost/api/mailing-list", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email: "not-an-email", firstName: "Matt" })
+    });
+    const badRes = await POST400(badReq);
+    expect(badRes.status).toBe(400);
+    expect(afterQueue.length).toBe(0);
+
+    vi.resetModules();
+    contactsCreateMock.mockReset();
+    mockResend({ data: null, error: { message: "rate limited", name: "rate_limit_exceeded" } });
+    const { POST: POST500 } = await import("../app/api/mailing-list/route");
+    const errReq = new Request("http://localhost/api/mailing-list", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email: "ok@example.com", firstName: "Matt" })
+    });
+    const errRes = await POST500(errReq);
+    expect(errRes.status).toBe(500);
+    expect(afterQueue.length).toBe(0);
+
+    vi.resetModules();
+    contactsCreateMock.mockReset();
+    delete process.env.RESEND_AUDIENCE_ID;
+    mockResend({ data: { object: "contact", id: "x" }, error: null });
+    const { POST: POSTEnv } = await import("../app/api/mailing-list/route");
+    const envReq = new Request("http://localhost/api/mailing-list", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email: "ok@example.com", firstName: "Matt" })
+    });
+    const envRes = await POSTEnv(envReq);
+    expect(envRes.status).toBe(500);
+    expect(afterQueue.length).toBe(0);
+    process.env.RESEND_AUDIENCE_ID = "aud_test_123";
   });
 });
