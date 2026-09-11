@@ -37,7 +37,7 @@ describe("POST /api/mailing-list", () => {
     const req = new Request("http://localhost/api/mailing-list", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ email: "test@example.com" })
+      body: JSON.stringify({ email: "test@example.com", firstName: "Matt" })
     });
     const res = await POST(req);
     expect(res.status).toBe(200);
@@ -48,6 +48,7 @@ describe("POST /api/mailing-list", () => {
     expect(call.email).toBe("test@example.com");
     expect(call.audienceId).toBe("aud_test_123");
     expect(call.unsubscribed).toBe(false);
+    expect(call.firstName).toBe("Matt");
   });
 
   it("returns 200 silently on duplicate (Resend upsert returns no error)", async () => {
@@ -56,7 +57,7 @@ describe("POST /api/mailing-list", () => {
     const req = new Request("http://localhost/api/mailing-list", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ email: "dup@example.com" })
+      body: JSON.stringify({ email: "dup@example.com", firstName: "Matt" })
     });
     const res = await POST(req);
     expect(res.status).toBe(200);
@@ -71,11 +72,65 @@ describe("POST /api/mailing-list", () => {
     const req = new Request("http://localhost/api/mailing-list", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ email: "not-an-email" })
+      body: JSON.stringify({ email: "not-an-email", firstName: "Matt" })
     });
     const res = await POST(req);
     expect(res.status).toBe(400);
     expect(contactsCreateMock).not.toHaveBeenCalled();
+  });
+
+  it("returns 400 when firstName is missing", async () => {
+    mockResend({ data: { object: "contact", id: "x" }, error: null });
+    const { POST } = await import("../app/api/mailing-list/route");
+    const req = new Request("http://localhost/api/mailing-list", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email: "ok@example.com" })
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+    expect(contactsCreateMock).not.toHaveBeenCalled();
+  });
+
+  it("returns 400 when firstName is empty", async () => {
+    mockResend({ data: { object: "contact", id: "x" }, error: null });
+    const { POST } = await import("../app/api/mailing-list/route");
+    const req = new Request("http://localhost/api/mailing-list", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email: "ok@example.com", firstName: "" })
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+    expect(contactsCreateMock).not.toHaveBeenCalled();
+  });
+
+  it("returns 400 when firstName is whitespace only", async () => {
+    mockResend({ data: { object: "contact", id: "x" }, error: null });
+    const { POST } = await import("../app/api/mailing-list/route");
+    const req = new Request("http://localhost/api/mailing-list", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email: "ok@example.com", firstName: "   " })
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+    expect(contactsCreateMock).not.toHaveBeenCalled();
+  });
+
+  it("trims firstName before forwarding to contacts.create", async () => {
+    mockResend({ data: { object: "contact", id: "x" }, error: null });
+    const { POST } = await import("../app/api/mailing-list/route");
+    const req = new Request("http://localhost/api/mailing-list", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email: "ok@example.com", firstName: "  Matt  " })
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    expect(contactsCreateMock).toHaveBeenCalledOnce();
+    const call = contactsCreateMock.mock.calls[0][0];
+    expect(call.firstName).toBe("Matt");
   });
 
   it("returns 500 when Resend contacts.create returns an error", async () => {
@@ -87,7 +142,7 @@ describe("POST /api/mailing-list", () => {
     const req = new Request("http://localhost/api/mailing-list", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ email: "ok@example.com" })
+      body: JSON.stringify({ email: "ok@example.com", firstName: "Matt" })
     });
     const res = await POST(req);
     expect(res.status).toBe(500);
@@ -103,7 +158,7 @@ describe("POST /api/mailing-list", () => {
     const req = new Request("http://localhost/api/mailing-list", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ email: "ok@example.com" })
+      body: JSON.stringify({ email: "ok@example.com", firstName: "Matt" })
     });
     const res = await POST(req);
     expect(res.status).toBe(500);
