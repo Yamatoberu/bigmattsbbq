@@ -30,6 +30,10 @@ export function DropNotificationEmail({ subject, dropId }: DropNotificationEmail
             Big Matt&apos;s BBQ Drop is Live
           </Text>
 
+          <Text style={{ color: "#d1d1d1", fontSize: "16px", lineHeight: "24px", margin: "0 0 16px 0" }}>
+            {"Hey {{{FIRST_NAME|there}}},"}
+          </Text>
+
           <Text style={{ color: "#d1d1d1", fontSize: "16px", lineHeight: "24px", margin: "0 0 24px 0" }}>
             {subject}
           </Text>
