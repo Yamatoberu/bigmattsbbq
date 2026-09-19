@@ -269,6 +269,19 @@ A mobile-first website for Big Matt's BBQ that serves as a sales funnel for limi
 <!-- GSD:architecture-end -->
 
 <!-- GSD:workflow-start source:GSD defaults -->
+## Branching & PR Workflow
+
+Shared with Codex via `AGENTS.md` — keep the two in sync.
+
+1. Work starts from a GitHub issue. Comment on the issue with the branch name so other agents don't pick up the same work.
+2. Branch off `master`, named `claude/<issue-number>-<short-slug>` (Codex uses `codex/...`).
+3. Commit and push to that branch freely — own it. Never push to `master` directly.
+4. Commit messages: conventional prefix (`feat:`, `fix:`, `docs:`, `chore:`, `refactor:`), one short line. Anything longer than a couple of sentences gets skipped over.
+5. Before opening a PR: rebase on latest `master`, run `npm run lint`, `npm run build`, `npm test`, and confirm the diff only touches what the issue asks for. CI runs the same three checks and must be green.
+6. Open the PR with `gh pr create --reviewer Yamatoberu`. Body follows `.github/pull_request_template.md` and includes `Closes #<n>`.
+7. Yamatoberu reviews, approves, and merges. Answer review questions in the PR thread. Push follow-up commits to the same branch — do not force-push once a PR is open.
+8. `.planning/` commits from GSD workflows ride along in the PR; that's expected.
+
 ## GSD Workflow Enforcement
 
 Before using Edit, Write, or other file-changing tools, start work through a GSD command so planning artifacts and execution context stay in sync.
@@ -287,3 +300,13 @@ Do not make direct repo edits outside a GSD workflow unless the user explicitly 
 > Profile not yet configured. Run `/gsd:profile-user` to generate your developer profile.
 > This section is managed by `generate-claude-profile` -- do not edit manually.
 <!-- GSD:profile-end -->
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

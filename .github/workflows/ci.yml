@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Lint, build, test
+    runs-on: ubuntu-latest
+    env:
+      # Dummy values so lib/env.ts validation passes at build time. No real
+      # network calls happen during build or unit tests.
+      NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ci
+      SUPABASE_SERVICE_ROLE_KEY: ci
+      RESEND_API_KEY: re_ci
+      EMAIL_FROM: ci@example.com
+      EMAIL_REPLY_TO: ci@example.com
+      SQUARE_ENV: sandbox
+      SQUARE_ACCESS_TOKEN: ci
+      SQUARE_LOCATION_ID: ci
+      SQUARE_FROZEN_CATEGORY_ID: ci
+      SQUARE_SAUCE_VARIATION_ID: ci
+      BROADCAST_SECRET: ci-secret-1234567890
+      RESEND_AUDIENCE_ID: ci
+      RESEND_SEGMENT_ID: ci
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - run: npm run build
+
+      - run: npm test
