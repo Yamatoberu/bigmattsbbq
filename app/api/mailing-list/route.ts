@@ -76,7 +76,7 @@ async function triggerWelcomeAutomation(
     const { error } = await resend.events.send({
       event,
       email,
-      payload: { FIRST_NAME: firstName }
+      payload: { FAN_NAME: firstName }
     });
     if (error) {
       console.warn("welcome automation trigger failed", error);

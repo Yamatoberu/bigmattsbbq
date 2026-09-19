@@ -249,7 +249,7 @@ describe("POST /api/mailing-list — welcome automation", () => {
     expect(eventsSendMock).toHaveBeenCalledWith({
       event: "subscriber.welcome",
       email: "new@example.com",
-      payload: { FIRST_NAME: "Matt" }
+      payload: { FAN_NAME: "Matt" }
     });
   });
 
