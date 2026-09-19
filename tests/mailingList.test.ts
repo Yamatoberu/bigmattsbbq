@@ -72,7 +72,6 @@ describe("POST /api/mailing-list", () => {
     process.env.RESEND_API_KEY = "re_test";
     process.env.RESEND_AUDIENCE_ID = "aud_test_123";
     process.env.RESEND_SEGMENT_ID = "seg_test_123";
-    process.env.RESEND_WELCOME_EVENT = "subscriber.welcome";
   });
 
   afterEach(() => {
@@ -226,7 +225,6 @@ describe("POST /api/mailing-list — welcome automation", () => {
     process.env.RESEND_API_KEY = "re_test";
     process.env.RESEND_AUDIENCE_ID = "aud_test_123";
     process.env.RESEND_SEGMENT_ID = "seg_test_123";
-    process.env.RESEND_WELCOME_EVENT = "subscriber.welcome";
   });
 
   afterEach(() => {
@@ -322,22 +320,6 @@ describe("POST /api/mailing-list — welcome automation", () => {
     const res = await POST(req);
     expect(res.status).toBe(200);
     expect(contactsCreateMock).toHaveBeenCalledOnce();
-    await flushAfter();
-    expect(eventsSendMock).not.toHaveBeenCalled();
-  });
-
-  it("never calls contacts.get or events.send when RESEND_WELCOME_EVENT is unset", async () => {
-    delete process.env.RESEND_WELCOME_EVENT;
-    mockResend({ data: { object: "contact", id: "c_new" }, error: null });
-    const { POST } = await import("../app/api/mailing-list/route");
-    const req = new Request("http://localhost/api/mailing-list", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ email: "new@example.com", firstName: "Matt" })
-    });
-    const res = await POST(req);
-    expect(res.status).toBe(200);
-    expect(contactsGetMock).not.toHaveBeenCalled();
     await flushAfter();
     expect(eventsSendMock).not.toHaveBeenCalled();
   });

@@ -35,15 +35,12 @@ export interface ResendEnv {
   apiKey: string;
   audienceId: string;
   segmentId: string;
-  welcomeEvent?: string;
 }
 
 export function getResendEnv(): ResendEnv {
   const apiKey = process.env.RESEND_API_KEY;
   const audienceId = process.env.RESEND_AUDIENCE_ID;
   const segmentId = process.env.RESEND_SEGMENT_ID;
-  const welcomeEventRaw = process.env.RESEND_WELCOME_EVENT;
-  const welcomeEvent = welcomeEventRaw?.trim() || undefined;
 
   if (!apiKey || !audienceId || !segmentId) {
     throw new Error(
@@ -51,6 +48,6 @@ export function getResendEnv(): ResendEnv {
     );
   }
 
-  return { apiKey, audienceId, segmentId, welcomeEvent };
+  return { apiKey, audienceId, segmentId };
 }
 

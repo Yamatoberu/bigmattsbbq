@@ -2,9 +2,11 @@ import { NextResponse, after } from "next/server";
 import { z } from "zod";
 import { Resend } from "resend";
 import { logError } from "../../../lib/logger";
-import { getResendEnv, type ResendEnv } from "../../../lib/env";
+import { getResendEnv } from "../../../lib/env";
 
 export const runtime = "nodejs";
+
+const WELCOME_EVENT = "subscriber.welcome";
 
 function escapeSlackText(value: string): string {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -103,7 +105,7 @@ export async function POST(request: Request) {
       );
     }
 
-    let env: ResendEnv;
+    let env: { apiKey: string; audienceId: string };
     try {
       env = getResendEnv();
     } catch (envErr) {
@@ -115,10 +117,7 @@ export async function POST(request: Request) {
     }
 
     const resend = new Resend(env.apiKey);
-    const welcomeEvent = env.welcomeEvent;
-    const shouldWelcome = welcomeEvent
-      ? await shouldSendWelcome(resend, env.audienceId, parsed.data.email)
-      : false;
+    const shouldWelcome = await shouldSendWelcome(resend, env.audienceId, parsed.data.email);
 
     const { error } = await resend.contacts.create({
       audienceId: env.audienceId,
@@ -143,9 +142,9 @@ export async function POST(request: Request) {
       })
     );
 
-    if (shouldWelcome && welcomeEvent) {
+    if (shouldWelcome) {
       after(() =>
-        triggerWelcomeAutomation(resend, welcomeEvent, parsed.data.email, parsed.data.firstName)
+        triggerWelcomeAutomation(resend, WELCOME_EVENT, parsed.data.email, parsed.data.firstName)
       );
     }
 
