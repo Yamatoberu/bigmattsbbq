@@ -1,0 +1,50 @@
+-- =============================================================================
+-- Big Matt's BBQ — Migration 0018
+-- Drops a dead, publicly-callable SECURITY DEFINER function found live on
+-- production, plus its orphaned sequence.
+--
+-- What it was: `public.place_preorder(bigint, bigint, jsonb, text, text,
+-- text, boolean)` was found live on the production project
+-- (`wpziabhigztyjrmjpmbw`) while reviewing advisors. It is `SECURITY DEFINER`
+-- and `EXECUTE`-granted to the `anon` and `authenticated` roles, meaning it
+-- was callable unauthenticated over PostgREST at
+-- `/rest/v1/rpc/place_preorder`, accepting customer PII (full name, email,
+-- phone) and an arbitrary item JSON payload.
+--
+-- Why it is untracked: it appears in no migration in this repo and was
+-- created out-of-band, the same way the `sca`, `menu_costing`, and
+-- `production` schemas were (see 0013-0016).
+--
+-- Why it is provably dead — three independent reasons:
+--   1. No application code calls it. A repo-wide grep finds only a generated
+--      type stub in `lib/database.types.ts`; there is no call site.
+--   2. Its body references four tables that do not exist anywhere in the
+--      database — `drop_pickups`, `drop_inventory`, `customers`,
+--      `mailing_list_subscribers` (confirmed against `information_schema.tables`,
+--      zero rows). Any invocation errors out before touching data.
+--   3. It compares a `bigint` parameter against `public.drops.id`, which is
+--      `uuid`. Postgres will not implicitly cast between those types, so the
+--      comparison cannot even plan.
+--
+-- What else goes: `public.order_number_seq`, a sequence owned by no column
+-- and referenced only by this dead function.
+--
+-- Decision: the user decided on 2026-09-19 to drop both rather than leave a
+-- non-functional, publicly-callable SECURITY DEFINER entry point on the
+-- production API surface.
+--
+-- Environment effect: this migration is a no-op on `bigmattsbbq-test`
+-- (`ujpviiulhibzztbricxu`) — the function predates this session's migration
+-- work, was never part of the tracked schema, and so was never recreated
+-- when that project was rebuilt from 0001-0016. On production it removes a
+-- real, live, anon-reachable function. Both `drop` statements use
+-- `if exists` precisely so the migration is safe to replay against either
+-- project.
+--
+-- No `cascade` is used on either statement — if something unexpected
+-- depends on these objects, this migration should fail loudly rather than
+-- silently widen its blast radius.
+-- =============================================================================
+
+drop function if exists public.place_preorder(bigint, bigint, jsonb, text, text, text, boolean);
+drop sequence if exists public.order_number_seq;
