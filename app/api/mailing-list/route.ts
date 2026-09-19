@@ -2,7 +2,7 @@ import { NextResponse, after } from "next/server";
 import { z } from "zod";
 import { Resend } from "resend";
 import { logError } from "../../../lib/logger";
-import { getResendEnv } from "../../../lib/env";
+import { getResendEnv, type ResendEnv } from "../../../lib/env";
 
 export const runtime = "nodejs";
 
@@ -44,6 +44,46 @@ async function notifySlackNewSubscriber({
   }
 }
 
+async function shouldSendWelcome(
+  resend: Resend,
+  audienceId: string,
+  email: string
+): Promise<boolean> {
+  try {
+    const { data, error } = await resend.contacts.get({ email, audienceId });
+    if (error?.name === "not_found") return true;
+    if (error) {
+      console.warn("mailing-list contact lookup failed", error);
+      return false;
+    }
+    if (data?.unsubscribed === true) return true;
+    return false;
+  } catch (err) {
+    console.warn("mailing-list contact lookup failed", err);
+    return false;
+  }
+}
+
+async function triggerWelcomeAutomation(
+  resend: Resend,
+  event: string,
+  email: string,
+  firstName: string
+): Promise<void> {
+  try {
+    const { error } = await resend.events.send({
+      event,
+      email,
+      payload: { FIRST_NAME: firstName }
+    });
+    if (error) {
+      console.warn("welcome automation trigger failed", error);
+    }
+  } catch (err) {
+    console.warn("welcome automation trigger failed", err);
+  }
+}
+
 const schema = z.object({
   email: z.string().trim().toLowerCase().email(),
   firstName: z.string().trim().min(1)
@@ -63,7 +103,7 @@ export async function POST(request: Request) {
       );
     }
 
-    let env: { apiKey: string; audienceId: string };
+    let env: ResendEnv;
     try {
       env = getResendEnv();
     } catch (envErr) {
@@ -75,6 +115,11 @@ export async function POST(request: Request) {
     }
 
     const resend = new Resend(env.apiKey);
+    const welcomeEvent = env.welcomeEvent;
+    const shouldWelcome = welcomeEvent
+      ? await shouldSendWelcome(resend, env.audienceId, parsed.data.email)
+      : false;
+
     const { error } = await resend.contacts.create({
       audienceId: env.audienceId,
       email: parsed.data.email,
@@ -97,6 +142,12 @@ export async function POST(request: Request) {
         signedUpAt: new Date().toISOString()
       })
     );
+
+    if (shouldWelcome && welcomeEvent) {
+      after(() =>
+        triggerWelcomeAutomation(resend, welcomeEvent, parsed.data.email, parsed.data.firstName)
+      );
+    }
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err) {
