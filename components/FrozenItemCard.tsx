@@ -2,19 +2,17 @@ import Image from "next/image";
 import { FrozenItemDTO } from "../lib/types";
 import { formatMoney } from "../lib/format";
 import { getFrozenItemImage } from "../lib/productImages";
-import { SoldOutCapture } from "./SoldOutCapture";
 
 interface FrozenItemCardProps {
   item: FrozenItemDTO;
   onAdd: (variationId: string) => void;
-  soldOut?: boolean;
 }
 
-export function FrozenItemCard({ item, onAdd, soldOut = false }: FrozenItemCardProps) {
+export function FrozenItemCard({ item, onAdd }: FrozenItemCardProps) {
   const image = getFrozenItemImage(item);
 
   return (
-    <article className={`glass-card flex h-full flex-col gap-4 p-5${soldOut ? " opacity-60" : ""}`}>
+    <article className="glass-card flex h-full flex-col gap-4 p-5">
       <div className="flex items-start gap-4">
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-smoke-900" style={{ fontFamily: "var(--font-display)" }}>
@@ -50,16 +48,12 @@ export function FrozenItemCard({ item, onAdd, soldOut = false }: FrozenItemCardP
                 {formatMoney(variation.priceCents, variation.currency)}
               </p>
             </div>
-            {soldOut ? (
-              <SoldOutCapture />
-            ) : (
-              <button
-                className="button-primary px-4 py-2 text-xs"
-                onClick={() => onAdd(variation.variationId)}
-              >
-                Add to Cart
-              </button>
-            )}
+            <button
+              className="button-primary px-4 py-2 text-xs"
+              onClick={() => onAdd(variation.variationId)}
+            >
+              Add to Cart
+            </button>
           </div>
         ))}
       </div>
