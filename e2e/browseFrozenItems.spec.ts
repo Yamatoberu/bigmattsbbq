@@ -3,7 +3,7 @@ import { stubFrozenItems, stubActiveDrop } from "./support/stubs";
 import { variationIds } from "./fixtures/frozenItems";
 
 test.describe("browse frozen items", () => {
-  test("renders in-stock items with prices and add-to-cart", async ({ page }) => {
+  test("renders items with prices and add-to-cart", async ({ page }) => {
     await stubActiveDrop(page);
     await stubFrozenItems(page);
     await page.goto("/");

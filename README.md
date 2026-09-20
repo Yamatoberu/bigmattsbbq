@@ -34,7 +34,7 @@ Open `http://localhost:3000`.
 - `SQUARE_ENV`: `sandbox` or `production`
 - `SQUARE_HOST`: `https://connect.squareup.com` or sandbox host
 - `SQUARE_ACCESS_TOKEN`: Square access token
-- `SQUARE_LOCATION_ID`: Square location for pickup and inventory
+- `SQUARE_LOCATION_ID`: Square location used for orders and invoices at checkout
 - `SQUARE_FROZEN_CATEGORY_ID`: Catalog category containing frozen items
 - `SQUARE_SAUCE_VARIATION_ID`: Variation ID for house sauce (used for bump)
 - `SCA_HOSTNAME` (optional): hostname that routes to the SCA Tracker, defaults to `sca.bigmattsbbq.com`
@@ -55,11 +55,9 @@ You can also fetch catalog data via the Square Catalog API if you prefer CLI too
 ## API routes
 
 - `GET /api/frozen-items`
-  - Returns frozen menu items with inventory counts.
+  - Returns frozen menu items and prices from the Square Catalog.
 - `POST /api/checkout`
   - Creates customer, order, and invoice, then publishes the invoice.
-- `POST /api/dev/set-inventory` (sandbox only)
-  - Updates physical counts for testing.
 
 ## SCA Tracker
 
@@ -81,7 +79,7 @@ npm run test
 ```
 
 Tests cover:
-- inventory count joins
+- frozen-items menu route (catalog only)
 - sauce bump logic
 - package mapping
 

@@ -2,17 +2,15 @@ import Image from "next/image";
 import { PackageConfig } from "../lib/types";
 import { getPackageImage } from "../lib/productImages";
 import { formatMoney } from "../lib/format";
-import { SoldOutCapture } from "./SoldOutCapture";
 
 interface PackageCardProps {
   pkg: PackageConfig;
   priceCents: number;
   onAdd: () => void;
   isDisabled: boolean;
-  soldOut?: boolean;
 }
 
-export function PackageCard({ pkg, priceCents, onAdd, isDisabled, soldOut = false }: PackageCardProps) {
+export function PackageCard({ pkg, priceCents, onAdd, isDisabled }: PackageCardProps) {
   const image = getPackageImage(pkg);
 
   return (
@@ -49,17 +47,13 @@ export function PackageCard({ pkg, priceCents, onAdd, isDisabled, soldOut = fals
             {formatMoney(priceCents)}
           </p>
         )}
-        {soldOut ? (
-          <SoldOutCapture />
-        ) : (
-          <button
-            className="button-primary"
-            onClick={onAdd}
-            disabled={isDisabled}
-          >
-            Add to Cart
-          </button>
-        )}
+        <button
+          className="button-primary"
+          onClick={onAdd}
+          disabled={isDisabled}
+        >
+          Add to Cart
+        </button>
       </div>
     </article>
   );

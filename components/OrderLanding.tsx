@@ -163,7 +163,7 @@ export function OrderLanding({ initialDrop }: { initialDrop: DropDTO | null }) {
             <SectionHeader
               eyebrow="Build Your Own"
               title="Individual Items"
-              subtitle="Mix and match individual items while supplies last."
+              subtitle="Mix and match individual items for this drop."
             />
             {error && (
               <div className="glass-card border border-ember-400 bg-[#1a120e] p-4 text-sm text-ember-200">

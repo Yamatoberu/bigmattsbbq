@@ -3,7 +3,6 @@ export interface VariationDTO {
   name: string;
   priceCents: number;
   currency: string;
-  remaining: number;
 }
 
 export interface FrozenItemDTO {

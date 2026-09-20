@@ -15,11 +15,11 @@ npx vitest run tests/<filename>.test.ts  # Run a single test file
 
 ## Architecture
 
-**Big Matt's BBQ** is a Next.js 16 App Router e-commerce sales funnel for frozen BBQ products. There is no database — all catalog, inventory, and payment data flows through the Square API.
+**Big Matt's BBQ** is a Next.js 16 App Router e-commerce sales funnel for frozen BBQ products. There is no database — catalog and payment data flow through the Square API.
 
 ### Data Flow
 
-1. **Item browsing**: `useFrozenItems` hook fetches `GET /api/frozen-items`, which calls Square's Catalog + Inventory APIs and returns `FrozenItemDTO[]` with live stock counts via `joinInventoryCounts()` in `lib/normalizers.ts`.
+1. **Item browsing**: `useFrozenItems` hook fetches `GET /api/frozen-items`, which calls Square's Catalog API and returns `FrozenItemDTO[]` via `mapCatalogToFrozenItems()` in `lib/square.ts`.
 2. **Cart**: `CartContext` (`components/cart/CartContext.tsx`) persists `CartItem[]` to localStorage under `big-matts-bbq-cart`.
 3. **Checkout**: `POST /api/checkout` validates the request with Zod, creates/looks up a Square customer, creates a Square order and invoice, and emails the invoice to the buyer.
 
@@ -31,7 +31,6 @@ npx vitest run tests/<filename>.test.ts  # Run a single test file
 | `lib/config.ts` | Pre-configured packages and pickup options (dates/locations live here) |
 | `lib/square.ts` | All Square API calls; API version is pinned at the top of this file |
 | `lib/cart.ts` | `resolvePackageToCartItems()` maps config packages to variation IDs; `isSauceBumpNeeded()` auto-adds sauce |
-| `lib/normalizers.ts` | `joinInventoryCounts()` joins catalog items with Square inventory counts |
 | `lib/env.ts` | Validates required environment variables at startup |
 
 ### Environment Variables
@@ -47,7 +46,7 @@ Custom color palettes `ember` (warm orange-red) and `smoke` (dark browns) are de
 
 ### Tests
 
-Three test files in `tests/` cover inventory join logic, package-to-cart-item mapping, and sauce bump logic. They run in a Node environment via Vitest.
+Test files in `tests/` cover the catalog-only frozen-items route, package-to-cart-item mapping, and sauce bump logic. They run in a Node environment via Vitest.
 
 <!-- GSD:project-start source:PROJECT.md -->
 ## Project
@@ -62,7 +61,7 @@ A mobile-first website for Big Matt's BBQ that serves as a sales funnel for limi
 
 - **Tech stack**: Next.js App Router, TypeScript, Tailwind CSS — already established
 - **Payment**: Square invoices (keep existing integration) — no new payment processing
-- **Inventory**: Square Inventory API remains source of truth — no migration to Supabase
+- **Inventory**: not tracked — no stock counts from Square or Supabase; Square Catalog is the product source of truth
 - **Database**: Supabase (Postgres) for new data models (drops, orders, mailing list, email logs)
 - **Email**: Resend for transactional and mailing list emails
 - **Hosting**: Vercel (implicit from Next.js stack)
@@ -110,7 +109,6 @@ A mobile-first website for Big Matt's BBQ that serves as a sales funnel for limi
 ## API Routes
 - `app/api/frozen-items/route.ts` - GET
 - `app/api/checkout/route.ts` - POST
-- `app/api/dev/set-inventory/route.ts` - POST (sandbox only)
 ## Platform Requirements
 - Node.js 24.x
 - npm 11.x
@@ -125,21 +123,21 @@ A mobile-first website for Big Matt's BBQ that serves as a sales funnel for limi
 ## Naming Patterns
 - React components: PascalCase, `.tsx` extension — `FrozenItemCard.tsx`, `CheckoutClient.tsx`, `CartContext.tsx`
 - Hooks: camelCase with `use` prefix, `.ts` extension — `useFrozenItems.ts`
-- Lib modules: camelCase, `.ts` extension — `cart.ts`, `normalizers.ts`, `idempotency.ts`
+- Lib modules: camelCase, `.ts` extension — `cart.ts`, `idempotency.ts`
 - API routes: Next.js convention `route.ts` inside named directories — `app/api/checkout/route.ts`
 - Config/constants modules: camelCase — `config.ts`, `env.ts`
-- Exported utility functions: camelCase verb phrase — `joinInventoryCounts`, `resolvePackageToCartItems`, `formatMoney`, `getSquareEnv`
+- Exported utility functions: camelCase verb phrase — `mapCatalogToFrozenItems`, `resolvePackageToCartItems`, `formatMoney`, `getSquareEnv`
 - React components: PascalCase — `FrozenItemCard`, `CartProvider`, `CheckoutClient`
 - Custom hooks: camelCase `use` prefix — `useFrozenItems`, `useCart`
 - Private helpers: camelCase, module-scoped (not exported) — `normalizeMatch`, `squareFetch`
 - Event handlers: `handle` prefix for form events — `handleSubmit`
 - camelCase throughout — `frozenItems`, `variationMap`, `cartDetails`, `estimatedTotalCents`
-- Boolean state variables: descriptive `is` prefix — `isReady`, `isLoading`, `isSubmitting`, `isSoldOut`
+- Boolean state variables: descriptive `is` prefix — `isReady`, `isLoading`, `isSubmitting`, `isDisabled`
 - Constants/config arrays: SCREAMING_SNAKE_CASE — `PACKAGES`, `PICKUP_OPTIONS`, `STORAGE_KEY`, `SQUARE_VERSION`
 - Interfaces: PascalCase with meaningful suffix — `FrozenItemDTO`, `CartItem`, `PackageConfig`, `SquareEnv`
 - DTO suffix for data-transfer objects from external APIs — `FrozenItemDTO`, `VariationDTO`
 - Props interfaces: PascalCase component name + `Props` — `FrozenItemCardProps`, `CheckoutClientProps`, `PackageCardProps`
-- Internal-only interfaces: declared without export — `InventoryCount`, `SquareFetchOptions`, `FrozenItemsState`
+- Internal-only interfaces: declared without export — `SquareFetchOptions`, `FrozenItemsState`
 - String literal unions preferred over enums — `"sandbox" | "production"`, `"Preston" | "Orem"`
 ## Code Style
 - 2-space indentation (enforced via `.editorconfig`)
@@ -189,7 +187,7 @@ A mobile-first website for Big Matt's BBQ that serves as a sales funnel for limi
 - API routes (`app/api/`) act as a thin orchestration layer over a single external service (Square)
 - All Square API calls are centralized in `lib/square.ts`; routes never call Square directly
 - Client state is limited to cart (localStorage-backed Context) and local form/UI state
-- No database — Square is the sole source of truth for catalog, inventory, customers, and orders
+- No database — Square is the sole source of truth for catalog, customers, and orders
 ## Layers
 - Purpose: Next.js route entry points; minimal logic, wires server-side env to client components
 - Location: `app/`
@@ -198,8 +196,8 @@ A mobile-first website for Big Matt's BBQ that serves as a sales funnel for limi
 - Used by: Next.js router
 - Purpose: Validate requests, orchestrate Square API calls, return normalized JSON
 - Location: `app/api/`
-- Contains: `route.ts` files for `GET /api/frozen-items`, `POST /api/checkout`, `POST /api/dev/set-inventory`
-- Depends on: `lib/square.ts`, `lib/env.ts`, `lib/normalizers.ts`, `lib/idempotency.ts`, `lib/logger.ts`
+- Contains: `route.ts` files for `GET /api/frozen-items`, `POST /api/checkout`
+- Depends on: `lib/square.ts`, `lib/env.ts`, `lib/idempotency.ts`, `lib/logger.ts`
 - Used by: Client components via `fetch()`
 - Purpose: All UI rendering and client-side interactivity
 - Location: `components/`
@@ -208,7 +206,7 @@ A mobile-first website for Big Matt's BBQ that serves as a sales funnel for limi
 - Used by: `app/` page files
 - Purpose: Shared logic, types, utilities, and the Square API client
 - Location: `lib/`
-- Contains: `square.ts` (API client + mappers), `types.ts`, `config.ts`, `cart.ts`, `normalizers.ts`, `env.ts`, `format.ts`, `idempotency.ts`, `logger.ts`
+- Contains: `square.ts` (API client + mappers), `types.ts`, `config.ts`, `cart.ts`, `env.ts`, `format.ts`, `idempotency.ts`, `logger.ts`
 - Depends on: Node.js runtime, environment variables
 - Used by: API routes and components
 ## Data Flow
@@ -216,9 +214,9 @@ A mobile-first website for Big Matt's BBQ that serves as a sales funnel for limi
 - Frozen item catalog is fetched fresh on each page load (no caching, `cache: "no-store"`)
 - No global server state; no database
 ## Key Abstractions
-- Purpose: Normalized representation of a Square catalog item with inventory counts
+- Purpose: Normalized representation of a Square catalog item and its variations
 - Definition: `lib/types.ts`
-- Created by: `mapCatalogToFrozenItems` + `joinInventoryCounts` in `lib/square.ts` and `lib/normalizers.ts`
+- Created by: `mapCatalogToFrozenItems` in `lib/square.ts`
 - Consumed by: `OrderLanding`, `FrozenItemCard`, `CheckoutClient`, `useFrozenItems`
 - Purpose: Minimal cart entry — just `variationId` and `quantity`
 - Definition: `lib/types.ts`
@@ -252,13 +250,10 @@ A mobile-first website for Big Matt's BBQ that serves as a sales funnel for limi
 - Responsibilities: Stub placeholder — "coming soon" UI only
 - Location: `app/api/frozen-items/route.ts`
 - Triggers: `GET /api/frozen-items`
-- Responsibilities: Fetch and merge Square catalog + inventory, return `FrozenItemDTO[]`
+- Responsibilities: Fetch the Square catalog category, return `FrozenItemDTO[]`
 - Location: `app/api/checkout/route.ts`
 - Triggers: `POST /api/checkout`
 - Responsibilities: Validate body, upsert Square customer, create order + invoice, publish invoice
-- Location: `app/api/dev/set-inventory/route.ts`
-- Triggers: `POST /api/dev/set-inventory`
-- Responsibilities: Sandbox-only; directly sets Square inventory counts for testing
 ## Error Handling
 - All API routes wrap logic in `try/catch`; `SquareError` status is passed through, all others return 500
 - `logError` in `lib/logger.ts` logs structured error objects to `console.error` with `requestId`

@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { getSquareEnv } from "../../../lib/env";
-import { joinInventoryCounts } from "../../../lib/normalizers";
 import {
-  batchRetrieveInventoryCounts,
-  extractVariationIds,
   mapCatalogToFrozenItems,
   searchCatalogItems,
   SquareError
@@ -28,19 +25,7 @@ export async function GET() {
     });
 
     const frozenItems = mapCatalogToFrozenItems({ items, relatedObjects });
-    const variationIds = extractVariationIds(frozenItems);
-
-    const inventory = await batchRetrieveInventoryCounts({
-      host: env.host,
-      accessToken: env.accessToken,
-      locationId: env.locationId,
-      variationIds,
-      requestId
-    });
-
-    const withInventory = joinInventoryCounts(frozenItems, inventory.counts ?? []);
-
-    return NextResponse.json(withInventory);
+    return NextResponse.json(frozenItems);
   } catch (error) {
     logError("Failed to load frozen items", error, requestId);
     const status = error instanceof SquareError ? error.status : 500;
