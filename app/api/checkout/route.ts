@@ -97,7 +97,7 @@ function notifySlackNewOrder({
   });
 }
 
-export const cartSchema = z.object({
+const cartSchema = z.object({
   variationId: z.string().min(1),
   quantity: z.number().int().positive(),
   productName: z.union([
