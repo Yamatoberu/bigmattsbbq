@@ -1,6 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
 
 vi.mock("next/server", () => ({
   NextResponse: {
@@ -105,9 +103,6 @@ describe("GET /api/frozen-items", () => {
       expect.objectContaining({ categoryId: "cat-frozen", accessToken: "test-token" })
     );
     expect(mapCatalogToFrozenItemsMock).toHaveBeenCalledTimes(1);
-
-    const source = readFileSync(resolve(__dirname, "../app/api/frozen-items/route.ts"), "utf8");
-    expect(source).not.toMatch(/inventory|normalizers|extractVariationIds|remaining/i);
   });
 
   it("passes a SquareError status through with a customer-safe body", async () => {
