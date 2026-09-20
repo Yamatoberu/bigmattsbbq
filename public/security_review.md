@@ -69,7 +69,7 @@ The following issues were identified during analysis but do not meet the confide
 | `orderItems` / `cart` capacity mismatch in checkout | If `orderItems` is provided, Square order items can differ from what was capacity-checked via `cart`. However, the invoice is sent to the *attacker's* email address, making this self-defeating as an attack. Business logic concern, not a security vulnerability. Confidence 6/10. |
 | `/api/test-seed` data exposure | Already guarded by `env.environment !== "sandbox"` — returns 404 in production. Confirmed by code review Issue 1 (marked DONE). No production risk. |
 | React component XSS | No `dangerouslySetInnerHTML`, `eval`, or `innerHTML` assignments found anywhere in `components/` or `app/`. React's default escaping applies throughout. |
-| `/api/dev/set-inventory` unauthenticated write | Sandbox-only gate (`env.environment !== "sandbox"`) prevents execution in production. Not a vulnerability in the deployed environment. |
+| `/api/dev/set-inventory` unauthenticated write | Sandbox-only gate (`env.environment !== "sandbox"`) prevents execution in production. Not a vulnerability in the deployed environment. **Resolved:** endpoint removed by #38. SEC-01's env-validation and test-seed portions remain tracked in #22. |
 
 ---
 
