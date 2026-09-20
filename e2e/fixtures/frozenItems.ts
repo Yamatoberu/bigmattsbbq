@@ -19,8 +19,7 @@ export const frozenItemsFixture: FrozenItemDTO[] = [
         variationId: variationIds.pulledPork,
         name: "Regular",
         priceCents: 1349,
-        currency: "USD",
-        remaining: 24
+        currency: "USD"
       }
     ]
   },
@@ -33,8 +32,7 @@ export const frozenItemsFixture: FrozenItemDTO[] = [
         variationId: variationIds.brisket,
         name: "Regular",
         priceCents: 1699,
-        currency: "USD",
-        remaining: 18
+        currency: "USD"
       }
     ]
   },
@@ -47,8 +45,7 @@ export const frozenItemsFixture: FrozenItemDTO[] = [
         variationId: variationIds.sauce,
         name: "Regular",
         priceCents: 899,
-        currency: "USD",
-        remaining: 40
+        currency: "USD"
       }
     ]
   },
@@ -61,8 +58,7 @@ export const frozenItemsFixture: FrozenItemDTO[] = [
         variationId: variationIds.familyNight,
         name: "Regular",
         priceCents: 4599,
-        currency: "USD",
-        remaining: 10
+        currency: "USD"
       }
     ]
   },
@@ -75,8 +71,7 @@ export const frozenItemsFixture: FrozenItemDTO[] = [
         variationId: variationIds.backyardHost,
         name: "Regular",
         priceCents: 8299,
-        currency: "USD",
-        remaining: 6
+        currency: "USD"
       }
     ]
   },
@@ -89,8 +84,7 @@ export const frozenItemsFixture: FrozenItemDTO[] = [
         variationId: variationIds.freezerFiller,
         name: "Regular",
         priceCents: 13999,
-        currency: "USD",
-        remaining: 4
+        currency: "USD"
       }
     ]
   }

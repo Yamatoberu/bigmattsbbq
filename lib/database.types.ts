@@ -280,18 +280,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      place_preorder: {
-        Args: {
-          p_drop_id: number
-          p_email: string
-          p_full_name: string
-          p_items: Json
-          p_opt_in?: boolean
-          p_phone?: string
-          p_pickup_id: number
-        }
-        Returns: Json
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never

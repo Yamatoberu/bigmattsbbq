@@ -10,7 +10,7 @@ const activeRow: DropReadinessRow = {
 };
 
 describe("checkDropReady", () => {
-  it("returns ok when drop is active and not sold out", () => {
+  it("returns ok when drop is active", () => {
     const result = checkDropReady(activeRow);
     expect(result).toEqual({ ok: true });
   });

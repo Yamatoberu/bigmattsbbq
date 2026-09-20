@@ -19,7 +19,7 @@ const frozenItems = [
     name: "Smoked Brisket",
     description: "",
     variations: [
-      { variationId: "var-1", name: "1 lb", priceCents: 1200, currency: "USD", remaining: 10 }
+      { variationId: "var-1", name: "1 lb", priceCents: 1200, currency: "USD" }
     ]
   },
   {
@@ -27,7 +27,7 @@ const frozenItems = [
     name: "BBQ Sauce",
     description: "",
     variations: [
-      { variationId: "var-2", name: "Jar", priceCents: 500, currency: "USD", remaining: 20 }
+      { variationId: "var-2", name: "Jar", priceCents: 500, currency: "USD" }
     ]
   }
 ];
@@ -56,8 +56,8 @@ describe("resolvePackageToCartItems", () => {
         name: "BBQ Sauce",
         description: "",
         variations: [
-          { variationId: "var-bottle", name: "Bottle", priceCents: 500, currency: "USD", remaining: 20 },
-          { variationId: "var-bottles", name: "Bottles", priceCents: 900, currency: "USD", remaining: 20 }
+          { variationId: "var-bottle", name: "Bottle", priceCents: 500, currency: "USD" },
+          { variationId: "var-bottles", name: "Bottles", priceCents: 900, currency: "USD" }
         ]
       }
     ];

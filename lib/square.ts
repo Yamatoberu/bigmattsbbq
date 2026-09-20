@@ -94,32 +94,6 @@ export async function searchCatalogItems(params: {
   };
 }
 
-export async function batchRetrieveInventoryCounts(params: {
-  host: string;
-  accessToken: string;
-  locationId: string;
-  variationIds: string[];
-  requestId?: string;
-}) {
-  if (params.variationIds.length === 0) {
-    return { counts: [] as { catalog_object_id: string; quantity?: string | null }[] };
-  }
-
-  return squareFetch<{
-    counts?: { catalog_object_id: string; quantity?: string | null }[];
-  }>({
-    host: params.host,
-    accessToken: params.accessToken,
-    path: "/v2/inventory/counts/batch-retrieve",
-    body: {
-      catalog_object_ids: params.variationIds,
-      location_ids: [params.locationId],
-      states: ["IN_STOCK"]
-    },
-    requestId: params.requestId
-  });
-}
-
 export async function searchCustomerByEmail(params: {
   host: string;
   accessToken: string;
@@ -231,35 +205,6 @@ export async function publishInvoice(params: {
   });
 }
 
-export async function batchSetInventoryCounts(params: {
-  host: string;
-  accessToken: string;
-  requestId?: string;
-  locationId: string;
-  changes: { variationId: string; quantity: number }[];
-  idempotencyKey: string;
-}) {
-  return squareFetch({
-    host: params.host,
-    accessToken: params.accessToken,
-    path: "/v2/inventory/changes/batch-create",
-    body: {
-      idempotency_key: params.idempotencyKey,
-      changes: params.changes.map((change) => ({
-        type: "PHYSICAL_COUNT",
-        physical_count: {
-          catalog_object_id: change.variationId,
-          location_id: params.locationId,
-          quantity: change.quantity.toString(),
-          state: "IN_STOCK",
-          occurred_at: new Date().toISOString()
-        }
-      }))
-    },
-    requestId: params.requestId
-  });
-}
-
 export function mapCatalogToFrozenItems(params: {
   items: CatalogObject[];
   relatedObjects: CatalogObject[];
@@ -285,8 +230,7 @@ export function mapCatalogToFrozenItems(params: {
             variationId: resolved.id,
             name: resolved.item_variation_data?.name || "Single",
             priceCents: priceMoney?.amount ?? 0,
-            currency: priceMoney?.currency ?? "USD",
-            remaining: 0
+            currency: priceMoney?.currency ?? "USD"
           };
         })
         .filter((variation) => Boolean(variation.variationId));
@@ -298,10 +242,6 @@ export function mapCatalogToFrozenItems(params: {
         variations
       };
     });
-}
-
-export function extractVariationIds(items: FrozenItemDTO[]) {
-  return items.flatMap((item) => item.variations.map((variation) => variation.variationId));
 }
 
 function truncateToByteLimit(value: string, limit: number): string {
