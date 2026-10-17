@@ -1,0 +1,30 @@
+name: Test database smoke tests
+
+on:
+  schedule:
+    # Monday and Thursday at 09:23 UTC: margin within the 7-day window.
+    - cron: '23 9 * * 1,4'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-database-smoke
+  cancel-in-progress: false
+
+jobs:
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run test:db
+        env:
+          TEST_SUPABASE_URL: https://ujpviiulhibzztbricxu.supabase.co
+          TEST_SUPABASE_ANON_KEY: ${{ secrets.TEST_SUPABASE_ANON_KEY }}

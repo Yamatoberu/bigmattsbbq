@@ -98,7 +98,35 @@ and daily backups, reached from the project's Database settings in the
 dashboard. This repo automates none of that. Say so plainly rather than
 describing tooling that does not exist.
 
-## 5. Related reading
+## 5. Scheduled database smoke tests
+
+The `Test database smoke tests` GitHub Actions workflow runs every Monday and
+Thursday at 09:23 UTC. It executes `npm run test:db`, which makes bounded,
+read-only Data API queries against `drops`, `drop_pickup_options`, and
+`attribution_sources`. These are live database tests; the ordinary `npm test`
+suite uses mocks and does not provide database activity. No orders, payments,
+emails, or fixture writes are involved. Empty tables are allowed.
+
+Configure the repository Actions secret `TEST_SUPABASE_ANON_KEY` with the test
+project's anon key. The workflow pins the test URL, and the test rejects any
+other URL before making requests. No service-role key is needed.
+For a local run, export `TEST_SUPABASE_URL` and `TEST_SUPABASE_ANON_KEY`, then
+run `npm run test:db`; application environment variables are not used as fallbacks.
+
+The schedule starts after the workflow is merged into `master`. For an immediate
+check, use Actions -> Test database smoke tests -> Run workflow. Missing secrets,
+query failures, and request timeouts fail the run; enable GitHub Actions failure
+notifications and investigate failures promptly. If the database is already
+paused, restore it in Supabase first and rerun the workflow.
+
+[Supabase may pause free projects with low activity over seven days](https://supabase.com/docs/guides/deployment/going-into-prod#availability).
+Two runs per week leave more margin than a single weekly run, but these checks
+are not a guarantee against pausing. GitHub can delay or drop scheduled jobs;
+in public repositories it also disables schedules after 60 days without repository
+activity. Monitor the workflow and re-enable it if necessary. See
+[GitHub's schedule documentation](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
+
+## 6. Related reading
 
 | Concern | File |
 |---------|------|
