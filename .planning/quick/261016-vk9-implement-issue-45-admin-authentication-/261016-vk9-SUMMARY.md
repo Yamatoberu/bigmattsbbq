@@ -1,5 +1,5 @@
 ---
-status: incomplete
+status: complete
 issue: 45
 branch: codex/45-admin-auth
 ---
@@ -14,7 +14,10 @@ Validation: lint passes (7 existing warnings), 364 unit tests, 16 browser tests,
 TypeScript and production build pass. Independent review finding fixed. Synthetic
 identities cleaned up. Production unchanged.
 
-Hosted test signup is now verified disabled; direct signup returns signup_disabled.
-A test mailbox is supplied and the recovery request accepted. Incomplete:
-SMTP/callback configuration and actual recovery-email delivery/completion unverified. Record final evidence
-and keep PR draft until these checks complete. See docs/admin-auth-verification.md.
+Hosted test signup is verified disabled; direct signup returns signup_disabled.
+Actual email delivery confirmed by the user. The supplied email link completed
+PKCE recovery with the saved requesting-browser state; password update and new
+login succeeded, non-admin access was denied, and reused link failed safely.
+Temporary recovery identity and generated credentials cleaned up. Production
+configuration/provisioning remain release steps. See docs/admin-auth-verification.md
+for exact evidence and limits. Ready for reviewer; no production deployment.

@@ -255,7 +255,8 @@ None
 
 ## Issue 45 implementation handoff — 2026-10-18
 
-Quick task `261016-vk9`, branch `codex/45-admin-auth`: application implementation and
-automated checks complete; acceptance verification incomplete. Test-only migration
-0019 applied. Hosted signup disablement and direct signup rejection are verified. Actual recovery
-delivery/callback completion remains pending after an accepted test email request. See `docs/admin-auth-verification.md` and the quick-task summary.
+Quick task `261016-vk9`, branch `codex/45-admin-auth`: application implementation,
+automated checks, hosted signup rejection, and actual emailed PKCE recovery verified.
+Test-only migration 0019 applied. Recovery test identity and generated credentials
+cleaned up. Ready for PR review; production rollout remains after review. See
+`docs/admin-auth-verification.md` and the quick-task summary for evidence and limits.

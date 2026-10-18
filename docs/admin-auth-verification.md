@@ -34,21 +34,39 @@ Last checked: October 18, 2026. Implementation branch: `codex/45-admin-auth`.
 - #23 and #27 remain open. Website permissions do not remediate their existing SCA
   authenticated write exposure or environment grant differences. #44 remains open.
 
-## Required before marking this PR ready
+## Hosted Auth and emailed recovery — verified
 
-1. **Hosted self-registration verified disabled.** After the dashboard change, public
-   Auth settings report `disable_signup: true`. A direct synthetic signup request
-   returned `signup_disabled` and created no user. This blocker is resolved.
-2. **Actual recovery-email delivery and full PKCE email flow are not yet verified.**
-   The user supplied a test mailbox and the provider accepted a recovery request.
-   Receipt and completion remain unverified. Hosted SMTP, sender, template,
-   callback allowlist, and expiry require verification. Complete delivery → original
-   browser callback → password update → new login, plus expired/reused/wrong-browser
-   link checks. A successful authenticated password change is not proof of email
-   delivery or PKCE callback configuration.
-3. Apply production release configuration and provision the intended owner only
-   through the reviewed runbook. Production rollout and owner sign-in remain pending.
+- Hosted test signup reports `disable_signup: true`. A direct synthetic signup
+  request returned `signup_disabled` and created no user.
+- The user confirmed receipt of the reset email and provided its original `.eml`
+  locally. The actual email points to the test project's verification endpoint
+  and redirects to `http://localhost:3000/auth/callback`.
+- A fresh request through `/forgot-password`, with the requesting browser's saved
+  state, completed the actual emailed PKCE callback and displayed the reset form.
+  Password update succeeded, the new password logged in, and the user without an
+  admin grant was correctly denied `/admin`. Logout completed successfully.
+- Reusing the actual email link returned the provider's `otp_expired` error and
+  displayed a fresh-reset request link rather than the password form.
+- The first attempt using manually reconstructed browser cookies failed safely;
+  the fresh real-browser request succeeded. The first failure's cause was not
+  established; the verified flow uses the application's actual browser request.
+- The temporary recovery-test identity and generated credential files were removed.
+  No recovery links, passwords, or session values are included in repository evidence.
 
-These gaps are explicit release/acceptance blockers; passing automated checks does
-not establish hosted settings or email delivery. Keep the PR in draft until the
-required non-production verification is recorded.
+## Verification limits and release steps
+
+Invalid/expired callback parameters and rejected code exchanges have automated
+coverage. The live reused-link check exercises the provider's expired/invalid-link
+response. We did not wait for a fresh link to age past the provider's configured
+expiry or perform an independent valid-link/wrong-browser experiment; do not claim
+those were separately observed. The runbook documents the PKCE same-browser
+requirement and recovery-help behavior.
+
+Actual delivery and the test callback destination are verified. Hosted SMTP internals,
+password policy, exact expiry/rate-limit values, and production callback configuration
+were not inspected through the connected tools. Review these during deployment using
+`docs/admin-auth.md`. Production migration promotion and owner provisioning remain
+release operations after review, not actions performed by this branch.
+
+Application implementation and non-production recovery verification are complete;
+the PR can move out of draft for Yamatoberu's review. Production remains unchanged.
