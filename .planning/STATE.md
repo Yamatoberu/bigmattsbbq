@@ -257,5 +257,5 @@ None
 
 Quick task `261016-vk9`, branch `codex/45-admin-auth`: application implementation and
 automated checks complete; acceptance verification incomplete. Test-only migration
-0019 applied. Hosted signup disablement and actual recovery delivery/callback flow
-remain pending. See `docs/admin-auth-verification.md` and the quick-task summary.
+0019 applied. Hosted signup disablement and direct signup rejection are verified. Actual recovery
+delivery/callback completion remains pending after an accepted test email request. See `docs/admin-auth-verification.md` and the quick-task summary.

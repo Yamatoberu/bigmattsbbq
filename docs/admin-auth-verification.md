@@ -36,12 +36,12 @@ Last checked: October 18, 2026. Implementation branch: `codex/45-admin-auth`.
 
 ## Required before marking this PR ready
 
-1. **Hosted self-registration is still enabled on the test project.** Its public Auth
-   settings reported `disable_signup: false` on October 18. Repository configuration
-   disables signup but does not update hosted settings. Disable it in the dashboard,
-   then verify the settings and direct signup denial using a synthetic identity.
+1. **Hosted self-registration verified disabled.** After the dashboard change, public
+   Auth settings report `disable_signup: true`. A direct synthetic signup request
+   returned `signup_disabled` and created no user. This blocker is resolved.
 2. **Actual recovery-email delivery and full PKCE email flow are not yet verified.**
-   A dedicated non-production mailbox is needed. Hosted SMTP, sender, template,
+   The user supplied a test mailbox and the provider accepted a recovery request.
+   Receipt and completion remain unverified. Hosted SMTP, sender, template,
    callback allowlist, and expiry require verification. Complete delivery → original
    browser callback → password update → new login, plus expired/reused/wrong-browser
    link checks. A successful authenticated password change is not proof of email

@@ -14,6 +14,7 @@ Validation: lint passes (7 existing warnings), 364 unit tests, 16 browser tests,
 TypeScript and production build pass. Independent review finding fixed. Synthetic
 identities cleaned up. Production unchanged.
 
-Incomplete: hosted test signup still enabled, SMTP/callback configuration and actual
-recovery-email delivery unverified, no test mailbox supplied. Record final evidence
+Hosted test signup is now verified disabled; direct signup returns signup_disabled.
+A test mailbox is supplied and the recovery request accepted. Incomplete:
+SMTP/callback configuration and actual recovery-email delivery/completion unverified. Record final evidence
 and keep PR draft until these checks complete. See docs/admin-auth-verification.md.
