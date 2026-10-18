@@ -20,6 +20,7 @@ jobs:
       NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ci
       SUPABASE_SERVICE_ROLE_KEY: ci
+      AUTH_SITE_URL: http://localhost:3000
       RESEND_API_KEY: re_ci
       EMAIL_FROM: ci@example.com
       EMAIL_REPLY_TO: ci@example.com

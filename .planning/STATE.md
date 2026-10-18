@@ -252,3 +252,11 @@ None
 - Last activity: 2026-09-19 - Fast task (c85ae82): hardcoded the welcome event name to `subscriber.welcome` in app/api/mailing-list/route.ts and removed RESEND_WELCOME_EVENT from lib/env.ts and .env.example per user decision — the trigger now always runs after the contacts.get dedup check; 16/16 mailing-list tests, 321/321 total, tsc clean. Pushed to origin/master
 - Last activity: 2026-09-19 - Fast task (80470bb): welcome-event payload key renamed FIRST_NAME → FAN_NAME in app/api/mailing-list/route.ts + tests — FIRST_NAME is reserved in Resend templates, so the user renamed the template variable and the subscriber.welcome event schema to FAN_NAME; 16/16 mailing-list tests, tsc clean. Pushed to origin/master
 - Last activity: 2026-09-19 - Fast task (a50aed1): set up branching/PR workflow for AI agents (issue #29) — CI workflow (lint/build/test), PR template, AGENTS.md for Codex, Branching & PR Workflow section in CLAUDE.md. First PR opened under the new process from branch claude/29-branch-pr-workflow
+
+## Issue 45 implementation handoff — 2026-10-18
+
+Quick task `261016-vk9`, branch `codex/45-admin-auth`: application implementation,
+automated checks, hosted signup rejection, and actual emailed PKCE recovery verified.
+Test-only migration 0019 applied. Recovery test identity and generated credentials
+cleaned up. Ready for PR review; production rollout remains after review. See
+`docs/admin-auth-verification.md` and the quick-task summary for evidence and limits.

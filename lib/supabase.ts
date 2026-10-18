@@ -1,4 +1,6 @@
-// Server-only singleton. Import only from API routes.
+import "server-only";
+
+// Privileged database client; never attach a user session to this singleton.
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "./database.types";
 

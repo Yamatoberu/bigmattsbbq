@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { AccountNav } from "./auth/AccountNav";
 import { useCart } from "./cart/CartContext";
 import { useActiveDrop } from "./hooks/useActiveDrop";
 
@@ -87,6 +88,7 @@ export function NavBar() {
                 </span>
               )}
             </Link>}
+            <div className="hidden nav:block"><AccountNav /></div>
             {/* Hamburger — mobile only */}
             <button
               type="button"
@@ -128,6 +130,7 @@ export function NavBar() {
           (isOpen ? "translate-x-0" : "-translate-x-full")
         }
         aria-hidden={!isOpen}
+        style={{ visibility: isOpen ? "visible" : "hidden" }}
       >
         <nav className="flex flex-col gap-1 p-6 pt-20" aria-label="Mobile primary">
           {navLinks.map((link) => (
@@ -143,6 +146,7 @@ export function NavBar() {
               {link.label}
             </Link>
           ))}
+          {isOpen && <div className="mt-4 border-t border-smoke-400 px-4 pt-5"><AccountNav onNavigate={() => setIsOpen(false)} /></div>}
         </nav>
       </aside>
     </>
