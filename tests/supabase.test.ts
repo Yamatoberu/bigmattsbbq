@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+vi.mock("server-only", () => ({}));
+
 // Each test resets the module to clear the singleton cache.
 // We use vi.resetModules() + dynamic import to get a fresh module per test.
 

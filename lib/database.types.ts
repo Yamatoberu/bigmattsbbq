@@ -14,6 +14,73 @@ export type Database = {
   }
   public: {
     Tables: {
+      roles: {
+        Row: {
+          id: string
+          description: string
+          created_at: string
+        }
+        Insert: {
+          id: string
+          description: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          description?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      role_permissions: {
+        Row: {
+          role_id: string
+          permission: string
+        }
+        Insert: {
+          role_id: string
+          permission: string
+        }
+        Update: {
+          role_id?: string
+          permission?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "role_permissions_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          user_id: string
+          role_id: string
+          created_at: string
+        }
+        Insert: {
+          user_id: string
+          role_id: string
+          created_at?: string
+        }
+        Update: {
+          user_id?: string
+          role_id?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       attribution_sources: {
         Row: {
           code: string
