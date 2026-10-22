@@ -76,8 +76,8 @@ A mobile-first website for Big Matt's BBQ that serves as a sales funnel for limi
 - CSS - Global styles (`app/globals.css`)
 - JavaScript allowed: `false` (`allowJs: false` in `tsconfig.json`)
 ## Runtime
-- Node.js v24.8.0
-- npm 11.12.1
+- Node.js 24.x (development/CI pin: `.nvmrc`)
+- npm 11.21.1 (`packageManager` in `package.json`)
 - Lockfile: `package-lock.json` present
 ## Frameworks
 - Next.js ^16.1.6 - Full-stack React framework; App Router with Server Components and API Routes

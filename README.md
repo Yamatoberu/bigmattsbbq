@@ -4,11 +4,21 @@ Mobile-first sales funnel for frozen BBQ drops, built with Next.js App Router an
 
 ## Setup
 
-1. Install dependencies:
+1. Select the pinned Node.js and npm versions, then install dependencies:
 
 ```bash
-npm install
+nvm install
+nvm use
+npm install --global npm@11.21.1
+node --version
+npm --version
+npm ci
 ```
+
+Node.js 24.22.1 is pinned in `.nvmrc` for development and CI. Both packages declare
+Node.js 24.x and npm 11.x; `packageManager` pins npm 11.21.1. Use the same
+toolchain when running commands in `mcp-servers/square`. Other Node version
+managers can select the version recorded in `.nvmrc`.
 
 2. Create a `.env.local` file (see `.env.example`):
 
@@ -88,3 +98,24 @@ Tests cover:
 - Packages are configured in `lib/config.ts` and map to catalog items/variations by name.
 - No database is used in v1.
 - All Square secrets remain server-side in `/app/api/*` routes.
+
+## Runtime deployment and rollback
+
+Vercel uses the root `engines.node` setting (`24.x`), including its managed minor
+and patch updates. Local development and GitHub Actions use `.nvmrc`. The npm
+version is pinned in both package manifests; CI installs that pin explicitly.
+`vercel.json` selects the same npm version for install/build, runs `npm ci`, and
+prints toolchain versions in the build log.
+When updating npm, update both manifests and the Vercel install/build commands together.
+Build logs must confirm the selected Node/npm versions; the `packageManager` field
+alone does not install npm. Project settings should also remain on Node 24.x.
+
+Validate changes with clean `npm ci` installs in the root and Square MCP directory,
+then root lint, TypeScript checks, production build, unit tests, MCP tests, and
+Playwright against the synthetic test environment. Never use production fixtures.
+
+For rollback, revert the runtime configuration, manifests, both lockfiles, workflow
+changes, and documentation together. Reinstall using the previous toolchain and
+redeploy the reverted commit. If Vercel project settings were changed separately,
+restore the recorded previous value too; reverting source does not change an
+already-running deployment.

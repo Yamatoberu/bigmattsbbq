@@ -1,5 +1,8 @@
 # Square MCP maintenance
 
+Use the repository's Node version (`nvm use` from the repository root) and npm
+11.21.1 before installing or testing this package. See the root README for setup.
+
 This package has its own lockfile. Installing or auditing the repository root
 does not install or audit this dependency tree.
 

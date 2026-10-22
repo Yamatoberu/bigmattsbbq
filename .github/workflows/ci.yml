@@ -37,9 +37,16 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version-file: .nvmrc
           cache: npm
 
+      - name: Select pinned npm
+        run: npm install --global "$(node -p "require('./package.json').packageManager")"
+        working-directory: ${{ github.workspace }}
+      - name: Report toolchain
+        run: |
+          node --version
+          npm --version
       - run: npm ci
       - run: npm run lint
       - run: npm run build
@@ -56,9 +63,16 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: mcp-servers/square/package-lock.json
 
+      - name: Select pinned npm
+        run: npm install --global "$(node -p "require('./package.json').packageManager")"
+        working-directory: ${{ github.workspace }}
+      - name: Report toolchain
+        run: |
+          node --version
+          npm --version
       - run: npm ci
       - run: npm test
