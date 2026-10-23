@@ -17,6 +17,10 @@ The tests launch the actual server and SDK client over stdio with synthetic
 credentials. A test-only preload blocks `.env.local` reads and intercepts fetch;
 no Square requests are sent. Redirect probes use native fetch only between
 temporary loopback HTTP servers, and assert that no redirected request occurs.
+Configuration tests supply synthetic `.env.local` contents through the preload
+to exercise fallback, process-environment precedence, and stale host rejection.
+POST redirect tests cover 307 and 308 on both origins, checking that the initial
+request contains the dummy credential and body while neither target is visited.
 Coverage includes initialization, tool discovery, all four supported
 HTTP methods, response forwarding, provider errors, non-JSON errors, network
 failures, unknown tools, and missing credentials. GitHub CI runs these tests in

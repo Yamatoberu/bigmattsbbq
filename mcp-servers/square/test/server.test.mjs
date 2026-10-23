@@ -72,6 +72,33 @@ test("stdio initialization, tool discovery, requests and errors", { timeout: 150
     });
   });
 
+  await t.test("accepts a request ID at the 128-character limit", async () => {
+    const requestId = "a".repeat(128);
+    const result = await client.callTool({
+      name: "square_request", arguments: { method: "GET", path: "/v2/locations", requestId }
+    });
+    assert.equal(result.isError, false);
+    assert.equal(JSON.parse(result.content[0].text).data.headers["X-Request-Id"], requestId);
+  });
+
+  await t.test("omits the tracing header when request ID is absent", async () => {
+    const result = await client.callTool({
+      name: "square_request", arguments: { method: "GET", path: "/v2/locations" }
+    });
+    assert.equal(result.isError, false);
+    assert.equal(Object.hasOwn(JSON.parse(result.content[0].text).data.headers, "X-Request-Id"), false);
+  });
+
+  await t.test("supports POST without a body", async () => {
+    const result = await client.callTool({
+      name: "square_request", arguments: { method: "POST", path: "/v2/locations" }
+    });
+    assert.equal(result.isError, false);
+    const data = JSON.parse(result.content[0].text).data;
+    assert.equal(data.method, "POST");
+    assert.equal(data.body, null);
+  });
+
   await t.test("handles a non-JSON provider error", async () => {
     const result = await client.callTool({
       name: "square_request",
@@ -154,9 +181,80 @@ test("stdio initialization, tool discovery, requests and errors", { timeout: 150
     });
     assert.deepEqual(JSON.parse(result.content[0].text).data, {
       redirectHits: 0,
-      redirectRequests: ["Bearer synthetic-test-token", "Bearer synthetic-test-token"]
+      redirectRequests: ["same", "cross"].map(() => ({
+        authorization: "Bearer synthetic-test-token", method: "GET", body: null
+      }))
     });
   });
+
+  for (const status of [307, 308]) {
+    for (const kind of ["same", "cross"]) {
+      await t.test(`rejects POST ${status} ${kind}-origin redirect without forwarding credentials or body`, async () => {
+        const body = { synthetic: true, idempotency_key: `test-${status}-${kind}` };
+        const before = await client.callTool({
+          name: "square_request", arguments: { method: "GET", path: "/v2/test-redirect-hits" }
+        });
+        const prior = JSON.parse(before.content[0].text).data;
+        await assert.rejects(client.callTool({
+          name: "square_request",
+          arguments: { method: "POST", path: `/v2/test-redirect-${kind}-${status}`, body }
+        }), /fetch failed/);
+        const after = await client.callTool({
+          name: "square_request", arguments: { method: "GET", path: "/v2/test-redirect-hits" }
+        });
+        assert.deepEqual(JSON.parse(after.content[0].text).data, {
+          redirectHits: 0,
+          redirectRequests: [...prior.redirectRequests, {
+            authorization: "Bearer synthetic-test-token", method: "POST", body
+          }]
+        });
+      });
+    }
+  }
+});
+
+const syntheticEnvLocal = [
+  "# Synthetic configuration only; never read the developer environment file",
+  "SQUARE_ACCESS_TOKEN=synthetic-file-token",
+  "SQUARE_ENV=sandbox",
+  "SQUARE_HOST=https://connect.squareupsandbox.com"
+].join("\n");
+
+for (const overrideProcess of [false, true]) {
+  test(`loads synthetic .env.local settings${overrideProcess ? " with process environment taking precedence" : " when process settings are absent"}`, async (t) => {
+    const env = { TEST_SQUARE_ENV_LOCAL: syntheticEnvLocal };
+    if (overrideProcess) Object.assign(env, {
+      SQUARE_ACCESS_TOKEN: "synthetic-process-token",
+      SQUARE_ENV: "production",
+      SQUARE_HOST: "https://connect.squareup.com"
+    });
+    const transport = new StdioClientTransport({
+      command: process.execPath, args: ["--import", mockFetchPath, serverPath], env, stderr: "pipe"
+    });
+    const client = new Client({ name: "square-config-test", version: "1.0.0" });
+    t.after(() => client.close());
+    await client.connect(transport);
+    assert.equal(client.getServerVersion().name, overrideProcess ? "square-production" : "square-sandbox");
+    const result = await client.callTool({
+      name: "square_request", arguments: { method: "GET", path: "/v2/locations" }
+    });
+    assert.equal(result.isError, false);
+    const data = JSON.parse(result.content[0].text).data;
+    assert.equal(data.url, `${overrideProcess ? "https://connect.squareup.com" : testEnv.SQUARE_HOST}/v2/locations`);
+    assert.equal(data.headers.Authorization, `Bearer synthetic-${overrideProcess ? "process" : "file"}-token`);
+  });
+}
+
+test("rejects a stale .env.local host that conflicts with the process environment", () => {
+  const result = spawnSync(process.execPath, ["--import", mockFetchPath, serverPath], {
+    env: { TEST_SQUARE_ENV_LOCAL: syntheticEnvLocal, SQUARE_ENV: "production" },
+    encoding: "utf8", timeout: 5000
+  });
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /SQUARE_HOST must exactly match/);
+  assert.doesNotMatch(result.stderr, /synthetic-file-token/);
+  assert.equal(result.stdout, "");
 });
 
 for (const environment of ["sandbox", "production"]) {

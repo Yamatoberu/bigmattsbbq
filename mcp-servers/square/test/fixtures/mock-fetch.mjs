@@ -7,7 +7,10 @@ import { fileURLToPath } from "node:url";
 const localEnvPath = fileURLToPath(new URL("../../../../.env.local", import.meta.url));
 const readFileSync = fs.readFileSync;
 fs.readFileSync = function (path, ...args) {
-  if (path === localEnvPath) throw new Error("Local environment disabled in tests");
+  if (path === localEnvPath) {
+    if (process.env.TEST_SQUARE_ENV_LOCAL !== undefined) return process.env.TEST_SQUARE_ENV_LOCAL;
+    throw new Error("Local environment disabled in tests");
+  }
   return readFileSync.call(this, path, ...args);
 };
 syncBuiltinESMExports();
@@ -19,7 +22,7 @@ let redirectProbe;
 let redirectHits = 0;
 const redirectRequests = [];
 let fetchCalls = 0;
-async function probeRedirect(options, crossOrigin) {
+async function probeRedirect(options, crossOrigin, status = 302) {
   if (!redirectProbe) {
     const target = createServer((_request, response) => {
       redirectHits++;
@@ -27,14 +30,20 @@ async function probeRedirect(options, crossOrigin) {
     });
     await new Promise((resolve) => target.listen(0, "127.0.0.1", resolve));
     target.unref();
-    const source = createServer((request, response) => {
+    const source = createServer(async (request, response) => {
       if (request.url === "/followed") {
         redirectHits++;
         response.end("{}");
       } else {
-        redirectRequests.push(request.headers.authorization);
-        response.writeHead(302, {
-          Location: request.url === "/cross"
+        let body = "";
+        for await (const chunk of request) body += chunk;
+        redirectRequests.push({
+          authorization: request.headers.authorization,
+          method: request.method,
+          body: body ? JSON.parse(body) : null
+        });
+        response.writeHead(Number(request.url.split("/")[2]), {
+          Location: request.url.startsWith("/cross/")
             ? `http://127.0.0.1:${target.address().port}/followed`
             : "/followed"
         });
@@ -45,7 +54,7 @@ async function probeRedirect(options, crossOrigin) {
     source.unref();
     redirectProbe = source;
   }
-  return nativeFetch(`http://127.0.0.1:${redirectProbe.address().port}/${crossOrigin ? "cross" : "same"}`, options);
+  return nativeFetch(`http://127.0.0.1:${redirectProbe.address().port}/${crossOrigin ? "cross" : "same"}/${status}`, options);
 }
 
 globalThis.fetch = async (url, options) => {
@@ -55,6 +64,11 @@ globalThis.fetch = async (url, options) => {
     ? "https://connect.squareup.com" : "https://connect.squareupsandbox.com";
   if (destination.origin !== expectedOrigin) {
     throw new Error("Unexpected test destination");
+  }
+
+  const writeRedirect = /^\/v2\/test-redirect-(same|cross)-(307|308)$/.exec(destination.pathname);
+  if (writeRedirect) {
+    return probeRedirect(options, writeRedirect[1] === "cross", Number(writeRedirect[2]));
   }
 
   switch (destination.pathname) {

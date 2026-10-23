@@ -35,3 +35,22 @@ both configurations and limitations. Credential/environment compatibility cannot
 be inferred from token contents; live permissions and endpoint availability were
 not tested. Application environment remediation remains in #22, and API version
 alignment remains in #33. SEC-04 awaits review, merge, and installation restart.
+
+## PR #48 follow-up: additional regression coverage
+
+Added ten tests requested after review, bringing the MCP suite to 29:
+
+- Synthetic `.env.local` contents supply missing configuration; explicit process
+  values override the file's token/environment/host; a stale file host conflicting
+  with the process environment prevents startup. Actual developer files remain
+  blocked by the preload.
+- POST 307 and 308 probes cover both same-origin and cross-origin redirects.
+  The initial endpoint receives the dummy authorization header and JSON body;
+  neither redirect target is visited.
+- A 128-character request ID is accepted, absent IDs omit the tracing header,
+  and POST without a body remains supported.
+
+No production implementation changed. MCP tests pass on Node 24.22.1 and
+Node 22.23.2; all 364 application tests and lint pass (seven existing warnings).
+The production build also passes with synthetic CI configuration; diff whitespace
+checks pass. Follow-up changes are limited to tests, fixtures, and documentation.

@@ -13,3 +13,8 @@ standalone MCP package; application configuration remediation remains in #22.
    document configuration migration, restart, and verification limitations.
 5. Run package tests plus root lint/build/test, inspect the focused diff, and
    submit a PR for Yamatoberu with SEC-04 evidence recorded in #19.
+
+Follow-up approved by user: exercise synthetic `.env.local` fallback, process
+precedence, and stale host mismatches; POST 307/308 redirects on both origins;
+and valid request ID/body boundaries. Push a follow-up commit to PR #48 without
+rewriting its existing history.
