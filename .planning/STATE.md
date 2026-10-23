@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-08-28 — v2.0 SCA Tracker milestone shi
 Phase: 12
 Plan: Not started
 Status: Milestone complete
-Last activity: 2026-09-20 - Completed quick task 260919-swq: Remove inventory tracking from application (issue #38)
+Last activity: 2026-10-23 - Completed quick task 261022-qlt: Constrain Square MCP requests to trusted origins (issue #24)
 
 ## Milestone Summary
 
@@ -175,6 +175,7 @@ Items acknowledged and carried forward from previous milestone close (2026-04-22
 
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
+| 261022-qlt | Constrain Square MCP requests to trusted origins (issue #24) | 2026-10-23 | 3c708a1 | [261022-qlt-constrain-square-mcp-requests-to-trusted](./quick/261022-qlt-constrain-square-mcp-requests-to-trusted/) |
 | 20260501-hero-redesign-full-bleed | Hero section redesign — full-bleed atmospheric | 2026-05-01 | feef870 | [20260501-hero-redesign-full-bleed](./.planning/quick/20260501-hero-redesign-full-bleed/) |
 | 260501-sc1 | Hero section redesign | 2026-05-02 | a25a39a | [260501-sc1-hero-section-redesign](./.planning/quick/260501-sc1-hero-section-redesign/) |
 | 260502-eu1 | Fix Issue 10 — About page bio missing heading and section wrapper | 2026-05-02 | 3b427e7 | [260502-eu1-fix-issue-10-about-page-bio-missing-head](./.planning/quick/260502-eu1-fix-issue-10-about-page-bio-missing-head/) |
