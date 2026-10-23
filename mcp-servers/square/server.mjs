@@ -5,6 +5,7 @@ import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprot
 import { readFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+import { getSquareOrigin, validateRequest } from "./request-policy.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -29,8 +30,8 @@ function loadEnvLocal() {
 loadEnvLocal();
 
 const ACCESS_TOKEN = process.env.SQUARE_ACCESS_TOKEN;
-const HOST = process.env.SQUARE_HOST ?? "https://connect.squareup.com";
-const ENV_LABEL = process.env.SQUARE_ENV ?? "sandbox";
+const ENV_LABEL = process.env.SQUARE_ENV;
+let HOST;
 const SQUARE_VERSION = "2024-12-18";
 
 if (!ACCESS_TOKEN) {
@@ -38,8 +39,15 @@ if (!ACCESS_TOKEN) {
   process.exit(1);
 }
 
+try {
+  HOST = getSquareOrigin(ENV_LABEL, process.env.SQUARE_HOST);
+} catch (error) {
+  process.stderr.write(`square-mcp: ${error.message}\n`);
+  process.exit(1);
+}
+
 const server = new Server(
-  { name: "square-sandbox", version: "1.0.0" },
+  { name: `square-${ENV_LABEL}`, version: "1.0.0" },
   { capabilities: { tools: {} } }
 );
 
@@ -50,6 +58,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       description: `Make a Square API HTTP request. Connected to: ${ENV_LABEL} (${HOST}). Use standard Square REST paths like /v2/catalog/search-catalog-items.`,
       inputSchema: {
         type: "object",
+        additionalProperties: false,
         properties: {
           method: {
             type: "string",
@@ -58,7 +67,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
           path: {
             type: "string",
-            description: "API path, e.g. /v2/locations or /v2/catalog/search-catalog-items"
+            description: "Rooted /v2/ API path, optionally with a query string; no URLs, traversal, or fragments"
           },
           body: {
             type: "object",
@@ -66,6 +75,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
           requestId: {
             type: "string",
+            minLength: 1,
+            maxLength: 128,
             description: "Optional X-Request-Id header for tracing"
           }
         },
@@ -80,7 +91,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     throw new Error(`Unknown tool: ${request.params.name}`);
   }
 
-  const { method, path, body, requestId } = request.params.arguments;
+  const { method, url, body, requestId } = validateRequest(request.params.arguments, HOST);
 
   const headers = {
     "Authorization": `Bearer ${ACCESS_TOKEN}`,
@@ -89,8 +100,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     ...(requestId ? { "X-Request-Id": requestId } : {})
   };
 
-  const response = await fetch(`${HOST}${path}`, {
+  const response = await fetch(url, {
     method,
+    redirect: "error",
     headers,
     body: body ? JSON.stringify(body) : undefined
   });

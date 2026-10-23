@@ -50,6 +50,7 @@ test("stdio initialization, tool discovery, requests and errors", { timeout: 150
       assert.equal(response.ok, true);
       assert.equal(response.data.url, `${testEnv.SQUARE_HOST}/v2/locations?cursor=synthetic`);
       assert.equal(response.data.method, method);
+      assert.equal(response.data.redirect, "error");
       assert.equal(response.data.headers.Authorization, "Bearer synthetic-test-token");
       assert.equal(response.data.headers["Content-Type"], "application/json");
       assert.match(response.data.headers["Square-Version"], /^\d{4}-\d{2}-\d{2}$/);
@@ -91,6 +92,112 @@ test("stdio initialization, tool discovery, requests and errors", { timeout: 150
   await t.test("rejects an unknown tool", async () => {
     await assert.rejects(client.callTool({ name: "unknown", arguments: {} }), /Unknown tool/);
   });
+
+  await t.test("rejects unsafe paths before fetch", async () => {
+    const before = await client.callTool({
+      name: "square_request", arguments: { method: "GET", path: "/v2/test-fetch-count" }
+    });
+    const count = JSON.parse(before.content[0].text).data.fetchCalls;
+    for (const path of [
+      ".example.invalid/v2/locations", "https://example.invalid/v2/locations",
+      "//example.invalid/v2/locations", "//user:pass@example.invalid/v2/locations",
+      "/v2/\\example.invalid", "/v2/locations#fragment", "/v2/../locations",
+      "/v2/%2e%2e/locations", "/v2/%2E./locations", "/v2/%2e%2e%2flocations",
+      "/v2/locations%", "/v2/%zz", "/v2/%ff", "/v2/%00", "/v2/%5c",
+      "/v2/locations?cursor=%zz", "/v2/loc\nations", "/v2/ locations", "/v1/locations", ""
+    ]) {
+      await assert.rejects(client.callTool({
+        name: "square_request", arguments: { method: "GET", path }
+      }), /Path must|Unsafe API path|URI malformed/, path);
+    }
+    const after = await client.callTool({
+      name: "square_request", arguments: { method: "GET", path: "/v2/test-fetch-count" }
+    });
+    assert.equal(JSON.parse(after.content[0].text).data.fetchCalls, count + 1);
+  });
+
+  await t.test("rejects malformed runtime arguments before fetch", async () => {
+    const before = await client.callTool({
+      name: "square_request", arguments: { method: "GET", path: "/v2/test-fetch-count" }
+    });
+    const count = JSON.parse(before.content[0].text).data.fetchCalls;
+    await assert.rejects(client.callTool({ name: "square_request" }), /Request arguments must/);
+    for (const [args, message] of [
+      [{}, /Unsupported HTTP method/],
+      [{ method: "PATCH", path: "/v2/locations" }, /Unsupported HTTP method/],
+      [{ method: "GET", path: 42 }, /Path must/],
+      [{ method: "GET", path: "/v2/locations", body: {} }, /GET requests/],
+      ...[null, [], "body", 42].map((body) => [
+        { method: "POST", path: "/v2/locations", body }, /body must be an object/
+      ]),
+      ...[42, "", "a\r\nb", "é", "a".repeat(129)].map((requestId) => [
+        { method: "GET", path: "/v2/locations", requestId }, /requestId must/
+      ]),
+      [{ method: "GET", path: "/v2/locations", host: "https://example.invalid" }, /Unknown request argument/]
+    ]) {
+      await assert.rejects(client.callTool({ name: "square_request", arguments: args }), message);
+    }
+    const after = await client.callTool({
+      name: "square_request", arguments: { method: "GET", path: "/v2/test-fetch-count" }
+    });
+    assert.equal(JSON.parse(after.content[0].text).data.fetchCalls, count + 1);
+  });
+
+  await t.test("rejects real same-origin and cross-origin redirects without a second request", async () => {
+    for (const kind of ["same", "cross"]) {
+      await assert.rejects(client.callTool({
+        name: "square_request", arguments: { method: "GET", path: `/v2/test-redirect-${kind}` }
+      }), /fetch failed/);
+    }
+    const result = await client.callTool({
+      name: "square_request", arguments: { method: "GET", path: "/v2/test-redirect-hits" }
+    });
+    assert.deepEqual(JSON.parse(result.content[0].text).data, {
+      redirectHits: 0,
+      redirectRequests: ["Bearer synthetic-test-token", "Bearer synthetic-test-token"]
+    });
+  });
+});
+
+for (const environment of ["sandbox", "production"]) {
+  const origin = environment === "sandbox" ? "https://connect.squareupsandbox.com" : "https://connect.squareup.com";
+  for (const host of [undefined, origin]) {
+    test(`uses the ${environment} origin with ${host ? "explicit" : "derived"} host and preserves encoded IDs and queries`, async (t) => {
+      const transport = new StdioClientTransport({
+        command: process.execPath, args: ["--import", mockFetchPath, serverPath],
+        env: { ...testEnv, SQUARE_ENV: environment, SQUARE_HOST: host }, stderr: "pipe"
+      });
+      const client = new Client({ name: "square-policy-test", version: "1.0.0" });
+      t.after(() => client.close());
+      await client.connect(transport);
+      assert.equal(client.getServerVersion().name, `square-${environment}`);
+      const path = "/v2/catalog/object/a%2Fb?cursor=a%2Bb%3D&limit=10";
+      const result = await client.callTool({ name: "square_request", arguments: { method: "GET", path } });
+      const data = JSON.parse(result.content[0].text).data;
+      assert.equal(data.url, origin + path);
+      assert.equal(data.headers.Authorization, "Bearer synthetic-test-token");
+    });
+  }
+}
+
+test("rejects invalid environment and host configuration at startup", () => {
+  for (const override of [
+    { SQUARE_ENV: undefined }, { SQUARE_ENV: "" }, { SQUARE_ENV: "staging" }, { SQUARE_ENV: "production" },
+    ...["", "https://connect.squareup.com", "https://example.invalid", "https://connect.squareupsandbox.com.example.invalid",
+      "http://connect.squareupsandbox.com", "https://connect.squareupsandbox.com:443",
+      "https://user:pass@connect.squareupsandbox.com", "https://connect.squareupsandbox.com/",
+      "https://connect.squareupsandbox.com/v2", "https://connect.squareupsandbox.com?x=1",
+      "https://connect.squareupsandbox.com#fragment"].map((SQUARE_HOST) => ({ SQUARE_HOST }))
+  ]) {
+    const result = spawnSync(process.execPath, ["--import", mockFetchPath, serverPath], {
+      env: { ...testEnv, ...override }, encoding: "utf8", timeout: 5000
+    });
+    assert.equal(result.error, undefined);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /SQUARE_ENV must|SQUARE_HOST must/);
+    assert.equal(result.stdout, "");
+    assert.doesNotMatch(result.stderr, /synthetic-test-token/);
+  }
 });
 
 test("exits with a diagnostic when the access token is missing", () => {
