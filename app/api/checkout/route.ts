@@ -172,6 +172,7 @@ export async function POST(request: Request) {
       );
     }
 
+    const env = getSquareEnv();
     const supabase = getSupabaseClient();
 
     const { data: dropRow, error: dropErr } = await supabase
@@ -217,8 +218,6 @@ export async function POST(request: Request) {
         { status: 404 }
       );
     }
-
-    const env = getSquareEnv();
 
     let catalogByVariationId: Map<
       string,

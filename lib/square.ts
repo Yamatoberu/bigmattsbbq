@@ -33,6 +33,7 @@ async function squareFetch<T>({
 }: SquareFetchOptions): Promise<T> {
   const response = await fetch(`${host}${path}`, {
     method,
+    redirect: "error",
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
