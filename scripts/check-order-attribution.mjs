@@ -12,6 +12,8 @@
 // actually persisted and returns it is to call RetrieveOrder directly. See
 // 12-RESEARCH.md Pitfall 3.
 
+import { getSquareOrigin } from "../lib/square-origin.mjs";
+
 // Must stay in sync with SQUARE_VERSION in lib/square.ts.
 const SQUARE_VERSION = "2026-07-15";
 
@@ -29,7 +31,14 @@ async function main() {
   }
 
   const accessToken = process.env.SQUARE_ACCESS_TOKEN;
-  const host = process.env.SQUARE_HOST || "https://connect.squareup.com";
+  let host;
+  try {
+    host = getSquareOrigin(process.env.SQUARE_ENV, process.env.SQUARE_HOST);
+  } catch (err) {
+    console.error(err.message);
+    process.exit(1);
+    return;
+  }
 
   if (!accessToken) {
     console.error(
@@ -43,6 +52,7 @@ async function main() {
   try {
     response = await fetch(`${host}/v2/orders/${encodeURIComponent(orderId)}`, {
       method: "GET",
+      redirect: "error",
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Square-Version": SQUARE_VERSION,

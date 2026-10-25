@@ -41,8 +41,8 @@ Open `http://localhost:3000`.
 
 ## Required env vars
 
-- `SQUARE_ENV`: `sandbox` or `production`
-- `SQUARE_HOST`: `https://connect.squareup.com` or sandbox host
+- `SQUARE_ENV`: required; exactly `sandbox` or `production`
+- `SQUARE_HOST`: optional; must exactly match the official origin for `SQUARE_ENV` (no trailing slash). See [Square configuration and rollout](docs/square-environment.md).
 - `SQUARE_ACCESS_TOKEN`: Square access token
 - `SQUARE_LOCATION_ID`: Square location used for orders and invoices at checkout
 - `SQUARE_FROZEN_CATEGORY_ID`: Catalog category containing frozen items

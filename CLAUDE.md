@@ -102,7 +102,7 @@ A mobile-first website for Big Matt's BBQ that serves as a sales funnel for limi
 - Template documented at `.env.example`
 - Loaded via `lib/env.ts` which validates and throws on missing required vars
 - Required vars: `SQUARE_ACCESS_TOKEN`, `SQUARE_LOCATION_ID`, `SQUARE_FROZEN_CATEGORY_ID`, `SQUARE_SAUCE_VARIATION_ID`
-- Optional vars with defaults: `SQUARE_HOST` (defaults to `https://connect.squareup.com`), `SQUARE_ENV` (defaults to `sandbox`)
+- `SQUARE_ENV` is required and must be exactly `sandbox` or `production`. `SQUARE_HOST` is optional and must exactly match the corresponding official origin; see `docs/square-environment.md`.
 - `next.config.js` - Minimal config; strict mode enabled
 - `tsconfig.json` - Strict TypeScript; ES2022 target; `vitest/globals` types included
 - `tailwind.config.ts` - Custom `ember` (orange/red) and `smoke` (dark brown) color palettes; custom shadows and gradients
