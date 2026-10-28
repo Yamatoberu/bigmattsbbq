@@ -42,6 +42,7 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
     attributionSourceCode: "",
     attributionDetail: ""
   });
+  const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | undefined>();
 
@@ -180,6 +181,7 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
           dropId: drop.id,
           pickupOptionId,
           packageId: selectedPackageId,
+          marketingOptIn,
           customer: {
             firstName: formState.firstName,
             lastName: formState.lastName,
@@ -344,16 +346,37 @@ export function CheckoutClient({ sauceVariationId, drop }: CheckoutClientProps) 
                 required
               />
             </label>
-            <label className="text-sm text-smoke-600">
-              Email
-              <input
-                type="email"
-                className="input-field mt-2"
-                value={formState.email}
-                onChange={(event) => setFormState({ ...formState, email: event.target.value })}
-                required
-              />
-            </label>
+            <div className="space-y-4">
+              <label className="block text-sm text-smoke-600">
+                Email
+                <input
+                  type="email"
+                  className="input-field mt-2"
+                  value={formState.email}
+                  onChange={(event) => setFormState({ ...formState, email: event.target.value })}
+                  required
+                />
+              </label>
+              <div className="rounded-lg border border-smoke-400 bg-pit-card p-4">
+                <p className="font-semibold text-smoke-900">Never miss a BBQ drop!</p>
+                <p id="marketing-description" className="mt-2 text-sm text-smoke-600">
+                  Our smoked meats are only available during limited ordering windows. Get an email when the next batch is ready.
+                </p>
+                <label className="mt-3 flex min-h-11 cursor-pointer items-start gap-3 text-sm font-semibold text-smoke-800">
+                  <input
+                    type="checkbox"
+                    className="mt-1 h-5 w-5 shrink-0 accent-ember-500"
+                    checked={marketingOptIn}
+                    onChange={(event) => setMarketingOptIn(event.target.checked)}
+                    aria-describedby="marketing-description marketing-reassurance"
+                  />
+                  <span>Yes! Notify me about future BBQ drops.</span>
+                </label>
+                <p id="marketing-reassurance" className="mt-2 text-xs italic text-smoke-600">
+                  Occasional updates from Big Matt&apos;s BBQ. Unsubscribe anytime.
+                </p>
+              </div>
+            </div>
             <label className="text-sm text-smoke-600">
               Phone (optional)
               <input

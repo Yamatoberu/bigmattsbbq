@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { headers } from "next/headers";
 import { z } from "zod";
 import { getSquareEnv } from "../../../lib/env";
@@ -14,6 +14,7 @@ import {
   searchCustomerByEmail,
   SquareError
 } from "../../../lib/square";
+import { subscribeToDropUpdates } from "../../../lib/checkoutMarketing";
 import { logError } from "../../../lib/logger";
 import { getSupabaseClient } from "../../../lib/supabase";
 import { checkDropReady, formatPickupWindow } from "../../../lib/drops";
@@ -114,6 +115,7 @@ const checkoutSchema = z.object({
   dropId: z.string().uuid(),
   pickupOptionId: z.string().uuid(),
   packageId: z.string().optional(),
+  marketingOptIn: z.unknown().transform((value) => value === true),
   customer: z.object({
     firstName: z.string().min(1),
     lastName: z.string().min(1),
@@ -534,6 +536,19 @@ export async function POST(request: Request) {
     } catch (squareError) {
       await markOrderFailed(supabase, orderRecordId, requestId);
       throw squareError;
+    }
+
+    if (parsed.data.marketingOptIn) {
+      try {
+        after(() => subscribeToDropUpdates({
+          email: parsed.data.customer.email,
+          consent: true,
+          requestId
+        }));
+      } catch {
+        // Scheduling marketing must not turn a published invoice into a failed checkout.
+        console.error({ message: "Checkout marketing scheduling failed", requestId });
+      }
     }
 
     return NextResponse.json({
