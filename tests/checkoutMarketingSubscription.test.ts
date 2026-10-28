@@ -89,14 +89,20 @@ describe("checkout marketing subscription", () => {
       { id: "already-out", subscription: "opt_out" }
     ], has_more: false }, error: null });
     contacts.topics.update.mockResolvedValue({ data: { id: "contact-1" }, error: null });
-    contacts.update.mockImplementation(async () => {
-      expect(contacts.topics.update).toHaveBeenCalledWith({ id: "contact-1", topics: [
-        { id: "other-topic", subscription: "opt_out" },
-        { id: "bbq-topic", subscription: "opt_in" }
-      ] });
-      return { data: { id: "contact-1" }, error: null };
-    });
-    await subscribeToDropUpdates(consent);
+    let finishTopicUpdate: (() => void) | undefined;
+    contacts.topics.update.mockImplementation(() => new Promise((resolve) => {
+      finishTopicUpdate = () => resolve({ data: { id: "contact-1" }, error: null });
+    }));
+    contacts.update.mockResolvedValue({ data: { id: "contact-1" }, error: null });
+    const subscription = subscribeToDropUpdates(consent);
+    await vi.waitFor(() => expect(finishTopicUpdate).toBeDefined());
+    expect(contacts.update).not.toHaveBeenCalled();
+    expect(contacts.topics.update).toHaveBeenCalledWith({ id: "contact-1", topics: [
+      { id: "other-topic", subscription: "opt_out" },
+      { id: "bbq-topic", subscription: "opt_in" }
+    ] });
+    finishTopicUpdate!();
+    await subscription;
     expect(contacts.update).toHaveBeenCalledWith({ id: "contact-1", unsubscribed: false });
   });
   it("resubscribes the BBQ topic with fresh consent and leaves unrelated topic choices untouched", async () => {

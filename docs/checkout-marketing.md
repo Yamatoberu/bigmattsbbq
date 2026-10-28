@@ -9,14 +9,17 @@ confirmation do not depend on marketing consent.
 
 Set server-only `RESEND_API_KEY` (full API access), `RESEND_SEGMENT_ID` (the BBQ
 marketing segment), and `RESEND_BBQ_TOPIC_ID`. Create the public BBQ-drop topic
-with default subscription `opt_out` so native Resend preferences can manage it.
-Select this topic as well as the segment on future BBQ broadcasts. Other
+with default subscription `opt_in` to preserve existing opted-in mailing-list
+contacts without a backfill. Global unsubscribes and explicit topic opt-outs
+still apply. The admin BBQ broadcast endpoint requires this topic ID and sends
+with both the segment and topic; missing configuration refuses sending. Other
 marketing campaigns must use their own topics to respect topic preferences;
 a topicless broadcast only honors the global unsubscribe flag.
 
 The checkout integration uses the current Contacts API without requiring the
-legacy `RESEND_AUDIENCE_ID`. The existing standalone signup and broadcast routes
-are unchanged. No campaign is sent by checkout.
+legacy `RESEND_AUDIENCE_ID`. Standalone signup is unchanged. The existing
+broadcast sender now assigns the BBQ topic so native topic unsubscribes are
+honored. No campaign is sent by checkout.
 
 ## Subscription behavior
 
