@@ -63,8 +63,14 @@ export async function POST(request: Request) {
       process.env.EMAIL_FROM ?? "Big Matt's BBQ <orders@bigmattsbbq.com>";
 
     const resend = new Resend(env.apiKey);
+    const topicId = process.env.RESEND_BBQ_TOPIC_ID;
+    if (!topicId) {
+      logError("broadcast missing BBQ topic", new Error("Missing RESEND_BBQ_TOPIC_ID"), requestId);
+      return NextResponse.json({ error: "Broadcast failed.", requestId }, { status: 500 });
+    }
     const { data, error } = await resend.broadcasts.create({
       segmentId: env.segmentId,
+      topicId,
       from,
       subject,
       html,

@@ -32,10 +32,12 @@ describe("POST /api/admin/broadcast", () => {
     process.env.RESEND_API_KEY = "re_test";
     process.env.RESEND_AUDIENCE_ID = "aud_test_123";
     process.env.RESEND_SEGMENT_ID = "seg_test_123";
+    vi.stubEnv("RESEND_BBQ_TOPIC_ID", "bbq-topic");
     process.env.EMAIL_FROM = "Big Matt's BBQ <orders@bigmattsbbq.com>";
   });
 
   afterEach(() => {
+    vi.unstubAllEnvs();
     vi.doUnmock("resend");
     vi.doUnmock("@react-email/render");
     vi.doUnmock("../emails/DropNotificationEmail");
@@ -104,6 +106,7 @@ describe("POST /api/admin/broadcast", () => {
     expect(broadcastsCreateMock).toHaveBeenCalledOnce();
     const call = broadcastsCreateMock.mock.calls[0][0];
     expect(call.segmentId).toBe("seg_test_123");
+    expect(call.topicId).toBe("bbq-topic");
     expect(call.subject).toBe("Drop is live");
     expect(call.send).toBe(true);
     expect(typeof call.html).toBe("string");
@@ -148,6 +151,19 @@ describe("POST /api/admin/broadcast", () => {
     });
     const res = await POST(req);
     expect(res.status).toBe(400);
+    expect(broadcastsCreateMock).not.toHaveBeenCalled();
+  });
+
+  it("refuses topicless sending when the BBQ topic is not configured", async () => {
+    vi.stubEnv("RESEND_BBQ_TOPIC_ID", "");
+    mockDeps();
+    const { POST } = await import("../app/api/admin/broadcast/route");
+    const response = await POST(new Request("http://localhost/api/admin/broadcast", {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: `Bearer ${process.env.BROADCAST_SECRET}` },
+      body: JSON.stringify({ subject: "Drop is live" })
+    }));
+    expect(response.status).toBe(500);
     expect(broadcastsCreateMock).not.toHaveBeenCalled();
   });
 

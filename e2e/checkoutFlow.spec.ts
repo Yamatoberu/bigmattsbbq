@@ -19,6 +19,32 @@ test.describe("checkout flow", () => {
     );
   });
 
+  for (const optedIn of [false, true]) {
+    test(`optional marketing consent ${optedIn ? "checked" : "unchecked"} reaches confirmation`, async ({ page }) => {
+      await stubFrozenItems(page);
+      await stubAttributionSources(page);
+      await seedCart(page, [{ variationId: variationIds.brisket, quantity: 1 }]);
+      const checkoutHandle = await stubCheckout(page, {
+        orderId: "marketing-order", invoiceId: "marketing-invoice", pickupNote: "Pickup at Preston"
+      });
+      await page.goto("/checkout");
+      await ensurePickupOptionSelected(page);
+      const checkbox = page.getByRole("checkbox", { name: "Yes! Notify me about future BBQ drops." });
+      await expect(checkbox).not.toBeChecked();
+      await expect(page.getByText("Never miss a BBQ drop!")).toBeVisible();
+      await page.getByLabel("First name", { exact: true }).fill("BBQ");
+      await page.getByLabel("Last name", { exact: true }).fill("Fan");
+      await page.getByLabel("Email", { exact: true }).fill("checkout-marketing@example.com");
+      if (optedIn) await checkbox.check();
+      await page.getByRole("button", { name: "Submit Order" }).click();
+      await expect(page).toHaveURL(/\/confirmation/);
+      expect(checkoutHandle.getRequestBody()).toMatchObject({
+        marketingOptIn: optedIn, customer: { email: "checkout-marketing@example.com" }
+      });
+      await expect(page.getByText("marketing-order")).toBeVisible();
+    });
+  }
+
   test("sauce bump prompts when the cart has meat and no sauce", async ({ page }) => {
     await stubFrozenItems(page);
     await seedCart(page, [{ variationId: variationIds.brisket, quantity: 1 }]);

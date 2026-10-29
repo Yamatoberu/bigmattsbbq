@@ -37,6 +37,7 @@ export interface PackageConfig {
 
 
 export interface CheckoutRequestBody {
+  marketingOptIn?: boolean;
   dropId: string;
   pickupOptionId: string;
   customer: {
