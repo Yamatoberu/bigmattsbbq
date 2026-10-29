@@ -256,8 +256,12 @@ describe("POST /api/checkout — invoice due date", () => {
     resolveAttributionLabelMock.mockResolvedValue(null);
   });
 
-  it("Test 1: uses the selected pickup option's pickup_date as the invoice due_date", async () => {
-    setupSupabaseMock(makePickupRow("2099-06-01"));
+  it("uses the window start for a multi-day pickup even when the legacy date differs", async () => {
+    setupSupabaseMock({
+      ...makePickupRow("2099-06-01"),
+      pickup_end_date: "2099-06-03",
+      pickup_date: "2099-05-30"
+    });
     setupSquareMocks();
     const cart = [{ variationId: "V-BRISKET", quantity: 1, productName: "brisket" }];
 
@@ -287,8 +291,11 @@ describe("POST /api/checkout — invoice due date", () => {
     expect(getInvoiceDueDate()).not.toBe(todaysDate);
   });
 
-  it("Test 3: a different pickup_date yields that same date as due_date, proving the value tracks the selected pickup option", async () => {
-    setupSupabaseMock(makePickupRow("2099-09-15"));
+  it("uses the window start for a single-day pickup even when the legacy date differs", async () => {
+    setupSupabaseMock({
+      ...makePickupRow("2099-09-15"),
+      pickup_date: "2099-09-14"
+    });
     setupSquareMocks();
     const cart = [{ variationId: "V-BRISKET", quantity: 1, productName: "brisket" }];
 
