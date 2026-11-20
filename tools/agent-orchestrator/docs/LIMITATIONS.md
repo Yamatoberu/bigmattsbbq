@@ -15,10 +15,10 @@ controlled Codex document edit with unattended production readiness.
   they never authorize a new provider or API billing. Provider reset extraction
   supports only explicit structured values. Approval requests are denied rather
   than answered with broader permissions.
-- The worker's offline build can fail for this app's `next/font/google` download.
-  A reviewed offline font cache or vendored font strategy is required before
-  enabling unattended implementation. Do not give verification unrestricted
-  network or production variables to work around it.
+- Site fonts are bundled under `app/fonts` and loaded locally; a clean production
+  build has been verified with worker-style network isolation. Dependency
+  installation still requires network access. A full supervised coding-worker
+  validation remains required before enabling unattended implementation.
 - GitHub issue/PR scans are capped at 200. A large backlog requires pagination
   before activation. PR deduplication recognizes linked body keywords and repo
   branch conventions, not every possible informal mention or external worker.
