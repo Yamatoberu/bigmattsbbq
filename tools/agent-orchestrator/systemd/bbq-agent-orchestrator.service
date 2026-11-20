@@ -1,0 +1,18 @@
+[Unit]
+Description=Big Matt's BBQ issue reconciliation
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/bbq-agent/release/tools/agent-orchestrator
+ExecStart=/opt/bbq-agent/toolchain/node_modules/.bin/node dist/cli.js --config /etc/bbq-agent/config.json wake
+TimeoutStartSec=10min
+UMask=0077
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/bbq-agent
+Environment=GH_CONFIG_DIR=/var/lib/bbq-agent/gh
+Environment=GIT_TERMINAL_PROMPT=0
+StandardOutput=journal
+StandardError=journal

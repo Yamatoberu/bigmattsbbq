@@ -1,0 +1,19 @@
+[Unit]
+Description=Big Matt's BBQ coding worker %i
+After=network-online.target
+
+[Service]
+Type=exec
+WorkingDirectory=/opt/bbq-agent/release/tools/agent-orchestrator
+ExecStart=/opt/bbq-agent/toolchain/node_modules/.bin/node dist/cli.js --config /etc/bbq-agent/config.json worker %i
+TimeoutStopSec=45s
+KillMode=control-group
+Restart=no
+UMask=0077
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/bbq-agent /srv/bbq-agent
+Environment=GH_CONFIG_DIR=/var/lib/bbq-agent/gh
+Environment=GIT_TERMINAL_PROMPT=0
+StandardOutput=journal
+StandardError=journal
