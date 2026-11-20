@@ -20,7 +20,7 @@ The owner can repeat both integration probes without implementing an issue.
 
 ```mermaid
 flowchart LR
-  Timer[Hourly timer] --> Wake[Short reconciliation]
+  Timer[Six-hour timer] --> Wake[Short reconciliation]
   Wake <--> DB[(Private SQLite)]
   Wake <--> GH[GitHub Issues and PRs]
   Wake --> Unit[Independent worker unit]

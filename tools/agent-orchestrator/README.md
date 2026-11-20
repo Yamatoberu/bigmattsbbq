@@ -121,8 +121,9 @@ journalctl --user -u bbq-agent-orchestrator.service --since today
 ```
 
 An administrator must enable lingering (`loginctl enable-linger bbq-agent`) for
-startup without an interactive login after reboot. The timer wakes hourly; the
-oneshot orchestrator exits after starting the separate worker service. Worker
+startup without an interactive login after reboot. The timer first wakes five
+minutes after boot, then every six hours. The oneshot orchestrator exits after
+starting the separate worker service. Worker
 services do not depend on the orchestrator service and survive its exit. Worker
 `Restart=no` deliberately defers retries to persisted reconciliation policy.
 
