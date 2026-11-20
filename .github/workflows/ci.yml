@@ -52,6 +52,21 @@ jobs:
       - run: npm run build
       - run: npm test
 
+  agent-orchestrator:
+    name: Agent orchestrator build and reliability tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Select pinned npm
+        run: npm install --global "$(node -p "require('./package.json').packageManager")"
+      - run: npm ci
+      - run: npm --prefix tools/agent-orchestrator run build
+      - run: npm --prefix tools/agent-orchestrator test
+
   square-mcp:
     name: Square MCP tests
     runs-on: ubuntu-latest
