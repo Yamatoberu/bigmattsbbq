@@ -468,7 +468,7 @@ export async function POST(request: Request) {
             payment_requests: [
               {
                 request_type: "BALANCE",
-                due_date: pickupRow.pickup_date
+                due_date: pickupRow.pickup_start_date
               }
             ],
             accepted_payment_methods: {
