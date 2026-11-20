@@ -75,6 +75,10 @@ subscription allowance or guaranteed live-turn attachment is made.
   uninstalled template naturally reports that its `/opt` executable is absent.
 - Status, pause and resume commands exercised with private external runtime state;
   dispatch remains disabled.
+- Initial hosted CI exposed a fake-CLI fixture that hardcoded `/usr/bin/node`.
+  Hiding that interpreter in a namespace reproduced the exact eight failures;
+  using the selected `process.execPath` fixed the fixture without changing runtime
+  security. The same namespace reproduction and all 50 tests then pass.
 
 ## Boundaries of this proof
 

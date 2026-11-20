@@ -13,10 +13,11 @@ function fixture(events: object[], exitCode = 0, auth = "chatgpt") {
   mkdirSync(join(root, "auth"));
   writeFileSync(join(root, "auth", "auth.json"), JSON.stringify({ auth_mode: auth }));
   const binary = join(root, "fake-codex");
-  writeFileSync(binary, `#!/usr/bin/node
+  writeFileSync(binary, `#!${process.execPath}
 const fs=require('node:fs');
 if(process.argv[2]==='login') process.exit(0);
 fs.writeFileSync('args.json',JSON.stringify(process.argv.slice(2)));
+fs.writeFileSync('runtime.json',JSON.stringify({execPath:process.execPath}));
 for(const event of ${JSON.stringify(events)}) console.log(JSON.stringify(event));
 console.error('private diagnostics should not appear in errors');
 process.exit(${exitCode});\n`);
@@ -37,6 +38,7 @@ it("streams and preserves the thread ID before completion", async () => {
   expect(args).toContain('forced_login_method="chatgpt"');
   expect(args).toContain("--ignore-user-config");
   expect(args).not.toContain("--dangerously-bypass-approvals-and-sandbox");
+  expect(JSON.parse(readFileSync(join(f.root, "runtime.json"), "utf8")).execPath).toBe(process.execPath);
 });
 
 it("resumes an explicit saved session instead of creating a new thread", async () => {
