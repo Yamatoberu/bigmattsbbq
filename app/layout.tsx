@@ -1,21 +1,27 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { headers } from "next/headers";
-import { Playfair_Display, Nunito_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "./providers";
 import { NavBar } from "../components/NavBar";
 import { Footer } from "../components/Footer";
 import { SCA_AREA_HEADER } from "../lib/sca/routing";
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
+const playfair = localFont({
+  src: "./fonts/playfair-display.woff2",
+  weight: "400 900",
+  style: "normal",
+  adjustFontFallback: "Times New Roman",
   variable: "--font-display",
   display: "swap"
 });
 
-const nunitoSans = Nunito_Sans({
-  subsets: ["latin"],
+const nunitoSans = localFont({
+  src: "./fonts/nunito-sans.woff2",
+  weight: "200 1000",
+  style: "normal",
+  adjustFontFallback: "Arial",
   variable: "--font-body",
   display: "swap"
 });
