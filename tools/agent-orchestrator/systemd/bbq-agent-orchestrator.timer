@@ -1,0 +1,12 @@
+[Unit]
+Description=Reconcile Big Matt's BBQ development hourly
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=60min
+Persistent=true
+RandomizedDelaySec=30
+Unit=bbq-agent-orchestrator.service
+
+[Install]
+WantedBy=timers.target

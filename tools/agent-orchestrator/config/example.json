@@ -1,0 +1,15 @@
+{
+  "repository": "/srv/bbq-agent/repository",
+  "stateDirectory": "/var/lib/bbq-agent/state",
+  "codexHome": "/var/lib/bbq-agent/codex",
+  "codexBinary": "/opt/bbq-agent/bin/codex",
+  "toolchainDirectory": "/opt/bbq-agent/toolchain/node_modules",
+  "readyLabel": "ready-for-agent",
+  "blockedLabel": "agent-blocked",
+  "ownerLabel": "awaiting-owner-input",
+  "maxRetries": 3,
+  "leaseMs": 300000,
+  "enabled": false,
+  "integrationVerified": false,
+  "approvedSecurityIssues": []
+}
